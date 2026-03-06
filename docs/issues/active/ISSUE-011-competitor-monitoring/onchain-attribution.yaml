@@ -397,6 +397,58 @@ bundlebear_factory_labels:
     note: "Safe4337Module 在 BundleBear apps 标签中追踪，非 factories 标签"
 
 # ============================================================
+# BundleBear EIP-7702 标签（authorized contract 归因）
+# 来源：https://github.com/Jam516/BundleBear/blob/main/models/eip7702/labels/eip7702_labels_authorized_contracts.sql
+# ============================================================
+bundlebear_eip7702_labels:
+  description: >
+    BundleBear 已建立完整的 EIP-7702 独立追踪系统（8 链覆盖）。
+    以下为与 wallet-bench 竞品相关的 authorized contract 标签。
+    全链累计 authorization 9100 万，存活 EOA 660 万（合法约 400 万）。
+  source: "https://github.com/Jam516/BundleBear/blob/main/models/eip7702/labels/eip7702_labels_authorized_contracts.sql"
+  data_as_of: "2025-12"
+
+  # 与 wallet-bench 竞品直接相关的 impl 地址
+  coinbase_wallet:
+    address: "0x7702cb554e6bfb442cb743a7df23154544a7176c"
+    live_accounts: 506358
+    trackable: true  # 专属地址，可确定性归因
+
+  # 被 Privy 使用但与其他集成方共享的 impl 地址
+  zerodev_kernel_7702:
+    address: "0xd6cedde84be40893d153be9d467cd6ad37875b28"
+    live_accounts: 302218
+    trackable: false  # 被 Privy + 直接 SDK 用户 + 其他集成方共享，无法归因 Privy
+
+  alchemy_7702:
+    address: "0x69007702764179f14f51cdce752f4f775d74e139"
+    live_accounts: 285328
+    trackable: false  # 同上
+
+  biconomy_nexus_7702:
+    addresses:
+      - "0x000000004f43c49e93c970e84001853a70923b03"
+    userops_accounts: 53984
+    trackable: false  # 同上
+
+  # 其他竞品（非 wallet-bench 6 家，但有参考价值）
+  metamask_delegator:
+    address: "0x63c0c19a282a1b52b07dd5a65b58948a07dae32b"
+    live_accounts: 698086
+  bitget:
+    address: "0xa845c74344fc9405b1fcf712f04668979573c1bf"
+    live_accounts: 868757
+  tokenpocket:
+    address: "0xcc0c946eecf01a4bc76bc333ea74ceb04756f17b"
+    live_accounts: 586797
+  ambire:
+    address: "0x5a7fc11397e9a8ad41bf10bf13f22b0a63f96f6d"
+    live_accounts: 508123
+  trustwallet:
+    address: "0xd2e28229f6f2c235e57de2ebc727025a1d0530fb"
+    live_accounts: 347087
+
+# ============================================================
 # Dune 社区 Query 候选
 # ============================================================
 dune_query_candidates:
@@ -428,6 +480,35 @@ dune_query_candidates:
       JiffyScan 提供 Factory 页面，但 WebFetch 时数据未加载（JS 渲染）。
       API 文档：https://jiffyscan.mintlify.app/welcome
       可通过 JiffyScan API 编程获取 factory 数据。
+
+  - description: "Dune 社区 EIP-7702 Dashboard（wintermute_research，最全面）"
+    query_url: "https://dune.com/wintermute_research/eip7702"
+    notes: >
+      多链 delegation、authorized contracts、daily/cumulative、4337 重合分析。
+      覆盖 Ethereum/Base/BSC/Polygon/Optimism/Arbitrum 等。最权威的 7702 看板。
+
+  - description: "Dune 社区 EIP-7702 Adoption（0xkhmer）"
+    query_url: "https://dune.com/0xkhmer/eip-7702"
+    notes: "cumulative authorizations、EOA 地址、Ethereum + Superchain 覆盖。"
+
+  - description: "Dune Transaction Type Adoption EIP-7702 Type4（lorenz234）"
+    query_url: "https://dune.com/lorenz234/transaction-type-adoption"
+    notes: "Ethereum 类型分布、最常用授权合约、daily authorizations。"
+
+  - description: "Dune Daily TrustWallet EIP-7702 Delegation（独立查询）"
+    query_url: "https://dune.com/queries/6356693/10112559"
+    notes: "TrustWallet 专项 7702 delegation 追踪。"
+
+  - description: "BundleBear EIP-7702 标签 SQL（authorized contracts 地址-名称映射）"
+    query_url: "https://github.com/Jam516/BundleBear/blob/main/models/eip7702/labels/eip7702_labels_authorized_contracts.sql"
+    notes: >
+      包含所有已标注的 7702 authorized contract 地址，
+      含 Coinbase Wallet、MetaMask、TrustWallet、Bitget、ZeroDev、Alchemy、Biconomy 等。
+      无 Privy 条目（Privy 为签名基础设施层，链上不可见）。
+
+  - description: "Etherscan EIP-7702 Authorizations 页面"
+    query_url: "https://etherscan.io/txnAuthList"
+    notes: "超过 1,000,000 条 EIP-7702 authorizations，支持按 Authority 和 Tx Sender 过滤。"
 
 # ============================================================
 # 机器人过滤策略（分级：硬过滤 vs 软标记）
@@ -480,13 +561,14 @@ research_summary:
         两个工厂地址（v1.0 和 v1.1）均来自官方 GitHub 仓库，
         在 Etherscan 上已验证源码，BundleBear 社区标签确认归属。
 
-    - finding: "Privy 不部署自有工厂，复用第三方工厂，且 paymaster/bundler 均无法归因"
+    - finding: "Privy 不部署自有工厂，复用第三方工厂，且 paymaster/bundler/EIP-7702 均无法归因"
       confidence: high
       details: >
         Privy 文档明确列出 6 种底层实现供开发者选择，
         链上无法区分 Privy 创建的钱包与直接使用底层 SDK 创建的钱包。
         ISSUE-013 进一步调研确认：paymaster/bundler 由开发者自配（无统一地址），
         Native Gas Sponsorship 地址未公开，两条路径均确认不可行。
+        EIP-7702 概率归因 5 条路径全部失败（impl 地址被多家共享，签名在链下完成）。
 
     - finding: "Crossmint 使用 ZeroDev Kernel 工厂，factory + bundler 组合可精准归因（测试网已验证）"
       confidence: high
@@ -504,6 +586,19 @@ research_summary:
         开源项目，维护 59 个已标注工厂地址（22 个供应商），
         提供每周账户激活数据按工厂分组。可直接用于 Phase 2。
 
+    - finding: "EIP-7702 调研发现 Coinbase Wallet 有专属 7702 impl，可补充 ERC-4337 工厂数据"
+      confidence: high
+      details: >
+        Coinbase Wallet 7702 impl (0x7702cb55...) 拥有 50.6 万账户，专属地址可确定性归因。
+        BundleBear 已追踪此地址。可纳入 Phase 2 链上采集，与 ERC-4337 factory 数据互补。
+        其他竞品（MetaMask 69.8万/Bitget 86.9万/TrustWallet 34.7万/Ambire 50.8万）均有专属 impl。
+
+    - finding: "BundleBear 同时是 ERC-4337 和 EIP-7702 最权威的归因数据源"
+      confidence: high
+      details: >
+        开源项目，维护 59 个 ERC-4337 工厂地址标签（22 个供应商），
+        同时建立了独立的 EIP-7702 追踪体系ﾈ8 链覆盖、authorized contract 标签、
+        authorizations/actions/metrics/state 4 层数据）。可直接用于 Phase 2。
 # ============================================================
 # Phase 2 采集配置（版本化，变更需记录 changelog）
 # ============================================================
@@ -562,3 +657,12 @@ onchain_changelog:
       采集频率每日，SLA T+1。机器人过滤规则分级为硬过滤 3 条 + 软标记 3 条。
       tx_per_active_wallet_median 指标延后（BundleBear API 不提供）。
       ISSUE-013 调研确认 Privy paymaster 不可归因。
+
+  - version: "3.0"
+    date: "2026-03-06"
+    changes: >
+      新增 EIP-7702 调研结果：BundleBear 7702 标签体系（authorized contract 地址-名称映射）、
+      Coinbase Wallet 专属 7702 impl（0x7702cb55...，50.6 万账户）可纳入 Phase 2 链上采集。
+      确认 Privy EIP-7702 概率归因不可行（5 条路径均失败），不建议创建 ISSUE-013B。
+      新增 4 个 Dune EIP-7702 Dashboard + Etherscan txnAuthList + BundleBear 7702 标签 SQL 作为数据源候选。
+      research_summary 更新：trackable 保持 1/6，Coinbase 新增 7702 维度数据。
