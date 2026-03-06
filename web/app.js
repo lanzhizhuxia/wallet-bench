@@ -545,13 +545,13 @@ function renderTabContent(tabId) {
             renderWalletTypesTab();
             break;
         case 'test-design':
-            renderMarkdownTab('test-design-container', '../docs/methodology/test-design-philosophy.md');
+            renderMarkdownTab('test-design-container', 'docs/methodology/test-design-philosophy.md');
             break;
         case 'test-detail':
-            renderMarkdownTab('test-detail-container', '../docs/methodology/test-item-reference.md');
+            renderMarkdownTab('test-detail-container', 'docs/methodology/test-item-reference.md');
             break;
         case 'next-steps':
-            renderMarkdownTab('next-steps-container', '../docs/next-steps.md');
+            renderMarkdownTab('next-steps-container', 'docs/next-steps.md');
             break;
     }
 }
