@@ -2554,6 +2554,9 @@ function renderMarketTab(npm, pypi, github, status, docs, onchain) {
     // Global disclaimer
     html += `<div class="market-disclaimer">⚠️ 本 Tab 展示的是活跃度代理指标，不等于供应商真实 DAU/MAU。所有数据仅用于趋势观察与横向相对比较。</div>`;
 
+    // Card 5 — 可观测用户激活（链上数据）— 置顶
+    html += renderMarketCard5(onchain);
+
     // Card 1 — 开发者兴趣
     html += renderMarketCard1(npm, pypi);
 
@@ -2565,9 +2568,6 @@ function renderMarketTab(npm, pypi, github, status, docs, onchain) {
 
     // Card 4 — 产品成熟度
     html += renderMarketCard4(docs);
-
-    // Card 5 — 终端活跃（链上数据）
-    html += renderMarketCard5(onchain);
 
     // Data freshness
     html += renderMarketFreshness(npm, pypi, github, status, docs, onchain);
