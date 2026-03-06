@@ -1,8 +1,15 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "2.0",
   "source": "bundlebear",
-  "collected_at": "2026-03-06T10:41:15+00:00",
+  "collected_at": "2026-03-06T11:11:10+00:00",
   "period": "last-30d",
+  "data_freshness": {
+    "sla": "T+1",
+    "latest_data_month": "2026-02-01",
+    "collection_status": "success"
+  },
+  "stale": false,
+  "stale_since": null,
   "providers": {
     "coinbase": {
       "trackable": true,

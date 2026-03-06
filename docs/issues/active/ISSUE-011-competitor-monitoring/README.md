@@ -8,7 +8,7 @@ concepts:
 # ISSUE-011: 竞品活跃度代理指标监控 — SDK 下载量 + GitHub 活跃度 + 状态页 + 文档密度 + 链上数据
 
 ## Meta
-- **Status**: OPEN
+- **Status**: PHASE_0-2_COMPLETE (Phase 3 = Backlog)
 - **Priority**: P2
 - **Component**: scripts/, web/, .github/workflows/
 - **Owner**: —

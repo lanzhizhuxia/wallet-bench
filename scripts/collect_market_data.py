@@ -554,6 +554,71 @@ def _fetch_status_incidents(base_url: str) -> dict | None:
         return None
 
 
+def _fetch_squadcast_incidents(base_url: str) -> dict | None:
+    """Fetch incidents from a Squadcast-powered status page (__NEXT_DATA__)."""
+    try:
+        resp = _get(base_url)
+        html = resp.text
+        match = re.search(
+            r'<script id="__NEXT_DATA__" type="application/json">(.*?)</script>',
+            html,
+        )
+        if not match:
+            log_error("squadcast: no __NEXT_DATA__", url=base_url)
+            return None
+
+        data = json.loads(match.group(1))
+        props = data.get("props", {}).get("pageProps", {})
+        history = props.get("history", [])
+        ongoing = props.get("onGoingIssues", {}).get("issues", [])
+
+        cutoff = datetime.now(timezone.utc) - timedelta(days=30)
+        count_30d = 0
+        resolution_minutes: list[float] = []
+
+        for day in history:
+            for issue in day.get("issues", []):
+                created = issue.get("begins_at") or issue.get("created_at", "")
+                if not created:
+                    continue
+                try:
+                    created_dt = datetime.fromisoformat(created.replace("Z", "+00:00"))
+                except ValueError:
+                    continue
+                if created_dt < cutoff:
+                    continue
+                count_30d += 1
+                resolved = issue.get("resolved_at") or issue.get("ends_at")
+                if resolved:
+                    try:
+                        resolved_dt = datetime.fromisoformat(resolved.replace("Z", "+00:00"))
+                        delta = (resolved_dt - created_dt).total_seconds() / 60.0
+                        if delta >= 0:
+                            resolution_minutes.append(delta)
+                    except ValueError:
+                        pass
+
+        count_30d += len(ongoing)
+
+        mttr = (
+            round(sum(resolution_minutes) / len(resolution_minutes), 1)
+            if resolution_minutes
+            else None
+        )
+
+        result = {
+            "incidents_30d": count_30d,
+            "mttr_minutes": mttr,
+            "resolved_count": len(resolution_minutes),
+        }
+        log_info("squadcast status ok", url=base_url, **result)
+        return result
+
+    except Exception as exc:
+        log_error("squadcast status failed", url=base_url, error=str(exc))
+        return None
+
+
 def collect_status() -> dict:
     """Collect Status Page data for all providers."""
     now = datetime.now(timezone.utc).isoformat(timespec="seconds")
@@ -571,6 +636,9 @@ def collect_status() -> dict:
             continue
 
         result = _fetch_status_incidents(base_url)
+        if result is None:
+            # Statuspage.io API 不可用，尝试 Squadcast 解析
+            result = _fetch_squadcast_incidents(base_url)
         if result is not None:
             providers[provider] = {
                 **result,
@@ -722,14 +790,30 @@ def collect_docs() -> dict:
 # 6. On-chain active wallets (BundleBear)
 # ---------------------------------------------------------------------------
 
+
+def _read_existing_snapshot(path: Path) -> dict | None:
+    """Read existing JSON snapshot for stale fallback."""
+    try:
+        if path.exists():
+            with open(path, "r", encoding="utf-8") as f:
+                return json.load(f)
+    except (json.JSONDecodeError, OSError) as exc:
+        log_warn("failed to read existing snapshot", path=str(path), error=str(exc))
+    return None
+
+
 def collect_onchain() -> dict:
     """Collect on-chain active wallet counts via BundleBear activation API.
 
     Only Coinbase Smart Wallet has verified, attributable factory addresses.
     All other providers are marked not_trackable with reasons.
+
+    On failure, falls back to the last successful snapshot marked as stale.
     """
     now = datetime.now(timezone.utc).isoformat(timespec="seconds")
     providers: dict = {}
+    latest_month: str | None = None
+    fetch_ok = False
 
     # 1. 采集 BundleBear erc4337-activation 数据（无需认证）
     url = "https://bundlebear-api.onrender.com/erc4337-activation?chain=all&timeframe=month"
@@ -759,11 +843,26 @@ def collect_onchain() -> dict:
                 # 同一 label 可能出现多次（factory + eip7702），累加
                 bundlebear_data[label] = bundlebear_data.get(label, 0) + int(count)
         log_info("bundlebear fetch ok", rows=len(rows), latest_month=latest_month)
+        fetch_ok = True
     except Exception as exc:
         log_error("bundlebear fetch failed", error=str(exc))
         bundlebear_data = None
+        fetch_ok = False
 
-    # 2. 可追踪供应商：Coinbase
+    # 2. 如果 BundleBear 失败，尝试读取上次成功的快照
+    if not fetch_ok:
+        existing = _read_existing_snapshot(OUTPUT_ONCHAIN)
+        if existing:
+            existing["stale"] = True
+            existing["stale_since"] = existing.get("stale_since") or now
+            existing.setdefault("data_freshness", {})
+            existing["data_freshness"]["collection_status"] = "stale"
+            existing["collected_at"] = now
+            log_warn("using stale onchain snapshot", stale_since=existing["stale_since"])
+            return existing
+        log_error("no historical snapshot available, returning empty onchain data")
+
+    # 3. 可追踪供应商：Coinbase
     for label, provider_id in BUNDLEBEAR_FACTORY_LABELS.items():
         if bundlebear_data is None:
             providers[provider_id] = {
@@ -783,7 +882,7 @@ def collect_onchain() -> dict:
             }
             log_info("onchain data", provider=provider_id, active_wallets_30d=count)
 
-    # 3. 不可追踪供应商
+    # 4. 不可追踪供应商
     all_provider_ids = ["privy", "coinbase", "crossmint", "bnbchain_mcp", "moonpay", "minara"]
     for pid in all_provider_ids:
         if pid not in providers:
@@ -794,10 +893,17 @@ def collect_onchain() -> dict:
             }
 
     return {
-        "schema_version": SCHEMA_VERSION,
+        "schema_version": "2.0",
         "source": "bundlebear",
         "collected_at": now,
         "period": "last-30d",
+        "data_freshness": {
+            "sla": "T+1",
+            "latest_data_month": latest_month,
+            "collection_status": "success",
+        },
+        "stale": False,
+        "stale_since": None,
         "providers": providers,
     }
 

@@ -2744,32 +2744,52 @@ function renderMarketCard5(onchain) {
         </div>`;
     }
 
+    // Stale 警告
+    let staleWarning = '';
+    if (onchain.stale) {
+        const staleSince = onchain.stale_since ? new Date(onchain.stale_since).toISOString().slice(0, 10) : '未知';
+        staleWarning = `<div class="market-stale-banner">⚠️ 链上数据采集失败，当前显示 ${staleSince} 的缓存数据</div>`;
+    }
+
+    // 表格行
     let rows = '';
+    let trackableCount = 0;
     PROVIDER_ORDER.forEach(id => {
         const d = onchain.providers[id];
         const name = MARKET_PROVIDER_NAMES[id];
         if (!d) {
             rows += `<tr><td>${name}</td><td class="market-na" colspan="2">暂无数据</td></tr>`;
         } else if (!d.trackable) {
-            rows += `<tr><td>${name}</td><td class="market-na" colspan="2" title="${d.reason}">架构不可追踪</td></tr>`;
-        } else if (d.active_wallets_30d == null) {
-            rows += `<tr><td>${name}</td><td class="market-na" colspan="2">数据获取失败</td></tr>`;
+            rows += `<tr><td>${name}</td><td class="market-na" colspan="2" title="${d.reason || ''}">架构不可追踪</td></tr>`;
         } else {
-            rows += `<tr>
-                <td>${name}</td>
-                <td>${formatNum(d.active_wallets_30d)}</td>
-                <td class="market-na" style="font-size:11px">月度新激活</td>
-            </tr>`;
+            trackableCount++;
+            if (d.active_wallets_30d == null) {
+                rows += `<tr><td>${name}</td><td class="market-na" colspan="2">数据获取失败</td></tr>`;
+            } else {
+                rows += `<tr>
+                    <td>${name}</td>
+                    <td>${formatNum(d.active_wallets_30d)}</td>
+                    <td class="market-na" style="font-size:11px">月度新激活</td>
+                </tr>`;
+            }
         }
     });
 
+    // 数据新鲜度
+    const freshness = onchain.data_freshness || {};
+    const dataMonth = freshness.latest_data_month || '\u2014';
+    const sla = freshness.sla || 'T+1';
+
     return `
-    <div class="market-card">
+    <div class="market-card${onchain.stale ? ' market-card-stale' : ''}">
         <h3 class="market-card-title">终端活跃（链上数据）</h3>
+        <div class="market-coverage-badge">覆盖率：${trackableCount}/${PROVIDER_ORDER.length} 供应商可追踪</div>
+        ${staleWarning}
         <table class="market-table">
             <thead><tr><th>供应商</th><th>30d 新激活钱包</th><th>说明</th></tr></thead>
             <tbody>${rows}</tbody>
         </table>
+        <div class="market-data-month">数据月份：${dataMonth} ｜ 时效：${sla}</div>
         <div class="market-confidence status-pass">置信度：高（仅覆盖 Coinbase Smart Wallet，来源 BundleBear）</div>
         <div class="market-confidence" style="color:var(--text-tertiary);font-size:11px;margin-top:4px">
             ⚠️ 数据为月度新激活账户数，非存量活跃用户数。Privy/Crossmint 链上无法归因。

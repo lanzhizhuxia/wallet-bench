@@ -1,8 +1,6 @@
 # wallet-bench Issue Index
 
-**Last Updated**: 2026-03-06 (ISSUE-012/013 新增：Crossmint 工厂反查 + Privy Paymaster 归因调研)
-
-**Last Updated**: 2026-03-05 (ISSUE-008 Batch 1-6 全部完成，6 个 provider 真实测试数据已生成)
+**Last Updated**: 2026-03-06 (ISSUE-011 Phase 0+1+2 完成：6 维度日频采集 + Dashboard 上线 + 链上 stale 降级 + Crossmint Squadcast 适配)
 
 ## Current Execution Focus
 
@@ -18,6 +16,6 @@
 | ISSUE-008 | Done     | 测试矩阵扩展 — App 层真实测试 + Crossmint 升级 + 数据可信度            | COMPLETE   | P1       | Batch 1-6 全部完成。6 provider 全量真实测试运行，数据溯源 badge + 覆盖率横幅 + YAML 视觉降级。 | docs/issues/active/ISSUE-008-test-matrix-expansion/ |
 | ISSUE-009 | Done     | 功能对比融合 DeFi 集成难度矩阵                                          | COMPLETE   | P1       | DeFi 场景评级（即用/低门槛/中等/不可行）融入功能对比卡片和详情页，替代旧 app_layer 雷达维度。 | docs/issues/active/ISSUE-009-comparison-defi-fusion/ |
 | ISSUE-010 | Done     | 一级导航重构 — 评测合并 + 知识阅读扩充                                  | COMPLETE   | P1       | 3 Tab 导航重构 + 了解更多子 Tab（测试设计/测试详解/下一步）+ Markdown 渲染。 | docs/issues/active/ISSUE-010-nav-restructure/ |
-| ISSUE-011 | Planning | 竞品活跃度监控 — 链上数据 + SDK 下载量 + 社区指标                       | OPEN       | P2       | 持续监控 WaaS 竞品活跃用户数：链上工厂合约事件、npm/PyPI 下载量、GitHub 活跃度。 | docs/issues/active/ISSUE-011-competitor-monitoring/ |
-| ISSUE-012 | Planning | Crossmint 链上工厂合约反查 — 通过自测钱包提取 factory 地址               | OPEN       | P2       | 通过 wallet-bench 自身 Crossmint adapter 创建测试钱包，反查链上 UserOp 中的 factory 地址，打通 Crossmint 链上归因。 | docs/issues/active/ISSUE-012-crossmint-onchain-attribution/ |
+| ISSUE-011 | Done     | 竞品活跃度监控 — 链上数据 + SDK 下载量 + 社区指标                       | PHASE_0-2_COMPLETE | P2 | 6 维度日频自动采集（npm/PyPI/GitHub/StatusPage/Docs/链上）+ Dashboard Market Tab + BundleBear API stale 降级。Phase 3 Backlog。 | docs/issues/active/ISSUE-011-competitor-monitoring/ |
+| ISSUE-012 | Done     | Crossmint 链上工厂合约反查 — 通过自测钱包提取 factory 地址               | DONE       | P2       | 确认 Crossmint 使用 ZeroDev Kernel 工厂，`trackable: partial`。Factory + validator/bundler 组合可提高归因精度。 | docs/issues/active/ISSUE-012-crossmint-onchain-attribution/ |
 || ISSUE-013 | Done     | Privy 链上归因突破 — Paymaster / Bundler 足迹调研                        | CLOSED     | P2       | 确认 Privy 链上不可追踪：paymaster 由开发者自配，Native Sponsorship 地址未公开，两条路径均失败。 | docs/issues/active/ISSUE-013-privy-paymaster-attribution/ |

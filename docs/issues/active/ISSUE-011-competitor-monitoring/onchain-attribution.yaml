@@ -25,7 +25,6 @@ attribution_rules:
         此外，Privy 的 Gas Sponsorship 也无法用于链上归因：Smart Wallet 路径的 bundlerUrl/paymasterUrl
         由开发者在 Privy Dashboard 自行配置（Pimlico/ZeroDev/Alchemy/Biconomy/Coinbase），无统一专属地址；
         Native Gas Sponsorship（EIP-7702）虽由 Privy 后端处理，但 paymaster 地址未公开。
-      investigation_log:
         - date: "2026-03-06"
           scope: "ISSUE-013 Privy Paymaster / Bundler 足迹调研"
           methods_tried:
@@ -55,6 +54,38 @@ attribution_rules:
           conclusion: >
             两条路径均无法归因：Smart Wallet paymaster 由开发者自配，Native Sponsorship 地址未公开。
             确认链上无可识别足迹，不再投入时间。
+        - date: "2026-03-06"
+          scope: "EIP-7702 概率归因路径评估（5 条路径 + BundleBear 7702 数据交叉验证）"
+          methods_tried:
+            - "Privy 官方文档确认 Native Gas Sponsorship 使用 EIP-7702"
+            - "BundleBear eip7702_labels_authorized_contracts.sql 检查 Privy label"
+            - "BundleBear 2025 年度报告获取 EIP-7702 宏观量级数据"
+            - "Dune 社区 3 个 EIP-7702 dashboard 检查 Privy 维度"
+            - "Etherscan txnAuthList 页面验证 7702 量级"
+            - "Oracle 评估 5 条概率归因路径可行性"
+          findings:
+            - >
+              Privy Native Gas Sponsorship 确认使用 EIP-7702（2025-09-24 上线，15+ 主网）。
+              EOA 默认升级为 ZeroDev Kernel 智能合约（KERNEL_V3_3），
+              链上可通过 eth_getCode(EOA) 检测 0xef0100 前缀。
+            - >
+              BundleBear 已全面追踪 EIP-7702（8 链覆盖），但 label 系统中无 "Privy" 条目。
+              Privy 是签名基础设施层，不部署 authorized contract，链上不可见。
+            - >
+              ZeroDev（Privy 默认 impl）30.2 万 7702 账户，但被 Privy + 直接 SDK 用户 +
+              其他集成方共享。字节码完全一致，链上不可区分。
+            - >
+              5 条概率归因路径评估结果：
+              路径1（impl 指纹）不可行（噪声太大）；路径2（paymaster 聚类）极弱；
+              路径3（factory）不适用（7702 不需 factory）；路径4（calldata）不可行；
+              路径5（离链申请数据）唯一可行但非自动化。
+            - >
+              意外收获：Coinbase Wallet 有专属 7702 impl (0x7702cb55...)，50.6 万账户，
+              可纳入 ISSUE-011 Phase 2 链上采集。其他竞品（MetaMask/TrustWallet/Bitget/Ambire）
+              也有专属 impl，可直接追踪。
+          conclusion: >
+            确定性归因不可行（impl 地址被多家共享），概率归因投入产出比过低。
+            不建议创建 ISSUE-013B。将 Coinbase 7702 数据纳入 Phase 2 即可。
       notes: >
         如果 Privy 客户选择 Coinbase Smart Wallet，其钱包会通过 CoinbaseSmartWalletFactory
         部署，在链上表现为 coinbase_smart_wallet 而非 privy。
@@ -158,65 +189,132 @@ attribution_rules:
     # Crossmint
     # ----------------------------------------------------------
     crossmint:
-      trackable: partial
+      trackable: partial  # factory 级别可追踪，但含 Crossmint 以外的 Kernel 客户
       architecture: smart_wallet
       underlying_factory: zerodev_kernel
       reason: >
-        ISSUE-012 反查结论：Crossmint 使用 ZeroDev Kernel 工厂部署 ERC-7579 模块化智能账户。
-        工厂地址 0xd703aae79538628d27099b8c4f621be4ccd142d5 在 BundleBear 社区标签库中已标注为
-        zerodev_kernel。链上无法区分 Crossmint 来源与直接使用 ZeroDev Kernel 的其他应用
-        （如 ZeroDev SDK 用户、其他基于 Kernel 的 WaaS）。
+        Crossmint 使用 ZeroDev Kernel 工厂实例 0xd703aae...，该工厂是 EntryPoint v0.7 上最大的 Kernel 工厂
+        （Base 52%, ETH 58%, ARB 80%, OP 94%, Polygon 44%）。
+        测试网 bundler 分析显示 Crossmint 占该 factory 67% 流量，但主网全部通过 Pimlico bundler（0x4337... 前缀），
+        无法按 bundler 区分 Crossmint 与其他 Kernel 客户。
+        该 factory 数据可作为 Crossmint 活跃度的上界估计，适用于趋势分析和量级参考。
+      attribution_formula:
+        testnet:
+          status: verified
+          rule: "factory = 0xd703aae... AND tx.from = 0xb052d584..."
+          confidence: high
+          evidence: >
+            Bundler 0xb052d584... 的 87 笔 AccountDeployed 交易中 100% 指向 factory 0xd703aae...。
+            该 factory 67.1% 的部署来自此 bundler，22.4% 来自 Pimlico（0x4337...），10.5% 来自 0x858b86e5...。
+        mainnet:
+          status: verified_partial
+          rule: "factory = 0xd703aae...（仅 factory，无 bundler 区分）"
+          confidence: medium
+          reason: >
+            主网 5 链全部通过 Pimlico bundler 提交（100% 为 0x4337... 前缀），Crossmint 无专用 bundler。
+            测试网 Crossmint bundler 0xb052d584... 在 Base mainnet nonce=1，确认生产环境用 Pimlico。
+            该 factory 数据 = Crossmint + 同工厂实例的其他 Kernel 客户。
       chains:
         - chain: base-sepolia
           factory_addresses:
             - address: "0xd703aae79538628d27099b8c4f621be4ccd142d5"
               label: zerodev_kernel
-              source: "ISSUE-012：通过 wallet-bench 测试钱包反查 EntryPoint v0.7 AccountDeployed 事件"
+              source: "ISSUE-012：wallet-bench 测试钱包反查 + bundler 分析"
               verified: true
-              verification_details: >
-                1. wallet-bench 运行 Crossmint adapter 创建测试钱包 0x490E6A6c74bfd538083938A108098c1c47eAa6E9
-                2. 查询 EntryPoint v0.7 (0x0000000071727de22e5e9d8baf0edac6f37da032) 的 AccountDeployed 事件
-                3. Block 38482363，TX 0x430bcd0add8d5b6ef10d2b46c68992c1fd77dc9f005a4dd82bdc5b9b5a2de379
-                4. AccountDeployed 事件 data 字段解码得到 factory = 0xd703aae79538628d27099b8c4f621be4ccd142d5
-                5. BundleBear 标签库确认该地址归属 zerodev_kernel
-                6. 部署交易日志包含 ModuleInstalled 事件，确认 ERC-7579 模块化架构
+              bundler: "0xb052d58410a2c54e27d3d62f99bf8b2bb27a8d23 (Crossmint 专用, 67.1%)"
+        - chain: base
+          factory_addresses:
+            - address: "0xd703aae79538628d27099b8c4f621be4ccd142d5"
+              label: zerodev_kernel
+              verified: true
+              ep_v07_share: "52.1% (521/1000 sampled events)"
+              bundler: "100% Pimlico (0x4337... prefix)"
+        - chain: ethereum
+          factory_addresses:
+            - address: "0xd703aae79538628d27099b8c4f621be4ccd142d5"
+              label: zerodev_kernel
+              verified: true
+              ep_v07_share: "57.7% (577/1000)"
+              bundler: "100% Pimlico"
+        - chain: arbitrum
+          factory_addresses:
+            - address: "0xd703aae79538628d27099b8c4f621be4ccd142d5"
+              label: zerodev_kernel
+              verified: true
+              ep_v07_share: "80.2% (802/1000)"
+              bundler: "100% Pimlico"
+        - chain: optimism
+          factory_addresses:
+            - address: "0xd703aae79538628d27099b8c4f621be4ccd142d5"
+              label: zerodev_kernel
+              verified: true
+              ep_v07_share: "94.0% (940/1000)"
+              bundler: "100% Pimlico"
+        - chain: polygon
+          factory_addresses:
+            - address: "0xd703aae79538628d27099b8c4f621be4ccd142d5"
+              label: zerodev_kernel
+              verified: true
+              ep_v07_share: "43.5% (435/1000)"
+              bundler: "100% Pimlico"
       entrypoint: "0x0000000071727de22e5e9d8baf0edac6f37da032"  # EntryPoint v0.7（非 v0.6）
-      validator_module: "0x845adb2c711129d4f3966735ed98a9f09fc4ce57"
+      bundler_addresses:
+        base_sepolia: "0xb052d58410a2c54e27d3d62f99bf8b2bb27a8d23"  # 已验证：nonce=29512，100% 绑定此 factory
+        base_mainnet: null  # 待确认：0xb052d584... 在 mainnet nonce=1，需另找
+      validator_module:
+        address: "0x845adb2c711129d4f3966735ed98a9f09fc4ce57"
+        type: "ZeroDev 标准 ECDSA Validator（通用组件，非 Crossmint 专属）"
+        cross_chain: "ETH/Base/Arbitrum/Optimism 均已部署，bytecode 一致"
+        attribution_value: none  # 不可用于归因
       investigation_log:
         - date: "2026-03-06"
-          scope: "ISSUE-012 Crossmint 链上工厂合约反查"
+          scope: "ISSUE-012 Phase 1：Factory 反查"
           methods_tried:
-            - "wallet-bench Crossmint adapter 创建 Base Sepolia 测试钱包"
+            - "wallet-bench 已有测试结果中提取钱包地址"
             - "Base Sepolia RPC eth_getLogs 查询 EntryPoint v0.7 AccountDeployed 事件"
             - "BundleBear 工厂标签库交叉验证"
-            - "部署交易日志事件分析（ModuleInstalled / AccountDeployed）"
+          findings:
+            - "Factory = 0xd703aae... (zerodev_kernel)"
+            - "EntryPoint = v0.7（非 v0.6）"
+            - "Paymaster = 零地址（无 gas 赞助）"
+          conclusion: "仅凭 factory 无法精准归因，需辅助条件"
+        - date: "2026-03-06"
+          scope: "ISSUE-012 Phase 2：Bundler + Validator 精准归因分析（测试网）"
+          methods_tried:
+            - "Factory 0xd703aae... 在 Base Sepolia 最近 2000 区块 76 笔部署交易 bundler 分布统计"
+            - "Bundler 0xb052d584... 反向分析：其所有 AccountDeployed 交易的 factory 分布"
+            - "Validator 0x845adb2c... 多链存在性检查（ETH/Base/Arbitrum/Optimism）"
+            - "Validator function selector 分析（IValidator/IModule ERC-7579 接口匹配）"
+          findings:
+            - "测试网 bundler 0xb052d584... 占 67.1%，且 100% 只用此 factory（一对一绑定）"
+            - "Validator 0x845adb2c... 在 4 链同 bytecode，ZeroDev 标准 ECDSA Validator，不可归因"
+          conclusion: "测试网精准归因可行（factory + bundler），validator 排除"
+        - date: "2026-03-06"
+          scope: "ISSUE-012 Phase 3：五链主网验证（Etherscan V2 API）"
+          methods_tried:
+            - "Etherscan V2 API 查询 5 链（Base/ETH/ARB/OP/Polygon）EntryPoint v0.7 AccountDeployed 事件"
+            - "每链抽样 30-100 笔交易统计 bundler 分布"
+            - "Factory 在 5 链的 eth_getCode 存在性验证"
+            - "EntryPoint v0.6 vs v0.7 factory 全景分析（Base mainnet）"
           findings:
             - >
-              测试钱包 0x490E6A6c74bfd538083938A108098c1c47eAa6E9 于 Block 38482363 部署，
-              factory = 0xd703aae79538628d27099b8c4f621be4ccd142d5（BundleBear 标签：zerodev_kernel）。
+              Factory 0xd703aae... 在 5 条主网均存在（CREATE2 一致），且是 EP v0.7 最大 Kernel 工厂实例：
+              OP 94%, ARB 80%, ETH 58%, Base 52%, Polygon 44%。
             - >
-              Crossmint 使用 EntryPoint v0.7（0x0000000071727de22e5e9d8baf0edac6f37da032），
-              而非 v0.6（0x5FF137D4...）。钱包是 ERC-1967 升级代理合约（61 bytes，含 implementation slot）。
+              主网 bundler 100% 为 Pimlico（0x4337... 前缀），Crossmint 生产环境使用 Pimlico bundler 服务。
+              测试网 bundler 0xb052d584... 在 Base mainnet nonce=1，确认生产环境用不同基础设施。
             - >
-              Validator 模块地址 0x845adb2c711129d4f3966735ed98a9f09fc4ce57，
-              出现在 UserOp nonce key 和 ModuleInstalled 事件中，推测为 ECDSA Validator。
-            - >
-              Paymaster 为零地址（无 gas 赞助），bundler 地址为 0xb052d58410a2c54e27d3d62f99bf8b2bb27a8d23。
-            - >
-              由于 ZeroDev Kernel 是通用工厂，在 BundleBear 中有 7 个已知地址，
-              无法仅凭 factory 区分 Crossmint 来源。但可结合 validator module 或 bundler 地址辅助归因。
+              EP v0.7 上有 4 个不同的 Kernel 工厂实例，0xd703aae... 是最大的。
+              EP v0.6 上的 Kernel 工厂（0xaee9762c... 等）是更老的版本，与 Crossmint 无关。
           conclusion: >
-            Crossmint 使用 ZeroDev Kernel 工厂，链上归因为 partial：
-            能追踪到 Kernel 工厂级别，但无法精确区分 Crossmint 与其他 Kernel 用户。
-            如需精确归因，需进一步研究 Crossmint 专用的 validator module 或 bundler 地址是否具有唯一性。
+            主网精准归因不可行（bundler 全部为 Pimlico），但 factory 级别归因可用于趋势分析：
+            Crossmint 是该工厂实例的主要客户（testnet 67%），主网数据为 Crossmint 活跃度上界。
       notes: >
-        Crossmint 底层使用 ZeroDev Kernel（ERC-7579 模块化智能账户框架）。
-        工厂地址在测试网（Base Sepolia）已验证，mainnet 是否使用相同地址需进一步确认
-        （CREATE2 确定性部署通常保持跨链/跨网一致）。
-        潜在的精确归因路径：
-        1) Crossmint bundler 地址（0xb052d584...）如果在 mainnet 上也使用同一地址，可作为辅助过滤条件
-        2) Crossmint validator module（0x845adb2c...）如果是 Crossmint 定制的，可作为更精确的归因依据
-        3) Crossmint 使用 EntryPoint v0.7，而非更常见的 v0.6，这本身可缩小候选范围
+        Crossmint 底层使用 ZeroDev Kernel + EntryPoint v0.7 + 标准 ECDSA Validator + Pimlico bundler（主网）。
+        归因策略：factory 0xd703aae... 作为 Crossmint 活跃度的上界近似（含同工厂的其他 Kernel 客户）。
+        该 factory 是 EP v0.7 上最大的 Kernel 实例（OP 94%, ARB 80%），Crossmint 在 testnet 占 67%。
+        主网无法按 bundler 区分（全部 Pimlico），精度为 medium。
+        适用于：趋势分析、量级估计、跨链偏好分析。不适用于精确用户数统计。
       sources:
         - url: "https://docs.crossmint.com/wallets/architecture"
           description: "确认 ERC-4337 + ERC-7579 架构"
@@ -332,33 +430,39 @@ dune_query_candidates:
       可通过 JiffyScan API 编程获取 factory 数据。
 
 # ============================================================
-# 机器人过滤建议
+# 机器人过滤策略（分级：硬过滤 vs 软标记）
 # ============================================================
-robot_filter_notes: |
-  以下规则用于在 Phase 2 链上数据采集中过滤机器人/测试流量：
+robot_filter_policy:
+  version: "1.0"
+  note: >
+    Phase 2 首版采集使用 BundleBear 聚合 API，数据已在上游（Allium）做了基础过滤。
+    以下规则用于 Phase 2 后续自建 Dune query 或 RPC 采集时参考，当前版本不在脚本中实现。
 
-  1. 高频 UserOp 过滤：
-     - 同一 sender 地址在 1 分钟内发起 > 10 笔 UserOp → 标记为疑似机器人
-     - 同一 sender 在 24 小时内发起 > 1000 笔 UserOp → 自动排除
+  hard_filters:  # 硬过滤：直接排除，不计入统计
+    - id: "HF-1"
+      rule: "同一 sender 24h 内 > 1000 笔 UserOp"
+      reason: "明显自动化脚本或压测"
 
-  2. 已知测试/水龙头地址过滤：
-     - 来自已知 faucet 合约的 UserOp → 排除
-     - sender 地址 ETH 余额来源 100% 为 faucet → 标记
+    - id: "HF-2"
+      rule: "callData 为空或仅 0x 的 UserOp"
+      reason: "心跳/探针，无实际业务含义"
 
-  3. 新合约冷启动过滤：
-     - Smart Account 创建后 24 小时内的 UserOp → 标记为可能的测试/部署
-     - 但不自动排除（部分正常用户也会立即使用）
+    - id: "HF-3"
+      rule: "已知 wifi_map 等批量工厂产生的账户"
+      reason: "非目标供应商，会严重污染数据"
 
-  4. 批量空操作过滤：
-     - callData 为空或仅包含 0x 的 UserOp → 排除（心跳/探针）
-     - 连续相同 callData 的 UserOp（hash 相同）→ 标记
+  soft_markers:  # 软标记：保留数据但打标签，供分析时参考
+    - id: "SM-1"
+      rule: "同一 sender 1min 内 > 10 笔 UserOp"
+      reason: "可能是机器人，但也可能是批量操作的正常用户"
 
-  5. 合约交互模式过滤：
-     - 仅与同一目标合约交互且无资金流动的 sender → 标记为可能的自动化脚本
+    - id: "SM-2"
+      rule: "Smart Account 创建后 24h 内的 UserOp"
+      reason: "可能是测试/部署，但也可能是新用户立即使用"
 
-  6. BundleBear 参考：
-     - BundleBear Account Activation 数据中的 "wifi_map" 工厂产生大量账户
-       （周峰值 36 万），需确认是否与目标供应商相关，否则应排除。
+    - id: "SM-3"
+      rule: "仅与同一目标合约交互且无资金流动"
+      reason: "可能是自动化脚本，但也可能是特定 DApp 的正常使用"
 
 # ============================================================
 # 调研总结
@@ -384,17 +488,77 @@ research_summary:
         ISSUE-013 进一步调研确认：paymaster/bundler 由开发者自配（无统一地址），
         Native Gas Sponsorship 地址未公开，两条路径均确认不可行。
 
-    - finding: "Crossmint 使用 ZeroDev Kernel 工厂，链上可部分归因"
+    - finding: "Crossmint 使用 ZeroDev Kernel 工厂，factory + bundler 组合可精准归因（测试网已验证）"
       confidence: high
       details: >
-        ISSUE-012 通过 wallet-bench 测试钱包反查确认：Crossmint 在 Base Sepolia 使用
-        ZeroDev Kernel 工厂 (0xd703aae...) + EntryPoint v0.7 部署 ERC-7579 模块化智能账户。
-        BundleBear 标签库已标注该地址为 zerodev_kernel。链上可追踪到 Kernel 工厂级别，
-        但无法精确区分 Crossmint 与其他 Kernel 用户。潜在精确归因路径：
-        bundler 地址 (0xb052d584...) 或 validator module (0x845adb2c...) 的唯一性验证。
+        ISSUE-012 两阶段反查：Phase 1 确认 factory = 0xd703aae... (zerodev_kernel)，
+        Phase 2 发现 Crossmint 专用 bundler 0xb052d584... 与该 factory 100% 一对一绑定。
+        测试网精准归因公式：factory + bundler = Crossmint（high confidence）。
+        主网 factory 已确认存在（CREATE2），但 bundler 地址不同（mainnet nonce=1），
+        需通过 mainnet bundler 分布分析找到 Crossmint mainnet bundler 才能完成主网归因。
+        Validator module (0x845adb2c...) 是 ZeroDev 标准组件（4 条链同 bytecode），已排除为归因条件。
 
     - finding: "BundleBear 是最权威的 ERC-4337 工厂归因数据源"
       confidence: high
       details: >
         开源项目，维护 59 个已标注工厂地址（22 个供应商），
         提供每周账户激活数据按工厂分组。可直接用于 Phase 2。
+
+# ============================================================
+# Phase 2 采集配置（版本化，变更需记录 changelog）
+# ============================================================
+phase2_config:
+  version: "2.0"
+  effective_date: "2026-03-06"
+
+  coverage:
+    trackable_providers: 1
+    total_providers: 6
+    coverage_rate: "16.7%"
+    trackable_list: ["coinbase"]
+    not_trackable_list: ["privy", "crossmint", "bnbchain_mcp", "moonpay", "minara"]
+
+  data_source:
+    primary: "bundlebear_api"  # https://bundlebear-api.onrender.com
+    fallback: "last_successful_snapshot"  # Dune 需付费，暂不作为降级
+    freshness_sla: "T+1"  # 数据延迟最多 T+1 天
+    collection_frequency: "daily"  # 与 Phase 1 同步，UTC 06:00
+
+  chains:
+    - base        # Coinbase Smart Wallet 主链
+    - ethereum    # 次要链
+    # optimism/arbitrum/polygon 暂不单独采集，用 chain=all 聚合
+
+  factory_whitelist:
+    coinbase_smart_wallet:
+      - "0x0ba5ed0c6aa8c49038f819e587e2633c4a9f428a"  # v1.0
+      - "0xba5ed110efdba3d005bfc882d75358acbbb85842"  # v1.1
+
+  metrics:
+    - name: "active_wallets_30d"
+      description: "30 天内新激活的智能钱包账户数"
+      source: "BundleBear erc4337-activation API"
+      aggregation: "按工厂地址归因，取最近完整月数据"
+      unit: "个"
+
+    - name: "tx_per_active_wallet_median"
+      description: "活跃钱包的 30 天交易数中位数"
+      source: "需要额外 API 或 Dune query，Phase 2 首版暂不实现"
+      status: "deferred"
+      reason: "BundleBear activation API 仅提供新激活数，不提供交易深度数据"
+
+# ============================================================
+# 口径变更日志
+# ============================================================
+onchain_changelog:
+  - version: "1.0"
+    date: "2026-03-06"
+    changes: "初版：Task 0-3 调研完成，6 家供应商归因可行性评估"
+
+  - version: "2.0"
+    date: "2026-03-06"
+    changes: >
+      Phase 2 口径冻结：覆盖率 1/6（仅 Coinbase），数据源 BundleBear API，
+      采集频率每日，SLA T+1。机器人过滤规则分级为硬过滤 3 条 + 软标记 3 条。
+      tx_per_active_wallet_median 指标延后（BundleBear API 不提供）。
+      ISSUE-013 调研确认 Privy paymaster 不可归因。

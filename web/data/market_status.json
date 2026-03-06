@@ -1,14 +1,14 @@
 {
   "schema_version": "1.0",
   "source": "statuspage",
-  "collected_at": "2026-03-06T10:40:20+00:00",
+  "collected_at": "2026-03-06T11:11:03+00:00",
   "period": "last-30d",
   "providers": {
     "privy": {
-      "incidents_30d": null,
-      "mttr_minutes": null,
-      "status_page_url": "https://privy.statuspage.io",
-      "error": "fetch failed"
+      "incidents_30d": 1,
+      "mttr_minutes": 1533.9,
+      "resolved_count": 1,
+      "status_page_url": "https://privy.statuspage.io"
     },
     "coinbase": {
       "incidents_30d": 18,
@@ -17,10 +17,10 @@
       "status_page_url": "https://coinbase.statuspage.io"
     },
     "crossmint": {
-      "incidents_30d": null,
+      "incidents_30d": 0,
       "mttr_minutes": null,
-      "status_page_url": "https://status.crossmint.com",
-      "error": "fetch failed"
+      "resolved_count": 0,
+      "status_page_url": "https://status.crossmint.com"
     },
     "bnbchain_mcp": {
       "incidents_30d": null,
