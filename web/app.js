@@ -407,7 +407,7 @@ function renderCoverageBanner(providers, summaryData) {
 async function loadData() {
     try {
         const [mainResp] = await Promise.all([
-            fetch('../results/public_results.json'),
+            fetch('data/public_results.json'),
             loadDecisionData(),  // pre-load DeFi data for radar chart app dimension
         ]);
         if (!mainResp.ok) throw new Error(`HTTP ${mainResp.status}`);
