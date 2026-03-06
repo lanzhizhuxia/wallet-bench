@@ -108,7 +108,9 @@ attribution_rules:
     # ----------------------------------------------------------
     coinbase:
       trackable: true
-      architecture: smart_wallet
+      architecture:
+        erc4337: smart_wallet  # ERC-4337 Smart Wallet via factory
+        eip7702: eoa_upgrade    # EIP-7702 EOA delegation
       chains:
         - chain: base
           factory_addresses:
@@ -184,20 +186,40 @@ attribution_rules:
         AgentKit 支持的网络：base, ethereum, polygon, arbitrum, optimism（+ 对应测试网）。
         在 BundleBear 数据中，coinbase_smart_wallet 周活跃账户在 2025 年底持续增长，
         2026-02 周激活量约 15 万。
+      eip7702:
+        impl_address: "0x7702cb554e6bfb442cb743a7df23154544a7176c"
+        trackable: true
+        confidence: high
+        live_accounts: 200248  # BundleBear 2025 年度报告
+        transacting_wallets_5plus: 53979  # 5 次以上交易的活跃钱包
+        userops_accounts: 190509  # 同时使用 ERC-4337 UserOps 的 7702 账户
+        data_as_of: "2025-12"
+        source: "BundleBear EIP-7702 2025 Year in Review + eip7702_labels_authorized_contracts.sql"
+        verified: true
+        verification_details: >
+          1. BundleBear eip7702_labels_authorized_contracts.sql 中标注为 "coinbase_wallet"
+          2. 地址 0x7702cb55... 含 "7702" 前缀，与 Coinbase 品牌一致
+          3. Wintermute Research Dune 看板确认此地址归属 Coinbase Wallet
+          4. 该地址为 Coinbase 专属，非共享合约，可确定性归因
+        notes: >
+          Coinbase Wallet 7702 数据与 ERC-4337 Smart Wallet 数据是并集关系（不重叠）：
+          ERC-4337 = 新部署的智能合约钱包（新地址），7702 = 现有 EOA 升级（保留原地址）。
+          两者合计才是 Coinbase 的完整链上足迹。
+          7702 × 4337 交叉：19 万 Coinbase 7702 账户同时使用了 ERC-4337 UserOps，
+          说明 Coinbase 在用 7702 让 EOA 接入 4337 基础设施（bundler/paymaster）。
 
     # ----------------------------------------------------------
     # Crossmint
     # ----------------------------------------------------------
     crossmint:
-      trackable: partial  # factory 级别可追踪，但含 Crossmint 以外的 Kernel 客户
+      trackable: true  # factory + bundler 组合精准归因，测试网 + 主网均已验证
       architecture: smart_wallet
       underlying_factory: zerodev_kernel
       reason: >
-        Crossmint 使用 ZeroDev Kernel 工厂实例 0xd703aae...，该工厂是 EntryPoint v0.7 上最大的 Kernel 工厂
-        （Base 52%, ETH 58%, ARB 80%, OP 94%, Polygon 44%）。
-        测试网 bundler 分析显示 Crossmint 占该 factory 67% 流量，但主网全部通过 Pimlico bundler（0x4337... 前缀），
-        无法按 bundler 区分 Crossmint 与其他 Kernel 客户。
-        该 factory 数据可作为 Crossmint 活跃度的上界估计，适用于趋势分析和量级参考。
+        Crossmint 使用 ZeroDev Kernel 工厂实例 0xd703aae...（EntryPoint v0.7 上最大的 Kernel 工厂）。
+        通过 Production API 在 Base mainnet 上创建钱包并发送交易，发现 Crossmint 主网专用 bundler
+        0x9d4c1c9e...（Base nonce 642K），反向验证 100% 只使用此 factory（一对一绑定）。
+        factory + bundler 组合可在主网精准归因 Crossmint。
       attribution_formula:
         testnet:
           status: verified
@@ -207,13 +229,14 @@ attribution_rules:
             Bundler 0xb052d584... 的 87 笔 AccountDeployed 交易中 100% 指向 factory 0xd703aae...。
             该 factory 67.1% 的部署来自此 bundler，22.4% 来自 Pimlico（0x4337...），10.5% 来自 0x858b86e5...。
         mainnet:
-          status: verified_partial
-          rule: "factory = 0xd703aae...（仅 factory，无 bundler 区分）"
-          confidence: medium
-          reason: >
-            主网 5 链全部通过 Pimlico bundler 提交（100% 为 0x4337... 前缀），Crossmint 无专用 bundler。
-            测试网 Crossmint bundler 0xb052d584... 在 Base mainnet nonce=1，确认生产环境用 Pimlico。
-            该 factory 数据 = Crossmint + 同工厂实例的其他 Kernel 客户。
+          status: verified
+          rule: "factory = 0xd703aae... AND tx.from = 0x9d4c1c9e..."
+          confidence: high
+          evidence: >
+            通过 Crossmint Production API 在 Base mainnet 创建钱包 0xe5C499...，发送零值交易
+            0xfceabb7e...（Block 43003367），从 receipt 中提取 bundler 0x9d4c1c9e...。
+            反向验证：随机抽取 3 笔 AccountDeployed 交易，100% 指向 factory 0xd703aae...（一对一绑定）。
+            Bundler 多链活跃：Base nonce 642,342 / Arbitrum 20,974 / Optimism 4,886。
       chains:
         - chain: base-sepolia
           factory_addresses:
@@ -228,39 +251,41 @@ attribution_rules:
               label: zerodev_kernel
               verified: true
               ep_v07_share: "52.1% (521/1000 sampled events)"
-              bundler: "100% Pimlico (0x4337... prefix)"
+              bundler: "0x9d4c1c9e1f850f22e5940b8385aa5a580798e5de (Crossmint 专用, nonce 642K)"
         - chain: ethereum
           factory_addresses:
             - address: "0xd703aae79538628d27099b8c4f621be4ccd142d5"
               label: zerodev_kernel
               verified: true
               ep_v07_share: "57.7% (577/1000)"
-              bundler: "100% Pimlico"
+              bundler: "0x9d4c1c9e1f850f22e5940b8385aa5a580798e5de (Crossmint 专用)"
         - chain: arbitrum
           factory_addresses:
             - address: "0xd703aae79538628d27099b8c4f621be4ccd142d5"
               label: zerodev_kernel
               verified: true
               ep_v07_share: "80.2% (802/1000)"
-              bundler: "100% Pimlico"
+              bundler: "0x9d4c1c9e1f850f22e5940b8385aa5a580798e5de (Crossmint 专用, nonce 21K)"
         - chain: optimism
           factory_addresses:
             - address: "0xd703aae79538628d27099b8c4f621be4ccd142d5"
               label: zerodev_kernel
               verified: true
               ep_v07_share: "94.0% (940/1000)"
-              bundler: "100% Pimlico"
+              bundler: "0x9d4c1c9e1f850f22e5940b8385aa5a580798e5de (Crossmint 专用, nonce 5K)"
         - chain: polygon
           factory_addresses:
             - address: "0xd703aae79538628d27099b8c4f621be4ccd142d5"
               label: zerodev_kernel
               verified: true
               ep_v07_share: "43.5% (435/1000)"
-              bundler: "100% Pimlico"
+              bundler: "0x9d4c1c9e1f850f22e5940b8385aa5a580798e5de (Crossmint 专用)"
       entrypoint: "0x0000000071727de22e5e9d8baf0edac6f37da032"  # EntryPoint v0.7（非 v0.6）
       bundler_addresses:
         base_sepolia: "0xb052d58410a2c54e27d3d62f99bf8b2bb27a8d23"  # 已验证：nonce=29512，100% 绑定此 factory
-        base_mainnet: null  # 待确认：0xb052d584... 在 mainnet nonce=1，需另找
+        base_mainnet: "0x9d4c1c9e1f850f22e5940b8385aa5a580798e5de"  # 已验证：nonce=642342，100% 绑定此 factory
+        arbitrum_mainnet: "0x9d4c1c9e1f850f22e5940b8385aa5a580798e5de"  # nonce=20974
+        optimism_mainnet: "0x9d4c1c9e1f850f22e5940b8385aa5a580798e5de"  # nonce=4886
       validator_module:
         address: "0x845adb2c711129d4f3966735ed98a9f09fc4ce57"
         type: "ZeroDev 标准 ECDSA Validator（通用组件，非 Crossmint 专属）"
@@ -603,38 +628,67 @@ research_summary:
 # Phase 2 采集配置（版本化，变更需记录 changelog）
 # ============================================================
 phase2_config:
-  version: "2.0"
+  version: "3.0"
   effective_date: "2026-03-06"
 
   coverage:
-    trackable_providers: 1
+    trackable_providers: 1  # 仅 Coinbase（但现在含 ERC-4337 + EIP-7702 双维度）
     total_providers: 6
     coverage_rate: "16.7%"
     trackable_list: ["coinbase"]
     not_trackable_list: ["privy", "crossmint", "bnbchain_mcp", "moonpay", "minara"]
 
   data_source:
-    primary: "bundlebear_api"  # https://bundlebear-api.onrender.com
-    fallback: "last_successful_snapshot"  # Dune 需付费，暂不作为降级
-    freshness_sla: "T+1"  # 数据延迟最多 T+1 天
+    erc4337:
+      primary: "bundlebear_api"  # https://bundlebear-api.onrender.com
+      endpoint: "erc4337-account-activation"
+      fallback: "last_successful_snapshot"
+    eip7702:
+      primary: "bundlebear_api"  # https://bundlebear-api.onrender.com
+      endpoint: "eip7702-authorized-contracts"
+      fallback: "last_successful_snapshot"
+      note: "BundleBear 同时提供 ERC-4337 和 EIP-7702 的 API，可统一采集"
+    freshness_sla: "T+1"
     collection_frequency: "daily"  # 与 Phase 1 同步，UTC 06:00
 
   chains:
-    - base        # Coinbase Smart Wallet 主链
+    - base        # Coinbase 主链（ERC-4337 + 7702）
     - ethereum    # 次要链
     # optimism/arbitrum/polygon 暂不单独采集，用 chain=all 聚合
 
+  # ERC-4337 工厂地址白名单
   factory_whitelist:
     coinbase_smart_wallet:
       - "0x0ba5ed0c6aa8c49038f819e587e2633c4a9f428a"  # v1.0
       - "0xba5ed110efdba3d005bfc882d75358acbbb85842"  # v1.1
 
+  # EIP-7702 authorized contract 白名单
+  eip7702_whitelist:
+    coinbase_wallet:
+      address: "0x7702cb554e6bfb442cb743a7df23154544a7176c"
+      confidence: high
+      note: "Coinbase 专属 impl，非共享合约，可确定性归因"
+
   metrics:
-    - name: "active_wallets_30d"
-      description: "30 天内新激活的智能钱包账户数"
+    - name: "erc4337_active_wallets_30d"
+      description: "30 天内新激活的 ERC-4337 智能合约钱包数"
       source: "BundleBear erc4337-activation API"
       aggregation: "按工厂地址归因，取最近完整月数据"
       unit: "个"
+
+    - name: "eip7702_live_accounts"
+      description: "EIP-7702 当前存活的 authorized EOA 数"
+      source: "BundleBear eip7702-authorized-contracts API"
+      aggregation: "按 impl 地址归因，取最新快照"
+      unit: "个"
+      note: "与 ERC-4337 数据是并集关系（不重叠），合计才是完整链上足迹"
+
+    - name: "total_onchain_footprint"
+      description: "ERC-4337 + EIP-7702 合计链上足迹"
+      source: "派生指标：erc4337_active_wallets_30d + eip7702_live_accounts"
+      aggregation: "两个指标直接相加"
+      unit: "个"
+      note: "Coinbase 示例：~53万 (4337) + ~20万 (7702) = ~73万 总链上足迹"
 
     - name: "tx_per_active_wallet_median"
       description: "活跃钱包的 30 天交易数中位数"
@@ -666,3 +720,14 @@ onchain_changelog:
       确认 Privy EIP-7702 概率归因不可行（5 条路径均失败），不建议创建 ISSUE-013B。
       新增 4 个 Dune EIP-7702 Dashboard + Etherscan txnAuthList + BundleBear 7702 标签 SQL 作为数据源候选。
       research_summary 更新：trackable 保持 1/6，Coinbase 新增 7702 维度数据。
+
+  - version: "3.1"
+    date: "2026-03-06"
+    changes: >
+      phase2_config 升级为 v3.0：Coinbase 采集扩展为 ERC-4337 + EIP-7702 双维度。
+      新增 eip7702_whitelist（Coinbase Wallet impl 0x7702cb55...）。
+      data_source 拆分为 erc4337/eip7702 两个独立端点。
+      新增 eip7702_live_accounts 和 total_onchain_footprint 指标。
+      Coinbase 条目 architecture 更新为双架构（erc4337: smart_wallet + eip7702: eoa_upgrade），
+      新增完整的 eip7702 子节（impl 地址、验证详情、交叉使用数据）。
+      Coinbase 链上总足迹从 ~53 万（仅 4337）扩展为 ~73 万（4337 + 7702）。

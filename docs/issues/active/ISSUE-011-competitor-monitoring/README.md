@@ -74,9 +74,11 @@ GitHub Actions (cron: 每日 UTC 06:00)
 | GitHub Issues（近 30d open） | GitHub API | 社区活跃度信号 | 取主仓库 | 有噪音 | 中 | Phase 1 |
 | **服务可用性（30d incident 数 / MTTR）** | 供应商 Status Page | 可用性与稳定性（企业级代理指标） | 取 incidents 数量 + 平均恢复时间 | 仅限有公开 Status Page 的供应商 | 高 | **Phase 1 新增** |
 | **文档变更密度（30d commits + breaking change 占比）** | GitHub API（changelog/docs 目录） | 产品成熟度与开发者摩擦信号 | 取 docs/CHANGELOG 目录 30d commit 数 | 不区分内容质量 | 中 | **Phase 1 新增** |
-| 30d 可归因活跃钉包数 | 链上 RPC + 工厂合约清单 | 最接近真实终端活跃的指标 | 按工厂地址归因，过滤机器人 | 仅覆盖 ERC-4337 智能钉包供应商（3/6） | 高（可归因供应商） | Phase 2 |
-| 30d tx/active wallet（中位数） | 同上（派生指标） | 区分“空壳活跃”与真实使用深度 | 复用 Phase 2 活跃钉包集合 | 同上 | 高 | Phase 2 派生 |
-| 链上钉包创建量（周） | Dune / RPC | ERC-4337 UserOp 创建次数 | 按 factory 地址分组 | 无法覆盖 EOA/托管架构 | 中 | Phase 2 |
+| 30d ERC-4337 可归因活跃钱包数 | BundleBear ERC-4337 API | ERC-4337 Smart Wallet 维度的终端活跃 | 按工厂地址归因，过滤机器人 | 仅覆盖部署了 Smart Wallet 的供应商 | 高（可归因供应商） | Phase 2 |
+| **30d EIP-7702 存活授权 EOA 数** | **BundleBear EIP-7702 API** | **EIP-7702 EOA 升级维度的终端活跃** | **按 impl 地址归因** | **仅覆盖有专属 impl 的供应商（如 Coinbase）** | **高** | **Phase 2 新增** |
+| **链上总足迹（ERC-4337 + EIP-7702 合计）** | **派生指标** | **最完整的链上活跃度画像** | **两个维度直接相加（不重叠）** | **仅 Coinbase 同时有两个维度** | **高** | **Phase 2 新增** |
+| 30d tx/active wallet（中位数） | 同上（派生指标） | 区分“空壳活跃”与真实使用深度 | 复用 Phase 2 活跃钱包集合 | 同上 | 高 | Phase 2 派生（延后） |
+| 链上钱包创建量（周） | Dune / RPC | ERC-4337 UserOp 创建次数 | 按 factory 地址分组 | 无法覆盖 EOA/托管架构 | 中 | Phase 2 |
 
 **多包聚合规则（锁定）**：同一供应商多个 npm 包的下载量相加作为该供应商的“周下载量”。规则一旦确定不得变更，否则会产生假波动。
 
@@ -254,11 +256,12 @@ GitHub Actions (cron: 每日 UTC 06:00)
 
 > Phase 2 不阻塞 Phase 1 交付。仅在 Task 0-3 找到稳定 factory 地址且 Task 0-4 确认 Dune 成本可控后启动。
 
-- [ ] **Task 2-1**: 搞定链上归因口径规则文档（版本化配置：链范围、工厂合约白名单、机器人过滤规则）
-- [ ] **Task 2-2**: 搞定 Dune query 追踪钉包创建趋势（含 factory 地址归属验证）
-- [ ] **Task 2-3**: 采集脚本增加链上数据调用（Dune 异步轮询 + RPC 降级），输出 `web/data/market_onchain.json`
-  - 含 `active_wallets_30d` + `tx_per_active_wallet_median` 派生字段（复用链上数据，无额外请求）
-- [ ] **Task 2-4**: Dashboard 终端活跃层卡片上线（仅展示可归因 3 家供应商，其余标注“架构不可追踪”）
+- [ ] **Task 2-1**: 搞定链上归因口径规则文档（版本化配置：链范围、ERC-4337 工厂合约白名单 + EIP-7702 impl 白名单、机器人过滤规则）
+- [ ] **Task 2-2**: 搞定 Dune query 追踪钱包创建趋势（含 ERC-4337 factory + EIP-7702 authorized contract 归属验证）
+- [ ] **Task 2-3**: 采集脚本增加链上数据调用（BundleBear ERC-4337 + EIP-7702 双维度，Dune 异步轮询 + RPC 降级），输出 `web/data/market_onchain.json`
+  - 含 `erc4337_active_wallets_30d` + `eip7702_live_accounts` + `total_onchain_footprint` 派生字段
+  - Coinbase 示例：~53万 (4337) + ~20万 (7702) = ~73万 总链上足迹
+- [ ] **Task 2-4**: Dashboard 终端活跃层卡片上线（展示 ERC-4337 + EIP-7702 双维度，仅可归因供应商，其余标注“架构不可追踪”）
 
 ### Phase 3: Backlog（商业化信号，半自动）
 
@@ -305,8 +308,10 @@ GitHub Actions (cron: 每日 UTC 06:00)
 研发健康    → GitHub commits/issues/stars      [Phase 1 / 日频自动 / 置信度：中]
 服务可靠    → Status Page incidents/MTTR       [Phase 1 新增 / 日频自动 / 置信度：高]
 产品成熟    → 文档变更密度/breaking change比例  [Phase 1 新增 / 日频自动 / 置信度：中]
-终端规模    → 30d 可归因活跃钉包数              [Phase 2 / 日频自动 / 仅 3/6 供应商 / 置信度：高]
-终端深度    → 30d tx/active wallet 中位数       [Phase 2 派生 / 同上]
+终端规模    → ERC-4337 可归因活跃钱包数          [Phase 2 / 日频自动 / 置信度：高]
+终端规模    → EIP-7702 存活授权 EOA 数            [Phase 2 新增 / 日频自动 / 置信度：高]
+终端规模    → 链上总足迹（4337 + 7702 合计）      [Phase 2 新增 / 派生指标]
+终端深度    → 30d tx/active wallet 中位数       [Phase 2 派生 / 延后]
 商业化进展  → 新增生产级集成数（季度）            [Phase 3 / 半自动+人工审核 / 置信度：中高]
 组织扩张    → 招聘结构雷达                      [不自动化 / 季度人工抄样]
 ```
