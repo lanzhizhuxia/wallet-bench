@@ -2544,6 +2544,23 @@ td.defi-difficulty { font-size: 0.82rem; white-space: nowrap; text-align: center
   margin-bottom: 8px;
 }
 
+
+.market-partial-badge {
+    background: var(--color-skip-alpha);
+    color: var(--color-skip);
+    font-size: 10px;
+    padding: 1px 5px;
+    border-radius: 3px;
+    margin-left: 6px;
+}
+
+.market-upgrade-date {
+    color: var(--text-tertiary);
+    font-size: 10px;
+    margin-top: 4px;
+    font-style: italic;
+}
+
 /* Mobile responsive */
 @media (max-width: 700px) {
   .market-bar-label { width: 100px; font-size: 12px; }

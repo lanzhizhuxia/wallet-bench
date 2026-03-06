@@ -2739,7 +2739,7 @@ function renderMarketCard5(onchain) {
     if (!onchain || !onchain.providers) {
         return `
         <div class="market-card market-card-placeholder">
-            <h3 class="market-card-title">终端活跃（链上数据）</h3>
+            <h3 class="market-card-title">终端活跃度代理指标（链上数据）</h3>
             <p class="market-placeholder-text">链上数据采集中，请稍候...</p>
         </div>`;
     }
@@ -2757,43 +2757,65 @@ function renderMarketCard5(onchain) {
     PROVIDER_ORDER.forEach(id => {
         const d = onchain.providers[id];
         const name = MARKET_PROVIDER_NAMES[id];
+
         if (!d) {
-            rows += `<tr><td>${name}</td><td class="market-na" colspan="2">暂无数据</td></tr>`;
-        } else if (!d.trackable) {
-            rows += `<tr><td>${name}</td><td class="market-na" colspan="2" title="${d.reason || ''}">架构不可追踪</td></tr>`;
-        } else {
+            rows += `<tr><td>${name}</td><td class="market-na" colspan="3">暂无数据</td></tr>`;
+            return;
+        }
+
+        if (d.trackable === false) {
+            rows += `<tr><td>${name}</td><td class="market-na" colspan="3" title="${d.reason || ''}">架构不可追踪</td></tr>`;
+            return;
+        }
+
+        if (d.trackable === true || d.trackable === 'partial') {
             trackableCount++;
-            if (d.active_wallets_30d == null) {
-                rows += `<tr><td>${name}</td><td class="market-na" colspan="2">数据获取失败</td></tr>`;
-            } else {
+            const total = d.total_onchain_footprint ?? d.active_wallets_30d;
+            if (total == null) {
+                rows += `<tr><td>${name}</td><td class="market-na" colspan="3">数据获取失败</td></tr>`;
+                return;
+            }
+
+            if (d.trackable === 'partial') { // Crossmint
+                rows += `<tr>
+                    <td>${name} <span class="market-partial-badge">上界估计</span></td>
+                    <td>≈ ${formatNum(d.erc4337_active_wallets_30d)}</td>
+                    <td>—</td>
+                    <td class="market-green">≈ ${formatNum(total)}</td>
+                </tr>`;
+            } else { // Coinbase (trackable: true)
                 rows += `<tr>
                     <td>${name}</td>
-                    <td>${formatNum(d.active_wallets_30d)}</td>
-                    <td class="market-na" style="font-size:11px">月度新激活</td>
+                    <td>${formatNum(d.erc4337_active_wallets_30d)}</td>
+                    <td>${formatNum(d.eip7702_live_accounts)}</td>
+                    <td class="market-green">${formatNum(total)}</td>
                 </tr>`;
             }
+        } else {
+             rows += `<tr><td>${name}</td><td class="market-na" colspan="3">数据格式未知</td></tr>`;
         }
     });
 
     // 数据新鲜度
     const freshness = onchain.data_freshness || {};
-    const dataMonth = freshness.latest_data_month || '\u2014';
+    const dataMonth = freshness.latest_data_month || '—';
     const sla = freshness.sla || 'T+1';
 
     return `
     <div class="market-card${onchain.stale ? ' market-card-stale' : ''}">
-        <h3 class="market-card-title">终端活跃（链上数据）</h3>
+        <h3 class="market-card-title">终端活跃度代理指标（链上数据）</h3>
         <div class="market-coverage-badge">覆盖率：${trackableCount}/${PROVIDER_ORDER.length} 供应商可追踪</div>
         ${staleWarning}
         <table class="market-table">
-            <thead><tr><th>供应商</th><th>30d 新激活钱包</th><th>说明</th></tr></thead>
+            <thead><tr><th>供应商</th><th>ERC-4337</th><th>EIP-7702</th><th>合计 (30d)</th></tr></thead>
             <tbody>${rows}</tbody>
         </table>
         <div class="market-data-month">数据月份：${dataMonth} ｜ 时效：${sla}</div>
-        <div class="market-confidence status-pass">置信度：高（仅覆盖 Coinbase Smart Wallet，来源 BundleBear）</div>
+        <div class="market-confidence status-pass">置信度：高（Coinbase 双维度覆盖，Crossmint 上界估计，来源 BundleBear）</div>
         <div class="market-confidence" style="color:var(--text-tertiary);font-size:11px;margin-top:4px">
-            ⚠️ 数据为月度新激活账户数，非存量活跃用户数。Privy/Crossmint 链上无法归因。
+            ⚠️ ERC-4337 = 月度新激活智能钱包，EIP-7702 = 月度新授权 EOA，两者不重叠。Crossmint 为 ZeroDev Kernel 工厂上界。
         </div>
+        <div class="market-upgrade-date">口径升级：2026-03 — 新增 EIP-7702 维度，schema v3.0</div>
     </div>`;
 }
 

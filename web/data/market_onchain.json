@@ -1,7 +1,7 @@
 {
-  "schema_version": "2.0",
+  "schema_version": "3.0",
   "source": "bundlebear",
-  "collected_at": "2026-03-06T11:11:10+00:00",
+  "collected_at": "2026-03-06T11:44:22+00:00",
   "period": "last-30d",
   "data_freshness": {
     "sla": "T+1",
@@ -13,34 +13,56 @@
   "providers": {
     "coinbase": {
       "trackable": true,
-      "active_wallets_30d": 529796,
+      "erc4337_active_wallets_30d": 529796,
+      "eip7702_live_accounts": 122425,
+      "total_onchain_footprint": 652221,
       "source": "bundlebear",
-      "bundlebear_label": "coinbase_smart_wallet",
-      "note": "月度新激活账户数（BundleBear erc4337-activation timeframe=month），非存量活跃"
+      "bundlebear_labels": {
+        "erc4337": "coinbase_smart_wallet",
+        "eip7702": "Coinbase Wallet"
+      },
+      "note": "ERC-4337 + EIP-7702 双维度。4337=月度新激活智能钱包，7702=月度新授权 EOA。两者不重叠。",
+      "active_wallets_30d": 652221
+    },
+    "crossmint": {
+      "trackable": "partial",
+      "erc4337_active_wallets_30d": 166034,
+      "eip7702_live_accounts": null,
+      "total_onchain_footprint": 166034,
+      "source": "bundlebear",
+      "confidence": "medium",
+      "bundlebear_labels": {
+        "erc4337": "zerodev_kernel"
+      },
+      "note": "上界估计：factory 0xd703aae...（ZeroDev Kernel）含 Crossmint + 其他 Kernel 客户。测试网 Crossmint 占 67%。",
+      "active_wallets_30d": 166034
     },
     "privy": {
       "trackable": false,
-      "active_wallets_30d": null,
+      "erc4337_active_wallets_30d": null,
+      "eip7702_live_accounts": null,
+      "total_onchain_footprint": null,
       "reason": "不部署自有工厂合约，复用底层实现（Coinbase/Kernel/Safe等），链上无法区分来源"
-    },
-    "crossmint": {
-      "trackable": false,
-      "active_wallets_30d": null,
-      "reason": "工厂地址未公开，全部通过 API 后端封装"
     },
     "bnbchain_mcp": {
       "trackable": false,
-      "active_wallets_30d": null,
+      "erc4337_active_wallets_30d": null,
+      "eip7702_live_accounts": null,
+      "total_onchain_footprint": null,
       "reason": "本地 EOA 钱包，无工厂合约"
     },
     "moonpay": {
       "trackable": false,
-      "active_wallets_30d": null,
+      "erc4337_active_wallets_30d": null,
+      "eip7702_live_accounts": null,
+      "total_onchain_footprint": null,
       "reason": "HD 钱包架构，链上无工厂合约"
     },
     "minara": {
       "trackable": false,
-      "active_wallets_30d": null,
+      "erc4337_active_wallets_30d": null,
+      "eip7702_live_accounts": null,
+      "total_onchain_footprint": null,
       "reason": "托管钱包，链上不可追踪"
     }
   }

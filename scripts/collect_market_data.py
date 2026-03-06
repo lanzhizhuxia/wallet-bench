@@ -119,16 +119,23 @@ DOCS_PATHS_BY_REPO: dict[str, list[str]] = {
 
 BREAKING_KEYWORDS: list[str] = ["breaking", "BREAKING", "breaking change"]
 
-# BundleBear factory label → provider id mapping
-BUNDLEBEAR_FACTORY_LABELS: dict[str, str] = {
+# ERC-4337 factory labels（BundleBear PROVIDER 字段 "factory - xxx" 的 xxx 部分）
+BUNDLEBEAR_4337_LABELS: dict[str, str] = {
     "coinbase_smart_wallet": "coinbase",
-    # Privy 复用底层工厂，链上无法归因，不列入
 }
+
+# EIP-7702 authorized contract labels（BundleBear PROVIDER 字段 "eip7702 - xxx" 的 xxx 部分）
+BUNDLEBEAR_7702_LABELS: dict[str, str] = {
+    "Coinbase Wallet": "coinbase",
+}
+
+# Crossmint: 通过 ZeroDev Kernel 工厂追踪（上界估计，含同工厂的其他 Kernel 客户）
+BUNDLEBEAR_CROSSMINT_FACTORY_LABEL = "zerodev_kernel"
+CROSSMINT_PROVIDER_ID = "crossmint"
 
 # 不可追踪供应商的原因说明
 ONCHAIN_NOT_TRACKABLE: dict[str, str] = {
     "privy":       "不部署自有工厂合约，复用底层实现（Coinbase/Kernel/Safe等），链上无法区分来源",
-    "crossmint":   "工厂地址未公开，全部通过 API 后端封装",
     "bnbchain_mcp": "本地 EOA 钱包，无工厂合约",
     "moonpay":     "HD 钱包架构，链上无工厂合约",
     "minara":      "托管钱包，链上不可追踪",
@@ -196,7 +203,8 @@ def _get(url: str, headers: dict[str, str] | None = None) -> requests.Response:
             return resp
         except requests.HTTPError as exc:
             # 4xx → not transient, raise immediately
-            if resp.status_code < 500:
+            status_code = exc.response.status_code if exc.response is not None else 0
+            if 0 < status_code < 500:
                 raise
             last_exc = exc
             log_warn(
@@ -805,8 +813,13 @@ def _read_existing_snapshot(path: Path) -> dict | None:
 def collect_onchain() -> dict:
     """Collect on-chain active wallet counts via BundleBear activation API.
 
-    Only Coinbase Smart Wallet has verified, attributable factory addresses.
-    All other providers are marked not_trackable with reasons.
+    Tracks two dimensions per provider:
+      - ERC-4337: Smart Wallet factory activations ("factory - xxx")
+      - EIP-7702: EOA delegation authorizations ("eip7702 - xxx")
+
+    Coinbase has both dimensions (factory + 7702 impl).
+    Crossmint tracked as upper-bound via ZeroDev Kernel factory.
+    Other providers marked not_trackable with reasons.
 
     On failure, falls back to the last successful snapshot marked as stale.
     """
@@ -815,9 +828,10 @@ def collect_onchain() -> dict:
     latest_month: str | None = None
     fetch_ok = False
 
-    # 1. 采集 BundleBear erc4337-activation 数据（无需认证）
+    # 1. 采集 BundleBear erc4337-activation 数据（包含 ERC-4337 + EIP-7702 双维度，无需认证）
     url = "https://bundlebear-api.onrender.com/erc4337-activation?chain=all&timeframe=month"
-    bundlebear_data: dict[str, int] | None = {}
+    erc4337_data: dict[str, int] = {}   # BundleBear label -> count
+    eip7702_data: dict[str, int] = {}   # BundleBear label -> count
     try:
         resp = _get(url)
         data = resp.json()
@@ -836,17 +850,23 @@ def collect_onchain() -> dict:
             if row.get("DATE") != latest_month:
                 continue
             provider_raw = row.get("PROVIDER", "")
-            # 格式: "factory - coinbase_smart_wallet" → 提取 label
-            label = provider_raw.replace("factory - ", "").lower()
             count = row.get("NUM_ACCOUNTS")
-            if label and count is not None:
-                # 同一 label 可能出现多次（factory + eip7702），累加
-                bundlebear_data[label] = bundlebear_data.get(label, 0) + int(count)
-        log_info("bundlebear fetch ok", rows=len(rows), latest_month=latest_month)
+            if not provider_raw or count is None:
+                continue
+            count = int(count)
+            # 分离两个维度的数据
+            if provider_raw.startswith("factory - "):
+                label = provider_raw[len("factory - "):]
+                erc4337_data[label] = erc4337_data.get(label, 0) + count
+            elif provider_raw.startswith("eip7702 - "):
+                label = provider_raw[len("eip7702 - "):]
+                eip7702_data[label] = eip7702_data.get(label, 0) + count
+            # Safe4337Module / Other / unknown 等忽略（不归属特定供应商）
+        log_info("bundlebear fetch ok", rows=len(rows), latest_month=latest_month,
+                 erc4337_labels=len(erc4337_data), eip7702_labels=len(eip7702_data))
         fetch_ok = True
     except Exception as exc:
         log_error("bundlebear fetch failed", error=str(exc))
-        bundlebear_data = None
         fetch_ok = False
 
     # 2. 如果 BundleBear 失败，尝试读取上次成功的快照
@@ -862,38 +882,84 @@ def collect_onchain() -> dict:
             return existing
         log_error("no historical snapshot available, returning empty onchain data")
 
-    # 3. 可追踪供应商：Coinbase
-    for label, provider_id in BUNDLEBEAR_FACTORY_LABELS.items():
-        if bundlebear_data is None:
+    # 3. 可追踪供应商：Coinbase（ERC-4337 + EIP-7702 双维度）
+    for label_4337, provider_id in BUNDLEBEAR_4337_LABELS.items():
+        label_7702 = None
+        for k, v in BUNDLEBEAR_7702_LABELS.items():
+            if v == provider_id:
+                label_7702 = k
+                break
+        if not fetch_ok:
             providers[provider_id] = {
                 "trackable": True,
-                "active_wallets_30d": None,
+                "erc4337_active_wallets_30d": None,
+                "eip7702_live_accounts": None,
+                "total_onchain_footprint": None,
                 "error": "BundleBear API fetch failed",
                 "source": "bundlebear",
             }
         else:
-            count = bundlebear_data.get(label)
+            c4337 = erc4337_data.get(label_4337)
+            c7702 = eip7702_data.get(label_7702) if label_7702 else None
+            total = (c4337 or 0) + (c7702 or 0) if (c4337 is not None or c7702 is not None) else None
             providers[provider_id] = {
                 "trackable": True,
-                "active_wallets_30d": count,
+                "erc4337_active_wallets_30d": c4337,
+                "eip7702_live_accounts": c7702,
+                "total_onchain_footprint": total,
                 "source": "bundlebear",
-                "bundlebear_label": label,
-                "note": "月度新激活账户数（BundleBear erc4337-activation timeframe=month），非存量活跃",
+                "bundlebear_labels": {
+                    "erc4337": label_4337,
+                    **({"eip7702": label_7702} if label_7702 else {}),
+                },
+                "note": "ERC-4337 + EIP-7702 双维度。4337=月度新激活智能钱包，7702=月度新授权 EOA。两者不重叠。",
             }
-            log_info("onchain data", provider=provider_id, active_wallets_30d=count)
+            log_info("onchain data", provider=provider_id,
+                     erc4337=c4337, eip7702=c7702, total=total)
 
-    # 4. 不可追踪供应商
+    # 4. Crossmint（partial tracking，上界估计）
+    if fetch_ok:
+        crossmint_count = erc4337_data.get(BUNDLEBEAR_CROSSMINT_FACTORY_LABEL)
+        providers[CROSSMINT_PROVIDER_ID] = {
+            "trackable": "partial",
+            "erc4337_active_wallets_30d": crossmint_count,
+            "eip7702_live_accounts": None,
+            "total_onchain_footprint": crossmint_count,
+            "source": "bundlebear",
+            "confidence": "medium",
+            "bundlebear_labels": {"erc4337": BUNDLEBEAR_CROSSMINT_FACTORY_LABEL},
+            "note": "上界估计：factory 0xd703aae...（ZeroDev Kernel）含 Crossmint + 其他 Kernel 客户。测试网 Crossmint 占 67%。",
+        }
+        log_info("onchain data", provider=CROSSMINT_PROVIDER_ID,
+                 erc4337=crossmint_count, confidence="medium-upper-bound")
+    else:
+        providers[CROSSMINT_PROVIDER_ID] = {
+            "trackable": "partial",
+            "erc4337_active_wallets_30d": None,
+            "eip7702_live_accounts": None,
+            "total_onchain_footprint": None,
+            "error": "BundleBear API fetch failed",
+            "source": "bundlebear",
+        }
+
+    # 5. 不可追踪供应商
     all_provider_ids = ["privy", "coinbase", "crossmint", "bnbchain_mcp", "moonpay", "minara"]
     for pid in all_provider_ids:
         if pid not in providers:
             providers[pid] = {
                 "trackable": False,
-                "active_wallets_30d": None,
+                "erc4337_active_wallets_30d": None,
+                "eip7702_live_accounts": None,
+                "total_onchain_footprint": None,
                 "reason": ONCHAIN_NOT_TRACKABLE.get(pid, "unknown"),
             }
 
+    for provider in providers.values():
+        if provider.get("trackable") is True or provider.get("trackable") == "partial":
+            provider["active_wallets_30d"] = provider.get("total_onchain_footprint")
+
     return {
-        "schema_version": "2.0",
+        "schema_version": "3.0",
         "source": "bundlebear",
         "collected_at": now,
         "period": "last-30d",
