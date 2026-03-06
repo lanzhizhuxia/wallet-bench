@@ -1,0 +1,43 @@
+name: Coinbase AgentKit
+class: tee
+custody_model: CDP-Server-Wallet
+signing_modes: [personal_sign, eip712, raw_tx]
+submission_mode: provider_submit
+chains: [base, ethereum, polygon, arbitrum, optimism, solana]
+required_secrets: [CDP_API_KEY_ID, CDP_API_KEY_SECRET, CDP_WALLET_SECRET]
+network_modes:
+  testnet: base-sepolia
+  mainnet: base-mainnet
+viability: ready
+viability_note: |
+  Python SDK (coinbase-agentkit v0.7.4) 可用。
+  Onboarding: 注册 CDP 账号 → 创建 API Key (key_id + key_secret) + Wallet Secret。
+  内置 request_faucet_funds action 可自动领测试币（无需人类 captcha）。
+  支持 CdpEvmWalletProvider (server wallet) + CdpSmartWalletProvider (ERC-4337)。
+  sign_message 在 WalletProvider 基类中有。
+  network_id=base-sepolia 即可使用 testnet。
+
+# Skill metadata (ISSUE-002)
+skill:
+  github: https://github.com/coinbase/agentkit
+  package: coinbase-agentkit
+  package_registry: pypi
+  integration_type: python_sdk
+  docs_url: https://docs.cdp.coinbase.com/agentkit/docs/welcome
+  description: "Coinbase 官方 AI Agent 工具包，CDP Server Wallet (TEE) 签名，内置 faucet/swap/trade actions"
+  stars: ~5000
+  license: Apache-2.0
+  last_verified: "2026-03-05"
+
+# Signing governance (ISSUE-002)
+governance:
+  policy_engine: false
+  spend_limit: false
+  address_allowlist: false
+  human_in_loop: false
+  notes: "CDP 平台有 policy 功能，但 AgentKit SDK 未暴露"
+
+# Decision takeaways (ISSUE-002)
+takeaways:
+  learn: "SDK 封装度高，签名/交易同步返回，错误信息清晰（Pydantic 校验 + API 错误码），内置 faucet action"
+  avoid: "Onboarding 需要三个独立凭证（API Key + API Secret + Wallet Secret），路径分散在 CDP Portal 不同页面，是所有 provider 中最重的"

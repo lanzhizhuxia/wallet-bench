@@ -1,0 +1,145 @@
+provider: bnbchain_mcp
+evaluator: claude-opus-4.6 (AI agent)
+date: "2026-03-05"
+
+summary: |
+  BNB Chain MCP **接入门槛极低**——只需一个私钥，无需注册账号，一行命令即可启动。
+  私钥存储在本地，用户自行保管，**无第三方托管**。
+  支持调用任意智能合约，代币兑换和借贷等场景均可实现，但需手动编写调用参数。
+  关键短板：**不支持消息签名和结构化签名**，导致部分 DeFi 协议无法接入。
+  接口参数命名与行业习惯不一致，且**没有独立文档**，只能在运行时查看可用功能，
+  集成过程需要反复试错。适合 BNB 链生态内的**简单转账和合约交互**场景。
+
+scores:
+  onboarding_ease: 4          # 1-5, 1=极难上手 5=零摩擦 (原 onboarding_friction 翻转)
+  doc_quality: 3               # 1-5, 1=严重误导 5=完美 (原 doc_accuracy 翻转)
+  api_consistency: 3           # 1-5, 1=处处意外 5=完全一致
+  error_message_quality: 2     # 1-5, 1=不可读 5=清晰可操作
+  agent_autonomy: 4            # 1-5, 1=完全依赖人类 5=全自主
+  time_to_first_success_min: 8
+  # --- ISSUE-008 新增评分 (e01-e06) ---
+  governance_completeness: 2   # e01, 1-5. 无策略引擎, 治理由调用方负责
+  network_environment: 4       # e02, 1-5. BSC testnet + mainnet 支持, faucet 需人类 captcha 但 auto env setup
+  sdk_doc_quality: 3           # e03, 1-5. 无独立文档, 只能 list_tools() 摸索, 需试错
+  # app_execution_quality: N/A  # e04, infra provider 不适用
+  cost_transparency: 2         # e05, 1-5. 开源免费但成本=链上 gas, 无定价基础设施
+  kyc_requirement_clarity: 5   # e06, 1-5. 完全无 KYC, permissionless, 只需私钥
+
+human_interventions:
+  - type: faucet
+    reason: "BSC testnet faucet 全部要求浏览器 captcha，AI agent 无法自动领取测试币"
+    blocker: true
+
+integration_bugs:
+  - id: BUG-1
+    description: "参数名 `to` 应为 `toAddress`（transfer_native_token）"
+    root_cause: our_code
+    fix_time_min: 2
+    lesson: "应先调 list_tools() 查 schema，不要凭经验猜参数名"
+
+  - id: BUG-2
+    description: "金额用 Python float 转 str 产生科学计数法 `1e-15`，viem 拒绝"
+    root_cause: our_code
+    fix_time_min: 2
+    lesson: "涉及链上金额必须用 Decimal，永远不用 float"
+
+  - id: BUG-3
+    description: "返回字段 `txHash` 而非 `transactionHash`"
+    root_cause: our_code
+    fix_time_min: 1
+    lesson: "同 BUG-1，不要假设返回字段名"
+
+  - id: BUG-4
+    description: "estimate_gas 的 value 参数单位是 ether 不是 wei"
+    root_cause: our_code
+    fix_time_min: 1
+    lesson: "横向检查发现，同一 adapter 内不同 tool 的单位约定可能不同"
+
+doc_gaps:
+  - "@bnb-chain/mcp npm 包无独立 API 文档，tool schema 只能通过 list_tools() 运行时获取"
+  - "参数单位（ether vs wei）未在 schema description 中明确说明"
+  - "错误信息来自 viem 底层，未被 MCP server 包装为用户友好格式"
+
+agent_experience: |
+  ## 作为 AI Agent 的集成体验
+
+  ### 优点
+  - 零注册、零配置（只需 PRIVATE_KEY），npx 一键启动
+  - MCP 协议标准化，工具发现和调用流程统一
+
+  ### 痛点
+  - 无文档，只能通过 `list_tools()` 运行时摸索
+  - 参数名非业界惯例（如 `toAddress` 而非 `to`）
+  - 错误信息是 viem 原始报错，未经封装
+
+  ### 人类依赖
+  - 仅 faucet 领测试币需要人类操作浏览器验证码
+
+  ### 总体评价
+  对熟悉 MCP 协议的开发者友好，但对 AI agent 不够友好——缺少可机器解析的文档和一致的参数约定。
+
+# ============================================================
+# 给其他 Agent 的集成备忘录
+# ============================================================
+
+agent_memo: |
+  ## 致后来的 Agent：BNB Chain MCP 集成备忘
+
+  ### 第一件事：永远先跑 list_tools()
+
+  这个 MCP server 没有独立文档。npm README 只有一句话让你 npx 启动。
+  所有 tool 的参数名、类型、哪些是 required，只能通过 MCP 协议的
+  `list_tools()` 在运行时拿到。不要凭你对 ethers.js / web3.js 的经验
+  去猜参数名——它用的是 viem，命名风格不同。
+
+  我的教训：直接按 ethers 惯例写了 `to`、`transactionHash`，全部报错。
+  正确做法是启动 server → list_tools() → 把每个 tool 的 inputSchema 打印出来
+  → 再写代码。这能省你 80% 的调试时间。
+
+  ### 金额字段：用 Decimal，别用 float
+
+  这个 server 底层是 viem，对数字格式极其严格：
+  - `transfer_native_token` 的 `amount`：ether 单位的字符串，如 "0.0001"
+  - `estimate_gas` 的 `value`：也是 ether 单位的字符串
+  - 绝对不能传科学计数法（"1e-15"），viem 会直接拒绝
+
+  Python 的 `str(1000 / 1e18)` 会产生 `"1e-15"`。必须用
+  `str(Decimal(1000) / Decimal(10**18))` → `"0.000000000000001"`。
+
+  重要：不同 provider 对 value 的单位约定不同！BNB Chain MCP 用 ether，
+  Crossmint 用 wei。不要在 adapter 外部做单位转换，让每个 adapter 内部
+  处理自己 provider 的约定。
+
+  ### 参数名速查表（省得你再踩一遍）
+
+  | Tool                         | 关键参数                                    |
+  |------------------------------|---------------------------------------------|
+  | get_address_from_private_key | privateKey (optional, 会用 env 中的)        |
+  | transfer_native_token        | toAddress*, amount* (ether), network*       |
+  | estimate_gas                 | to*, value (ether string), network          |
+  | get_native_balance           | address, network                            |
+
+  注意 `transfer_native_token` 用 `toAddress` 而 `estimate_gas` 用 `to`
+  ——同一个 server 内部都不一致。这不是 bug，就是它的 schema 设计。
+
+  ### 返回值解析
+
+  - `transfer_native_token` 成功返回：`{"success": true, "txHash": "0x..."}`
+    注意是 `txHash` 不是 `transactionHash` 也不是 `hash`
+  - `get_address_from_private_key` 返回纯文本地址字符串，不是 JSON
+  - 错误时返回的是 viem 原始错误文本，没有 JSON 结构。你需要字符串匹配来判断
+    错误类型
+
+  ### Testnet 注意事项
+
+  - BSC testnet 的所有 faucet 都需要浏览器 captcha，你作为 agent 领不了币，
+    需要让人类去 https://www.bnbchain.org/en/testnet-faucet 领
+  - server 启动时 stderr 会输出 `ERROR: BNBChain MCP Server running on stdio mode`
+    这不是错误，是正常的启动日志，别被吓到
+  - 通过 env 变量 `PRIVATE_KEY` 传入私钥，StdioServerParameters 的 env 参数
+
+  ### 并发安全
+
+  同一个 MCP session 内可以并发调 tool，但 transfer_native_token 涉及 nonce
+  管理。测试中 3 并发 create_wallet 没问题，但并发 transfer 可能有 nonce 冲突。
+  如果你需要并发转账，建议串行执行或自己管理 nonce。

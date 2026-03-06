@@ -1,0 +1,93 @@
+provider: minara
+evaluator: claude-opus-4.6 (AI agent)
+date: "2026-03-05"
+
+summary: |
+  Minara AI 采用**全托管模式**——私钥由平台保管，用户无需也无法自行管理密钥。
+  内置代币兑换、转账、合约交易等常用操作，注册即自动创建钱包，**上手最简单**。
+  内置交易确认流程，每笔操作前可人工审核，也可设为自动跳过。
+  但**不提供底层签名能力**，无法用于需要自定义签名的高级场景；
+  借贷、永续合约、预测市场等复杂 DeFi 操作均不可行。
+  测试通过 8 项，跳过 5 项（因架构不支持），无故障。
+  适合**对密钥控制无要求、只需简单兑换和转账**的轻量场景。
+
+scores:
+  onboarding_ease: 4          # 1-5, 1=极难上手 5=零摩擦
+  doc_quality: 3               # 1-5, 1=严重误导 5=完美
+  api_consistency: 3           # 1-5, 1=处处意外 5=完全一致
+  error_message_quality: 3     # 1-5, 1=不可读 5=清晰可操作
+  agent_autonomy: 3            # 1-5, 1=完全依赖人类 5=全自主
+  time_to_first_success_min: 8
+  # --- ISSUE-008 新增评分 (e01-e06) ---
+  governance_completeness: 3   # e01, 1-5. Per-workflow risk rules (TP/SL, sizing caps) in UI builder, 无 API-level policy engine
+  network_environment: 2       # e02, 1-5. 消费级产品, 无开发者 testnet 环境
+  sdk_doc_quality: 3           # e03, 1-5. 文档基本可用, 需试错, 无 llms.txt
+  app_tool_coverage: 3         # t27, 1-5. CLI 提供 swap/transfer/perps/deposit, 约 10+ 工具
+  app_execution_quality: 3     # e04, 1-5. 可靠执行, 无滑点优化或 MEV 保护
+  cost_transparency: 3         # e05, 1-5. 基础定价信息可用, 无 per-API billing dashboard
+  kyc_requirement_clarity: 2   # e06, 1-5. KYC 状态在公开文档中未说明
+
+human_interventions:
+  - type: account_registration
+    reason: "minara login 需要浏览器 email 验证"
+    blocker: true
+
+integration_bugs: []
+
+doc_gaps:
+  - "--json flag 不输出结构化 JSON，仍然是格式化文本"
+  - "钱包架构（MPC/TEE/custodial 具体实现）未在文档中公开"
+  - "token 选择器交互式 UI 在非 TTY 环境下行为未说明"
+
+agent_experience: |
+  ## 作为 AI Agent 的集成体验
+
+  ### 优点
+  - 安装简单（`npm install -g minara`），登录后即可使用
+  - `account` 命令返回所有链的钱包地址
+  - 内置 swap / perps / transfer 等高层命令，无需编写底层逻辑
+
+  ### 痛点
+  - `--json` flag 不生效（仍输出格式化文本），需要正则解析输出
+  - transfer 命令的 token 匹配会弹出交互式选择器，在自动化场景下会挂住
+  - 不暴露签名原语，无法用于自定义签名场景
+
+  ### 人类依赖
+  - 注册账号需人类完成（一次性），之后 AI 完全自主
+
+  ### 总体评价
+  作为"一站式 DeFi 助手"，swap / perps / transfer 能力在六家中最全面。但底层签名能力几乎为零，适合不需要密钥控制的轻量场景。
+
+agent_memo: |
+  ## Minara AI — Agent 集成速查表
+
+  ### 安装与登录
+  ```bash
+  npm install -g minara
+  minara login          # 浏览器 email 验证
+  minara account        # 查看钱包地址
+  ```
+
+  ### 核心操作
+  - 查看地址: `minara account` 或 `minara deposit spot`
+  - 查看余额: `minara balance`
+  - 转账: `minara transfer -c <chain> -t <token_addr> -a <amount> --to <addr> -y`
+  - Swap: `minara swap -s <buy|sell> -t '<token>' -a <amount> -y`
+  - 永续合约: `minara perps order`
+
+  ### 已知限制
+  1. 无 sign_message / sign_typed_data — custodial wallet 不暴露签名
+  2. --json 不输出 JSON — 需要文本正则解析
+  3. token ticker 匹配会弹出交互式选择器 — 使用合约地址避免
+  4. 无 create_wallet — 钱包在注册时自动创建
+  5. 余额为零时 transfer 会返回错误（expected）
+
+  ### 钱包地址
+  - EVM: 所有 EVM 链共享同一个 abstraction-evm 地址
+  - Solana: 独立的 abstraction-solana 地址
+  - 类型: custodial smart wallet
+
+  ### 性能数据（本机实测）
+  - 获取地址 (account): ~250ms
+  - 转账尝试 (transfer): ~700ms
+  - 并发 3 ops: ~300ms

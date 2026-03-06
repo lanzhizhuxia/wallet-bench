@@ -1,0 +1,181 @@
+provider: crossmint
+evaluator: claude-opus-4.6 (AI agent)
+date: "2026-03-05"
+
+summary: |
+  Crossmint 是本次评测中**文档最完善**的方案，接口设计规范，测试环境开箱即用。
+  私钥由专业级安全芯片托管，采用智能合约钱包架构，**安全合规标准高**。
+  错误提示精确到字段级别，开发调试体验好。
+  不足之处：每次签名操作需**等待约 10 秒**才返回结果（其他方案通常毫秒级），
+  且部分签名接口的必填项比行业惯例更严格，需要实际调用才能发现。
+  适合对**安全合规要求高、不急于毫秒级响应**的企业场景。
+
+scores:
+  onboarding_ease: 3          # 1-5, 1=极难上手 5=零摩擦
+  doc_quality: 4               # 1-5, 1=严重误导 5=完美
+  api_consistency: 4           # 1-5, 1=处处意外 5=完全一致 (REST 风格一致，异步模式统一)
+  error_message_quality: 4     # 1-5, 1=不可读 5=清晰可操作 (400 错误带字段级提示)
+  agent_autonomy: 3            # 1-5, 1=完全依赖人类 5=全自主 (注册需人类，但注册后 AI 可完全自主)
+  time_to_first_success_min: 15
+  # --- ISSUE-008 新增评分 (e01-e06) ---
+  governance_completeness: 4   # e01, 1-5. Delegated signers + permissions + policies (付费层), 无公开 condition DSL API
+  network_environment: 4       # e02, 1-5. Staging 即开即用 + mainnet 支持, 无本地 devnet
+  sdk_doc_quality: 5           # e03, 1-5. llms.txt + interactive examples + framework quickstarts
+  # app_execution_quality: N/A  # e04, infra provider 不适用
+  cost_transparency: 4         # e05, 1-5. 公开定价页面 + tier details, enterprise 需联系
+  kyc_requirement_clarity: 4   # e06, 1-5. 钱包创建无 KYC, Regulated Transfers 有自动 AML/KYC (清晰文档)
+
+human_interventions:
+  - type: account_registration
+    reason: "Staging console 注册需要浏览器登录，AI agent 无法自动完成"
+    blocker: true
+  - type: api_key_copy
+    reason: "人类需要从 console 复制 server-side API key"
+    blocker: true
+
+integration_bugs:
+  - id: BUG-1
+    description: "EIP-712 typed data 必须包含 domain.version 和 domain.verifyingContract"
+    root_cause: our_code
+    fix_time_min: 3
+    lesson: "Crossmint 比 EIP-712 标准更严格，domain 字段全部 required"
+
+  - id: BUG-2
+    description: "send_transaction 的 value 必须是 wei 整数字符串，不能是 ether 小数"
+    root_cause: our_code
+    fix_time_min: 2
+    lesson: "不同 provider 对 value 的单位约定不同——BNB Chain MCP 用 ether，Crossmint 用 wei"
+
+  - id: BUG-3
+    description: "send_transaction 422 revert 需要当作结构化响应处理，不能直接抛异常"
+    root_cause: our_code
+    fix_time_min: 3
+    lesson: "Intent 类 provider 的 tx 提交是异步的，revert 是正常业务状态不是协议错误"
+
+doc_gaps:
+  - "signatures API 的 chain 参数是 required 但在文档示例中未强调"
+  - "EIP-712 的 domain 全字段 required 的约束未在 API reference 中明确说明"
+  - "transactions API 返回 422 时的 error schema 未文档化"
+
+agent_experience: |
+  ## 作为 AI Agent 的集成体验
+
+  ### 优点
+  - 文档结构清晰（有 OpenAPI spec），错误信息带字段级路径（如 `params.typedData.domain.version: Required`）
+  - Staging 环境无需真实资产即可测试签名
+
+  ### 痛点
+  - 异步模式需要轮询（签名 ~10s，比本地方案慢 500 倍）
+  - 注册必须人类操作
+  - Staging 钱包无 ETH，导致 send_tx 必定 revert
+
+  ### 人类依赖
+  - 注册 + 复制 API key（一次性），之后 AI 可完全自主
+
+  ### 总体评价
+  对企业级集成友好（完善的 API、权限控制、审计），但对快速原型和 AI agent 自主接入有摩擦——注册门槛是最大瓶颈。
+
+# ============================================================
+# 给其他 Agent 的集成备忘录
+# ============================================================
+
+agent_memo: |
+  ## 致后来的 Agent：Crossmint Smart Wallets 集成备忘
+
+  ### 架构理解：这不是本地钱包
+
+  Crossmint 是一个**托管型智能钱包服务**。你不持有私钥，Crossmint 在
+  Fireblocks TEE 里替你签名。所有操作都是 REST API 调用，签名和交易是
+  **异步**的——你提交请求拿到一个 ID，然后轮询等结果。
+
+  这意味着：
+  1. 延迟在秒级（签名 ~10s），不是毫秒级
+  2. 你不能做本地验签——签名格式是 smart wallet (ERC-4337) 的，不是 EOA 的
+  3. 没有 `personal_sign` 的离线验证意义，签名只在链上验证时有效
+
+  ### Onboarding：必须让人类做一次
+
+  人类需要做的：
+  1. 打开 https://staging.crossmint.com/console → 注册账号
+  2. 创建 Project → 复制 Server-side API Key（`sk_staging_...` 开头）
+  3. 把 key 给你
+
+  之后你就完全自主了。key 不会过期（staging 环境），一个 key 可以创建无限钱包。
+
+  ### API 速查表
+
+  所有请求带 header: `X-API-KEY: sk_staging_...` + `Content-Type: application/json`
+
+  Base URL: `https://staging.crossmint.com/api/v1-alpha2`
+
+  | 操作 | 方法 | 路径 | 同步/异步 |
+  |------|------|------|-----------|
+  | 创建钱包 | POST | /wallets | 同步，直接返回地址 |
+  | 签名 | POST | /wallets/{addr}/signatures | 异步，返回 id |
+  | 查询签名 | GET | /wallets/{addr}/signatures/{id} | 轮询到 status≠pending |
+  | 发交易 | POST | /wallets/{addr}/transactions | 异步，返回 id |
+  | 查询交易 | GET | /wallets/{addr}/transactions/{id} | 轮询到 status≠pending |
+
+  ### 最容易踩的三个坑
+
+  **坑 1：EIP-712 typed data 的 domain 字段全部 required**
+
+  标准 EIP-712 里 `version` 和 `verifyingContract` 是可选的。但 Crossmint
+  要求全部提供。如果你少了任何一个，会报：
+  ```
+  params.typedData.domain.version: Required
+  params.typedData.domain.verifyingContract: Required
+  ```
+  完整的 domain 必须包含 `name`、`version`、`chainId`、`verifyingContract`。
+
+  **坑 2：金额单位是 wei 整数字符串**
+
+  send_transaction 的 `value` 字段要求：
+  - 必须是字符串（不是数字）
+  - 必须是整数（不能有小数点）
+  - 单位是 wei（不是 ether）
+
+  正确：`"value": "100000000000000"` (0.0001 ETH)
+  错误：`"value": "0.0001"` → 400 报错
+  错误：`"value": 100000000000000` → 类型错误
+
+  这和 BNB Chain MCP 完全相反（它要 ether 小数字符串 "0.0001"）。
+
+  **坑 3：422 revert 不是协议错误，是业务状态**
+
+  当 transaction 在链上 revert 时（比如余额不足），API 返回 HTTP 422：
+  ```json
+  {"error": {"reason": "execution_reverted", "revert": {...}}}
+  ```
+  不要把这当作异常抛出去。这是正常的业务响应，说明交易确实被提交到链上了，
+  只是执行失败。你应该解析 revert reason 返回给用户。
+
+  ### 签名返回值
+
+  sign_message 和 sign_typed_data 返回的 `outputSignature` 是
+  **smart wallet signature**，不是标准 EOA 签名。它包含了 smart wallet
+  的验证逻辑 calldata，长度比 65 字节的 EOA 签名长得多。
+  你不能用 `ecrecover` 去验证它——它只在链上通过 ERC-1271 验证。
+
+  ### 轮询策略
+
+  异步操作（签名/交易）通常 2-12 秒完成。建议：
+  - 轮询间隔：2 秒
+  - 超时：60 秒
+  - 签名操作通常 10s 左右（Fireblocks HSM 签名 + smart wallet 部署）
+  - 创建钱包是同步的（~2s），不需要轮询
+
+  ### Staging 环境限制
+
+  - Staging 钱包创建后余额为 0，没有 faucet 可以给 Crossmint smart wallet 充值
+  - 所以 send_transaction 在 staging 环境必定 revert（余额不足）
+  - 签名操作不受此限制，可以正常测试
+  - 同一个 linkedUser 创建钱包是幂等的——第二次调用返回已有钱包，不会创建新的
+
+  ### 链支持
+
+  签名时必须指定 `chain` 参数。支持的 staging 链名：
+  `base-sepolia`, `ethereum-sepolia`, `polygon-amoy`,
+  `arbitrum-sepolia`, `optimism-sepolia`, `solana`
+
+  注意：链名格式是 `{chain}-{network}`，不是 chain ID。

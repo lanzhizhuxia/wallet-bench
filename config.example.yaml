@@ -1,0 +1,60 @@
+# wallet-bench configuration template
+# Copy this file to config.yaml and fill in your credentials.
+#   cp config.example.yaml config.yaml
+#
+# All keys below are TESTNET-ONLY. Never use mainnet credentials.
+
+providers:
+  # ── BNB Chain MCP ──────────────────────────────────────────────
+  # Requires: a BSC-testnet private key with tBNB balance.
+  # Faucet: https://www.bnbchain.org/en/testnet-faucet
+  bnbchain_mcp:
+    private_key: "0x_YOUR_BSC_TESTNET_PRIVATE_KEY"
+    network: bsc-testnet
+
+  # ── Crossmint Smart Wallets ───────────────────────────────────
+  # Requires: Crossmint staging API key + an EOA private key for approval signing.
+  # Get API key: https://staging.crossmint.com/console → API Keys
+  crossmint:
+    api_key: "sk_staging_YOUR_CROSSMINT_API_KEY"
+    chain: base-sepolia
+    eoa_private_key: "0x_YOUR_EOA_PRIVATE_KEY"
+
+  # ── Coinbase AgentKit (CDP) ───────────────────────────────────
+  # Requires: CDP API key JSON file + wallet secret.
+  # Get credentials: https://portal.cdp.coinbase.com → API Keys
+  # 1. Download the API key JSON → save as cdp_api_key.json
+  # 2. Export the wallet secret → save as cdp_wallet_secret.txt
+  coinbase_agentkit:
+    cdp_key_file: "cdp_api_key.json"
+    wallet_secret: "YOUR_CDP_WALLET_SECRET_BASE64"
+    network_id: base-sepolia
+
+  # ── Privy ─────────────────────────────────────────────────────
+  # Requires: Privy app ID + app secret.
+  # Get credentials: https://dashboard.privy.io → Settings → API Keys
+  privy:
+    app_id: "YOUR_PRIVY_APP_ID"
+    app_secret: "privy_app_secret_YOUR_SECRET"
+    chain: ethereum-sepolia
+    wallet_id: ""  # Optional: pre-funded wallet ID, leave empty to create new
+
+  # ── MoonPay ───────────────────────────────────────────────────
+  # Requires: MoonPay CLI (`mp`) installed and authenticated.
+  # Install: npm install -g @moonpay/cli && mp auth login
+  moonpay:
+    wallet_name: bench
+    chain: ethereum
+
+  # ── Minara ────────────────────────────────────────────────────
+  # Requires: Minara CLI (`minara`) installed and authenticated.
+  # Install: npm install -g minara && minara auth login
+  minara:
+    chain: base
+
+safety:
+  allowed_networks: [bsc-testnet, opbnb-testnet, base-sepolia, ethereum-sepolia]
+  blocked_chain_ids: [56, 204, 8453, 1]  # Block mainnet chain IDs
+  rpc_allowlist:
+    - "https://data-seed-prebsc-1-s1.bnbchain.org:8545"
+    - "https://data-seed-prebsc-2-s1.bnbchain.org:8545"

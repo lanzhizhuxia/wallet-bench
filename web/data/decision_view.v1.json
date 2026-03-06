@@ -1,0 +1,589 @@
+{
+  "meta": {
+    "version": "v1.1",
+    "generated_at": "2026-03-06T18:00:00",
+    "sources": {
+      "defi_matrix": "docs/data/defi_matrix.v1.json",
+      "tech_results": "results/public_results.json"
+    },
+    "rating_note": "Ratings reflect AI Agent integration complexity, not human developer effort."
+  },
+  "scenarios": [
+    {
+      "id": "uniswap_swap",
+      "name": "Uniswap V3 Swap",
+      "category": "on_chain_defi",
+      "chain": "Ethereum/Base"
+    },
+    {
+      "id": "aave_morpho",
+      "name": "Aave V3 / Morpho Blue",
+      "category": "on_chain_defi",
+      "chain": "Ethereum/Base"
+    },
+    {
+      "id": "hyperliquid",
+      "name": "Hyperliquid Perpetuals",
+      "category": "off_chain_signing",
+      "chain": "Hyperliquid L1"
+    },
+    {
+      "id": "polymarket",
+      "name": "Polymarket Prediction",
+      "category": "off_chain_signing",
+      "chain": "Polygon"
+    }
+  ],
+  "weight_presets": {
+    "equal": {
+      "name": "等权 (Equal)",
+      "uniswap_swap": 0.25,
+      "aave_morpho": 0.25,
+      "hyperliquid": 0.25,
+      "polymarket": 0.25
+    },
+    "defi_heavy": {
+      "name": "DeFi 为重",
+      "uniswap_swap": 0.3,
+      "aave_morpho": 0.3,
+      "hyperliquid": 0.2,
+      "polymarket": 0.2
+    },
+    "trading_heavy": {
+      "name": "交易为重",
+      "uniswap_swap": 0.2,
+      "aave_morpho": 0.1,
+      "hyperliquid": 0.4,
+      "polymarket": 0.3
+    }
+  },
+  "rating_definitions": {
+    "ready_to_use": {
+      "label": "即用",
+      "label_en": "Ready",
+      "emoji": "🟢",
+      "proxy": 1.0,
+      "description": "SDK/工具内置该场景，Agent 声明即用，无需额外编码"
+    },
+    "ready_to_use_conditional": {
+      "label": "即用†",
+      "label_en": "Ready†",
+      "emoji": "🟢",
+      "proxy": 0.8,
+      "description": "内置能力可用但有限制条件（如仅聚合器、仅特定链）"
+    },
+    "low_barrier": {
+      "label": "低门槛",
+      "label_en": "Low",
+      "emoji": "🟡",
+      "proxy": 0.65,
+      "description": "需要 calldata 编码但步骤少，有 ABI 即可完成"
+    },
+    "moderate": {
+      "label": "中等",
+      "label_en": "Moderate",
+      "emoji": "🟠",
+      "proxy": 0.4,
+      "description": "多步交易 + 协议专属编码 + 外部依赖或需人工介入"
+    },
+    "not_feasible": {
+      "label": "不可行",
+      "label_en": "N/A",
+      "emoji": "🔴",
+      "proxy": 0.0,
+      "description": "架构缺少必要能力（签名、calldata、密钥导出等）"
+    }
+  },
+  "providers": [
+    {
+      "id": "privy",
+      "name": "Privy",
+      "architecture": "TEE/REST",
+      "technical": {
+        "score": 84.2,
+        "confidence": 100.0,
+        "pass": 16,
+        "fail": 2,
+        "unsupported": 1,
+        "inconclusive": 0,
+        "total": 27
+      },
+      "defi": {
+        "scores": {
+          "equal": 58.8,
+          "defi_heavy": 60.0,
+          "trading_heavy": 57.5
+        },
+        "scenarios": {
+          "uniswap_swap": {
+            "rating": "low_barrier",
+            "label": "低门槛",
+            "emoji": "🟡",
+            "proxy": 0.65,
+            "integration_mode": "calldata 组装",
+            "tx_steps": 1,
+            "external_deps": ["Uniswap Trading API 或自行编码 ABI"],
+            "human_intervention": false,
+            "rationale": "Agent 通过 REST API 发送 eth_sendTransaction + data，需自行编码 calldata 或调用 Uniswap Trading API。",
+            "confidence": "high",
+            "caveats": []
+          },
+          "aave_morpho": {
+            "rating": "low_barrier",
+            "label": "低门槛",
+            "emoji": "🟡",
+            "proxy": 0.65,
+            "integration_mode": "calldata 组装",
+            "tx_steps": 2,
+            "external_deps": ["Aave V3 ABI"],
+            "human_intervention": false,
+            "rationale": "两步交易（approve + supply）通过 REST 发送，Agent 处理 ABI 编码和交易排序。",
+            "confidence": "high",
+            "caveats": []
+          },
+          "hyperliquid": {
+            "rating": "low_barrier",
+            "label": "低门槛",
+            "emoji": "🟡",
+            "proxy": 0.65,
+            "integration_mode": "calldata 组装",
+            "tx_steps": 1,
+            "external_deps": ["Hyperliquid EIP-712 domain", "hyperliquid-python-sdk"],
+            "human_intervention": false,
+            "rationale": "Privy REST signTypedData 支持 EIP-712，可签名 Hyperliquid approveAgent 授权。但 Hyperliquid 使用自定义 EIP-712 domain（chainId 1337 或 421614），需 Agent 自行构造 typed data 并调用 hyperliquid-python-sdk。非即用，需约 1-2d 编码。",
+            "confidence": "medium",
+            "caveats": ["需验证 Hyperliquid 自定义 chainId 兼容性"]
+          },
+          "polymarket": {
+            "rating": "moderate",
+            "label": "中等",
+            "emoji": "🟠",
+            "proxy": 0.4,
+            "integration_mode": "协议专属编码",
+            "tx_steps": 2,
+            "external_deps": ["Polymarket CLOB API", "自定义 EIP-712 编码器"],
+            "human_intervention": false,
+            "rationale": "需通过 REST 签名 EIP-712 数据用于 CLOB 授权 + 订单签名，py-clob-client 无法注入外部签名者，需自定义编码器。",
+            "confidence": "high",
+            "caveats": []
+          }
+        },
+        "coverage": "4/4"
+      }
+    },
+    {
+      "id": "coinbase_agentkit",
+      "name": "Coinbase AgentKit",
+      "architecture": "TEE/CDP",
+      "technical": {
+        "score": 66.7,
+        "confidence": 100.0,
+        "pass": 16,
+        "fail": 2,
+        "unsupported": 6,
+        "inconclusive": 0,
+        "total": 27
+      },
+      "defi": {
+        "scores": {
+          "equal": 76.2,
+          "defi_heavy": 81.0,
+          "trading_heavy": 68.0
+        },
+        "scenarios": {
+          "uniswap_swap": {
+            "rating": "ready_to_use",
+            "label": "即用",
+            "emoji": "🟢",
+            "proxy": 1.0,
+            "integration_mode": "声明即用",
+            "tx_steps": 0,
+            "external_deps": [],
+            "human_intervention": false,
+            "rationale": "内置 swap action（CDP Swap API / 0x 聚合器），自动处理 Permit2 + 滑点。仅限 Base/ETH 主网。",
+            "confidence": "high",
+            "caveats": ["仅 Base/ETH 主网", "Sepolia 不支持"]
+          },
+          "aave_morpho": {
+            "rating": "ready_to_use",
+            "label": "即用",
+            "emoji": "🟢",
+            "proxy": 1.0,
+            "integration_mode": "声明即用",
+            "tx_steps": 0,
+            "external_deps": [],
+            "human_intervention": false,
+            "rationale": "内置 AaveActionProvider（6 个 action）+ MorphoActionProvider（deposit/withdraw），Agent 声明即用。",
+            "confidence": "high",
+            "caveats": ["Aave 仅 Base", "Morpho 仅 MetaMorpho vault"]
+          },
+          "hyperliquid": {
+            "rating": "low_barrier",
+            "label": "低门槛",
+            "emoji": "🟡",
+            "proxy": 0.65,
+            "integration_mode": "calldata 组装",
+            "tx_steps": 1,
+            "external_deps": ["Hyperliquid EIP-712 domain", "hyperliquid-python-sdk"],
+            "human_intervention": false,
+            "rationale": "CDP sign_typed_data API 支持 EIP-712，可签名 approveAgent。但 Hyperliquid 使用自定义 domain（chainId 1337/421614），AgentKit 无内置 Hyperliquid action，需 Agent 自行构造 typed data + 调用 SDK。非即用，需约 1-2d 编码。",
+            "confidence": "medium",
+            "caveats": ["无内置 Hyperliquid action", "需验证 chainId 兼容性"]
+          },
+          "polymarket": {
+            "rating": "moderate",
+            "label": "中等",
+            "emoji": "🟠",
+            "proxy": 0.4,
+            "integration_mode": "协议专属编码",
+            "tx_steps": 2,
+            "external_deps": ["Polymarket CLOB API"],
+            "human_intervention": false,
+            "rationale": "CDP sign_typed_data API 支持 EIP-712，但 Polygon（chain 137）支持需验证 — 若仅 Base 则需跨链桥接。",
+            "confidence": "medium",
+            "caveats": ["Polygon 支持未验证"]
+          }
+        },
+        "coverage": "4/4"
+      }
+    },
+    {
+      "id": "crossmint",
+      "name": "Crossmint",
+      "architecture": "Intent/REST",
+      "technical": {
+        "score": 83.3,
+        "confidence": 96.3,
+        "pass": 15,
+        "fail": 3,
+        "unsupported": 0,
+        "inconclusive": 1,
+        "total": 27
+      },
+      "defi": {
+        "scores": {
+          "equal": 58.8,
+          "defi_heavy": 60.0,
+          "trading_heavy": 57.5
+        },
+        "scenarios": {
+          "uniswap_swap": {
+            "rating": "low_barrier",
+            "label": "低门槛",
+            "emoji": "🟡",
+            "proxy": 0.65,
+            "integration_mode": "calldata 组装",
+            "tx_steps": 1,
+            "external_deps": ["Uniswap Router ABI"],
+            "human_intervention": false,
+            "rationale": "通过 REST API sendTransaction({to, value, data})，Agent 编码 calldata，支持多链 EVM。",
+            "confidence": "high",
+            "caveats": []
+          },
+          "aave_morpho": {
+            "rating": "low_barrier",
+            "label": "低门槛",
+            "emoji": "🟡",
+            "proxy": 0.65,
+            "integration_mode": "calldata 组装",
+            "tx_steps": 2,
+            "external_deps": ["Aave V3 ABI"],
+            "human_intervention": false,
+            "rationale": "与 Uniswap 同路径 — Agent 编码 ABI 调用，Crossmint 签名。Agent 处理两步交易排序。",
+            "confidence": "high",
+            "caveats": []
+          },
+          "hyperliquid": {
+            "rating": "low_barrier",
+            "label": "低门槛",
+            "emoji": "🟡",
+            "proxy": 0.65,
+            "integration_mode": "calldata 组装",
+            "tx_steps": 1,
+            "external_deps": ["Hyperliquid EIP-712 domain"],
+            "human_intervention": false,
+            "rationale": "REST signatures 端点支持 typed data 签名，需验证与 HL 自定义 EIP-712 domain 的兼容性。API Wallet 模式适用。",
+            "confidence": "medium",
+            "caveats": []
+          },
+          "polymarket": {
+            "rating": "moderate",
+            "label": "中等",
+            "emoji": "🟠",
+            "proxy": 0.4,
+            "integration_mode": "协议专属编码",
+            "tx_steps": 2,
+            "external_deps": ["Polymarket CLOB API", "自定义 EIP-712 编码器"],
+            "human_intervention": false,
+            "rationale": "signatures 端点签名 EIP-712，需为 ClobAuth + Order 结构体编写自定义编码器，需验证兼容性。",
+            "confidence": "medium",
+            "caveats": []
+          }
+        },
+        "coverage": "4/4"
+      }
+    },
+    {
+      "id": "bnbchain_mcp",
+      "name": "BNB Chain MCP",
+      "architecture": "Local/MCP",
+      "technical": {
+        "score": 68.4,
+        "confidence": 100.0,
+        "pass": 13,
+        "fail": 2,
+        "unsupported": 4,
+        "inconclusive": 0,
+        "total": 27
+      },
+      "defi": {
+        "scores": {
+          "equal": 26.2,
+          "defi_heavy": 31.5,
+          "trading_heavy": 17.0
+        },
+        "scenarios": {
+          "uniswap_swap": {
+            "rating": "low_barrier",
+            "label": "低门槛",
+            "emoji": "🟡",
+            "proxy": 0.65,
+            "integration_mode": "calldata 组装",
+            "tx_steps": 2,
+            "external_deps": ["PancakeSwap/Uniswap ABI"],
+            "human_intervention": false,
+            "rationale": "write_contract MCP 工具 + approve_token_spending，Agent 提供完整 ABI + 参数。BSC 为主，其他链需配置。",
+            "confidence": "high",
+            "caveats": []
+          },
+          "aave_morpho": {
+            "rating": "moderate",
+            "label": "中等",
+            "emoji": "🟠",
+            "proxy": 0.4,
+            "integration_mode": "calldata 组装 + 链限制",
+            "tx_steps": 2,
+            "external_deps": ["Aave V3 ABI"],
+            "human_intervention": false,
+            "rationale": "write_contract 可执行任意合约调用，但 BSC 上 Aave V3 资产有限，Morpho Blue 不在 BSC 上部署。",
+            "confidence": "medium",
+            "caveats": ["BSC 为主", "Morpho Blue 不在 BSC"]
+          },
+          "hyperliquid": {
+            "rating": "not_feasible",
+            "label": "不可行",
+            "emoji": "🔴",
+            "proxy": 0.0,
+            "integration_mode": "不可行",
+            "tx_steps": null,
+            "external_deps": [],
+            "human_intervention": null,
+            "rationale": "无 signTypedData 或 personal_sign 工具，无法为 Scheme A 或 B 生成 EIP-712 签名。",
+            "confidence": "high",
+            "caveats": []
+          },
+          "polymarket": {
+            "rating": "not_feasible",
+            "label": "不可行",
+            "emoji": "🔴",
+            "proxy": 0.0,
+            "integration_mode": "不可行",
+            "tx_steps": null,
+            "external_deps": [],
+            "human_intervention": null,
+            "rationale": "Polymarket CLOB 需要 EIP-712 签名（ClobAuth + Order），BNB Chain MCP 不支持 signTypedData。且 Polymarket 运行在 Polygon（chain 137），非 BSC 链。即使 polymarket-cli 可用，也无法注入 MCP 管理的私钥。",
+            "confidence": "high",
+            "caveats": []
+          }
+        },
+        "coverage": "2/4"
+      }
+    },
+    {
+      "id": "moonpay",
+      "name": "MoonPay",
+      "architecture": "Local/CLI",
+      "technical": {
+        "score": 54.2,
+        "confidence": 100.0,
+        "pass": 13,
+        "fail": 8,
+        "unsupported": 3,
+        "inconclusive": 0,
+        "total": 27
+      },
+      "defi": {
+        "scores": {
+          "equal": 0.0,
+          "defi_heavy": 0.0,
+          "trading_heavy": 0.0
+        },
+        "scenarios": {
+          "uniswap_swap": {
+            "rating": "not_feasible",
+            "label": "不可行",
+            "emoji": "🔴",
+            "proxy": 0.0,
+            "integration_mode": "不可行",
+            "tx_steps": null,
+            "external_deps": [],
+            "human_intervention": null,
+            "rationale": "无原始 calldata 接口。KYC 网关聚合器兑换，无 send-tx --data 命令。",
+            "confidence": "high",
+            "caveats": []
+          },
+          "aave_morpho": {
+            "rating": "not_feasible",
+            "label": "不可行",
+            "emoji": "🔴",
+            "proxy": 0.0,
+            "integration_mode": "不可行",
+            "tx_steps": null,
+            "external_deps": [],
+            "human_intervention": null,
+            "rationale": "无原始 calldata 接口，无法发送自定义合约调用。",
+            "confidence": "high",
+            "caveats": []
+          },
+          "hyperliquid": {
+            "rating": "not_feasible",
+            "label": "不可行",
+            "emoji": "🔴",
+            "proxy": 0.0,
+            "integration_mode": "不可行",
+            "tx_steps": null,
+            "external_deps": [],
+            "human_intervention": null,
+            "rationale": "仅支持 personal_sign（添加 \\x19Ethereum Signed Message 前缀），与 EIP-712 不兼容。无 signTypedData。",
+            "confidence": "high",
+            "caveats": []
+          },
+          "polymarket": {
+            "rating": "not_feasible",
+            "label": "不可行",
+            "emoji": "🔴",
+            "proxy": 0.0,
+            "integration_mode": "不可行",
+            "tx_steps": null,
+            "external_deps": [],
+            "human_intervention": null,
+            "rationale": "Polymarket CLOB 需要 EIP-712 签名，MoonPay 仅支持 personal_sign（添加 \\x19Ethereum Signed Message 前缀），与 EIP-712 不兼容。密钥提取注入 polymarket-cli 也不可行——MoonPay CLI 不暴露原始私钥导出接口。",
+            "confidence": "high",
+            "caveats": []
+          }
+        },
+        "coverage": "0/4"
+      }
+    },
+    {
+      "id": "minara",
+      "name": "Minara",
+      "architecture": "Custodial/CLI",
+      "technical": {
+        "score": 38.1,
+        "confidence": 100.0,
+        "pass": 8,
+        "fail": 7,
+        "unsupported": 6,
+        "inconclusive": 0,
+        "total": 24
+      },
+      "defi": {
+        "scores": {
+          "equal": 20.0,
+          "defi_heavy": 24.0,
+          "trading_heavy": 16.0
+        },
+        "scenarios": {
+          "uniswap_swap": {
+            "rating": "ready_to_use_conditional",
+            "label": "即用†",
+            "emoji": "🟢",
+            "proxy": 0.8,
+            "integration_mode": "声明即用（受限）",
+            "tx_steps": 0,
+            "external_deps": [],
+            "human_intervention": false,
+            "rationale": "minara swap 命令是托管聚合器 — 适用于通用兑换意图，非原始 Uniswap V3 Router 调用。",
+            "confidence": "high",
+            "caveats": ["托管聚合器，非 Uniswap V3 直连", "若需原始 Router calldata 则不可行"]
+          },
+          "aave_morpho": {
+            "rating": "not_feasible",
+            "label": "不可行",
+            "emoji": "🔴",
+            "proxy": 0.0,
+            "integration_mode": "不可行",
+            "tx_steps": null,
+            "external_deps": [],
+            "human_intervention": null,
+            "rationale": "无借贷/存款命令，无原始 calldata 能力。托管架构无法执行任意合约调用。",
+            "confidence": "high",
+            "caveats": []
+          },
+          "hyperliquid": {
+            "rating": "not_feasible",
+            "label": "不可行",
+            "emoji": "🔴",
+            "proxy": 0.0,
+            "integration_mode": "不可行",
+            "tx_steps": null,
+            "external_deps": [],
+            "human_intervention": null,
+            "rationale": "无任何消息签名 API。托管系统不暴露签名能力。",
+            "confidence": "high",
+            "caveats": []
+          },
+          "polymarket": {
+            "rating": "not_feasible",
+            "label": "不可行",
+            "emoji": "🔴",
+            "proxy": 0.0,
+            "integration_mode": "不可行",
+            "tx_steps": null,
+            "external_deps": [],
+            "human_intervention": null,
+            "rationale": "无密钥导出，无签名接口。无法满足 Path A 或 Path B。",
+            "confidence": "high",
+            "caveats": []
+          }
+        },
+        "coverage": "1/4"
+      }
+    }
+  ],
+  "recommendations": [
+    {
+      "use_case": "通用型 AI Agent 钱包",
+      "description": "需要灵活性和全场景覆盖",
+      "recommended": "privy",
+      "reason": "技术得分最高 + DeFi 全场景可达 + REST API 设计清晰"
+    },
+    {
+      "use_case": "链上 DeFi (Swap + 借贷)",
+      "description": "以 Base 链为主的 DeFi 场景",
+      "recommended": "coinbase_agentkit",
+      "reason": "Swap/Aave/Morpho 内置 action，Agent 声明即用（仅限 Base/ETH 主网）"
+    },
+    {
+      "use_case": "衍生品交易 (Hyperliquid)",
+      "description": "永续合约交易场景",
+      "recommended": "privy",
+      "alternates": ["coinbase_agentkit", "crossmint"],
+      "reason": "REST signTypedData 支持 EIP-712，可签名 Hyperliquid approveAgent 授权，需 Agent 自行构造 typed data（~1-2d）"
+    },
+    {
+      "use_case": "预测市场 (Polymarket)",
+      "description": "预测市场交易场景",
+      "recommended": "privy",
+      "alternates": ["crossmint", "coinbase_agentkit"],
+      "reason": "REST signTypedData 支持 EIP-712，可签名 CLOB 授权和订单 — 需自定义编码器但可行性最高"
+    },
+    {
+      "use_case": "企业级风控",
+      "description": "需要策略引擎和审计能力",
+      "recommended": "privy",
+      "reason": "唯一内置 Policy Engine 的供应商"
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+# Credentials
+config.yaml
+.env
+cdp_api_key.json
+cdp_wallet_secret.txt
+*.key
+*.pem
+*.secret
+*.p12
+
+# Internal documents (procurement strategy, not for public)
+docs/pm/
+
+# Logs
+logs/
+
+# Test results (may contain addresses, signatures)
+results/
+
+# Temp files
+tmp/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Node
+node_modules/
+
+# OS
+.DS_Store

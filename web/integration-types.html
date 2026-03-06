@@ -1,0 +1,494 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>集成方式对比 - wallet-bench</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      background-color: var(--bg-subtle);
+    }
+    .article-header {
+      background-color: var(--bg-base);
+      border-bottom: 1px solid var(--bg-border);
+      padding: var(--space-m) var(--space-xl);
+    }
+    .article-header-inner {
+      max-width: var(--content-max-width);
+      margin: 0 auto;
+    }
+    .back-link {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 14px;
+      transition: color var(--duration-fast);
+    }
+    .back-link:hover {
+      color: var(--text-primary);
+    }
+    .article-layout {
+      display: grid;
+      grid-template-columns: 1fr 240px;
+      gap: var(--space-2xl);
+      max-width: var(--content-max-width);
+      margin: 0 auto;
+      padding: var(--space-xl);
+      align-items: flex-start;
+    }
+    .article-content {
+      background-color: var(--bg-card);
+      border: 1px solid var(--bg-border);
+      border-radius: var(--radius-l);
+      padding: var(--space-2xl);
+      min-width: 0;
+    }
+    .article-toc {
+      position: sticky;
+      top: calc(var(--space-xl) + 50px); /* Adjust based on header height */
+    }
+    .toc-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: var(--space-m);
+    }
+    .toc-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+    }
+    .toc-list a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 13px;
+      display: block;
+      padding-left: var(--space-s);
+      border-left: 2px solid var(--bg-border);
+      transition: all var(--duration-fast);
+    }
+    .toc-list a:hover {
+      color: var(--text-primary);
+      border-left-color: var(--bg-muted);
+    }
+    .toc-list a.is-active {
+      color: var(--brand-yellow);
+      border-left-color: var(--brand-yellow);
+      font-weight: 500;
+    }
+
+    /* Article content styles */
+    .article-content h1 { font-size: 28px; margin-bottom: var(--space-s); color: var(--brand-yellow); }
+    .article-content h2 { font-size: 22px; margin-top: var(--space-2xl); margin-bottom: var(--space-l); border-bottom: 1px solid var(--bg-border); padding-bottom: var(--space-s); }
+    .article-content h3 { font-size: 18px; margin-top: var(--space-xl); margin-bottom: var(--space-m); }
+    .article-content p, .article-content li { font-size: 15px; color: var(--text-secondary); line-height: 1.7; }
+    .article-content ul, .article-content ol { padding-left: var(--space-l); }
+    .article-content hr { border: 0; border-top: 1px solid var(--bg-border); margin: var(--space-2xl) 0; }
+    .article-content .data-table { margin: var(--space-l) 0; }
+    .article-content .data-table th, .article-content .data-table td { font-size: 14px; }
+    .article-content .memo-pre { color: var(--text-primary); }
+
+    @media (max-width: 900px) {
+      .article-layout {
+        grid-template-columns: 1fr;
+      }
+      .article-toc {
+        display: none; /* Hide TOC on mobile for simplicity */
+      }
+      .article-content {
+        padding: var(--space-xl);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="article-header">
+    <div class="article-header-inner">
+      <a href="index.html" class="back-link">&larr; 返回 wallet-bench</a>
+    </div>
+  </header>
+
+  <div class="article-layout">
+    <article class="article-content" id="article-content">
+      <h1 id="top">AI Agent 钱包集成方式对比</h1>
+      <p><strong>日期</strong>: 2026-03-05 | <strong>适用</strong>: wallet-bench 所有 provider</p>
+      <hr>
+
+      <h2 id="why-integration-matters">为什么集成方式很重要？</h2>
+      <p>对 AI Agent 而言，钱包的<strong>集成方式</strong>决定了：</p>
+      <ul>
+        <li><strong>接入成本</strong> — 需要写多少代码才能让 Agent 调用钱包？</li>
+        <li><strong>可靠性</strong> — Agent 调用是否有类型安全、schema 校验？</li>
+        <li><strong>可移植性</strong> — 能否跨 Agent 框架（Claude、LangChain、AutoGen）复用？</li>
+        <li><strong>发现性</strong> — Agent 能否自动发现钱包的能力（tool list），还是需要人写 prompt？</li>
+      </ul>
+      <p>选错集成方式，可能意味着 <strong>3 天的适配工作</strong> vs <strong>3 分钟的 npx 启动</strong>。</p>
+      <hr>
+
+      <h2 id="six-methods">六种集成方式一览</h2>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th style="text-align: center;">排序</th>
+            <th>集成方式</th>
+            <th style="text-align: center;">Agent 友好度</th>
+            <th>代表 Provider</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="text-align: center;">1</td>
+            <td><strong>MCP Server</strong></td>
+            <td style="text-align: center;">⭐⭐⭐⭐⭐</td>
+            <td>Privy, BNB Chain MCP, Crossmint (checkout)</td>
+          </tr>
+          <tr>
+            <td style="text-align: center;">2</td>
+            <td><strong>OpenClaw Plugin</strong></td>
+            <td style="text-align: center;">⭐⭐⭐⭐</td>
+            <td>Crossmint (lobster.cash)</td>
+          </tr>
+          <tr>
+            <td style="text-align: center;">3</td>
+            <td><strong>Python/TS SDK</strong></td>
+            <td style="text-align: center;">⭐⭐⭐½</td>
+            <td>Coinbase AgentKit</td>
+          </tr>
+          <tr>
+            <td style="text-align: center;">4</td>
+            <td><strong>CLI Subprocess</strong></td>
+            <td style="text-align: center;">⭐⭐⭐</td>
+            <td>MoonPay, Minara</td>
+          </tr>
+          <tr>
+            <td style="text-align: center;">5</td>
+            <td><strong>SKILL.md (Prompt 注入)</strong></td>
+            <td style="text-align: center;">⭐⭐½</td>
+            <td>Privy (OpenClaw Skill)</td>
+          </tr>
+          <tr>
+            <td style="text-align: center;">6</td>
+            <td><strong>REST API</strong></td>
+            <td style="text-align: center;">⭐⭐</td>
+            <td>(各家的底层 API)</td>
+          </tr>
+        </tbody>
+      </table>
+      <hr>
+
+      <h2 id="mcp-server">1. MCP Server（最优）</h2>
+      <pre class="memo-pre"><code>Agent &lt;-stdio-&gt; MCP Server &lt;-HTTP-&gt; Provider API</code></pre>
+      <p><strong>Model Context Protocol (MCP)</strong> 是 Anthropic 于 2024 年提出的开放协议，定义了 AI Agent 与外部工具之间的标准通信方式。</p>
+      <h3>为什么最好</h3>
+      <table class="data-table">
+        <thead>
+          <tr><th>优势</th><th>说明</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>协议标准化</strong></td><td>tool name、参数 schema（Zod/JSON Schema）、返回格式全部 typed，Agent 不需要"猜"怎么调用</td></tr>
+          <tr><td><strong>零代码集成</strong></td><td><code class="memo-code">npx @privy-io/mcp-server</code> 或 <code class="memo-code">npx @bnb-chain/mcp</code> 即用</td></tr>
+          <tr><td><strong>双向通信</strong></td><td>Server 可主动推送 progress、log，不只是 request-response</td></tr>
+          <tr><td><strong>跨框架复用</strong></td><td>Claude Desktop、Cursor、Claude Code、LangChain、AutoGen 都原生支持</td></tr>
+          <tr><td><strong>自动发现</strong></td><td>Agent 调用 <code class="memo-code">list_tools()</code> 即可获取所有可用工具和参数定义</td></tr>
+        </tbody>
+      </table>
+      <h3>局限</h3>
+      <ul>
+        <li>进程常驻（stdio transport），多 provider 并行时占资源</li>
+        <li>如果 MCP Server 非官方出品，质量可能参差不齐</li>
+        <li>仍需 API 凭证（App ID / Secret / Private Key）</li>
+      </ul>
+      <h3>实际示例</h3>
+      <p><strong>Privy MCP Server</strong> — 25+ typed tools：</p>
+      <pre class="memo-pre"><code>{
+  "mcpServers": {
+    "privy": {
+      "command": "npx",
+      "args": ["@privy-io/mcp-server"],
+      "env": {
+        "PRIVY_APP_ID": "your-app-id",
+        "PRIVY_APP_SECRET": "your-app-secret"
+      }
+    }
+  }
+}</code></pre>
+      <p>Agent 自动获得 <code class="memo-code">create_wallet</code>、<code class="memo-code">personal_sign</code>、<code class="memo-code">eth_sendTransaction</code>、<code class="memo-code">create_policy</code> 等工具，无需手写任何 adapter。</p>
+      <p><strong>BNB Chain MCP</strong> — BSC/opBNB 链上操作：</p>
+      <pre class="memo-pre"><code>{
+  "mcpServers": {
+    "bnbchain": {
+      "command": "npx",
+      "args": ["-y", "@bnb-chain/mcp"],
+      "env": {
+        "PRIVATE_KEY": "0x..."
+      }
+    }
+  }
+}</code></pre>
+      <hr>
+
+      <h2 id="openclaw-plugin">2. OpenClaw Plugin</h2>
+      <pre class="memo-pre"><code>Agent (OpenClaw daemon) &lt;-in-process-&gt; Plugin Runtime &lt;-HTTP-&gt; Provider API</code></pre>
+      <p>OpenClaw 是 2026 年最流行的开源 AI Agent 框架（264k+ GitHub Stars），其插件系统允许 npm 包直接注入 Agent 运行时。</p>
+      <h3>特点</h3>
+      <table class="data-table">
+        <thead><tr><th>优势</th><th>局限</th></tr></thead>
+        <tbody>
+          <tr><td>类 MCP 的 typed 体验</td><td><strong>锁死在 OpenClaw 生态</strong></td></tr>
+          <tr><td>npm install 即用</td><td>不兼容 Claude Desktop / LangChain</td></tr>
+          <tr><td>进程内执行，低延迟</td><td>插件安全性依赖 OpenClaw 审核</td></tr>
+          <tr><td>可共享本地密钥存储</td><td>生态较新，插件数量有限</td></tr>
+        </tbody>
+      </table>
+      <h3>实际示例</h3>
+      <p><strong>lobster.cash</strong> — Crossmint 的 OpenClaw 支付插件：</p>
+      <pre class="memo-pre"><code>openclaw plugins install @crossmint/lobster.cash</code></pre>
+      <p>独特之处：</p>
+      <ul>
+        <li>本地 ed25519 密钥 + 委托签名（Agent 密钥不出机）</li>
+        <li><strong>Visa 虚拟信用卡</strong>（Agent 可以在法币世界消费）</li>
+        <li><strong>x402 支付协议</strong>（HTTP 402 自动付款）</li>
+        <li>Solana USDC 链上支付</li>
+      </ul>
+      <p>这意味着 Agent 不仅能做链上交易，还能<strong>刷信用卡购物</strong> — 这是纯 REST API 集成无法覆盖的能力维度。</p>
+      <hr>
+
+      <h2 id="sdk">3. Python / TypeScript SDK</h2>
+      <pre class="memo-pre"><code>Agent &lt;-function call-&gt; SDK (typed) &lt;-HTTP-&gt; Provider API</code></pre>
+      <h3>特点</h3>
+      <table class="data-table">
+        <thead><tr><th>优势</th><th>局限</th></tr></thead>
+        <tbody>
+          <tr><td>完整类型安全（Pydantic / TypeScript）</td><td>需要写代码，管理依赖</td></tr>
+          <tr><td>同步调用，错误处理清晰</td><td>绑定特定语言</td></tr>
+          <tr><td>IDE 补全、调试友好</td><td>无自动 tool 发现（需人写 wrapper）</td></tr>
+        </tbody>
+      </table>
+      <h3>实际示例</h3>
+      <p><strong>Coinbase AgentKit</strong> — Python SDK：</p>
+      <pre class="memo-pre"><code>from coinbase_agentkit import AgentKit, CdpEvmWalletProvider
+
+wallet = CdpEvmWalletProvider(network_id="base-sepolia")
+kit = AgentKit(wallet_provider=wallet)
+
+# 类型安全的函数调用
+result = kit.run_action("transfer", {
+    "amount": "0.001",
+    "asset_id": "eth",
+    "destination": "0x..."
+})</code></pre>
+      <p>SDK 的优势在于 <strong>类型安全和 IDE 体验</strong>，但相比 MCP，Agent 无法自动发现可用工具 — 需要人类开发者写 LangChain Tool wrapper。</p>
+      <hr>
+
+      <h2 id="cli">4. CLI Subprocess</h2>
+      <pre class="memo-pre"><code>Agent &rarr; subprocess.Popen &rarr; `cli-tool --arg1 val1 --json` &rarr; parse stdout</code></pre>
+      <h3>特点</h3>
+      <table class="data-table">
+        <thead><tr><th>优势</th><th>局限</th></tr></thead>
+        <tbody>
+          <tr><td>安装简单（npm install -g）</td><td>每次调用 fork 新进程，冷启动开销大</td></tr>
+          <tr><td>一条命令一个动作，语义清晰</td><td>输出格式不保证（`--json` 可能不输出 JSON）</td></tr>
+          <tr><td>不需要理解 HTTP 认证</td><td>交互式 prompt 会阻塞自动化</td></tr>
+          <tr><td>非托管方案，密钥本地</td><td>错误处理靠 exit code + stderr 文本解析</td></tr>
+        </tbody>
+      </table>
+      <h3>实际示例</h3>
+      <p><strong>MoonPay CLI</strong>：</p>
+      <pre class="memo-pre"><code>mp wallet create --json
+# {"address": "0x...", "type": "evm", "chain": "ethereum"}
+
+mp send --to 0x... --amount 0.01 --chain ethereum --json</code></pre>
+      <p>MoonPay 的 <code class="memo-code">--json</code> 输出较可靠。但 <strong>Minara 的 <code class="memo-code">--json</code> flag 实际不输出 JSON</strong> — 这是 CLI 集成的最大风险：你无法信任 flag 文档，必须实际验证。</p>
+      <h3>CLI 的特殊问题</h3>
+      <ol>
+        <li><strong>交互式 UI 阻塞</strong>：Minara 的 token 选择器弹出 inquirer UI，必须用 <code class="memo-code">stdin=DEVNULL</code> 防止卡死</li>
+        <li><strong>进程管理</strong>：subprocess 需要超时控制、僵尸进程清理</li>
+        <li><strong>输出解析脆弱</strong>：CLI 输出可能包含 ANSI 颜色码、进度条等干扰字符</li>
+      </ol>
+      <hr>
+
+      <h2 id="skill-md">5. SKILL.md（Prompt 注入）</h2>
+      <pre class="memo-pre"><code>Agent &lt;- system prompt injection -&gt; SKILL.md (markdown) &rarr; Agent 自行调用 REST API</code></pre>
+      <h3>特点</h3>
+      <table class="data-table">
+          <thead><tr><th>优势</th><th>局限</th></tr></thead>
+          <tbody>
+            <tr><td><strong>最轻量</strong> — 纯文本文件</td><td><strong>最不可靠</strong> — 完全靠 LLM 理解力</td></tr>
+            <tr><td>无运行时依赖</td><td>无类型安全，无 schema 校验</td></tr>
+            <tr><td>跨 LLM 通用（Claude/GPT/Cursor）</td><td>复杂操作容易"幻觉"（编造参数）</td></tr>
+            <tr><td>安装到 <code class="memo-code">~/.openclaw/skills/</code></td><td>安全指令可被 prompt injection 绕过</td></tr>
+          </tbody>
+      </table>
+      <h3>工作原理</h3>
+      <p>SKILL.md 被注入到 Agent 的 system prompt 中，告诉 Agent "你有以下 REST API 可用"。Agent 读完说明后，<strong>自行构造 HTTP 请求</strong>。</p>
+      <pre class="memo-pre"><code>## 创建钱包
+POST /api/v1/wallets
+Headers: Authorization: Basic {base64(APP_ID:APP_SECRET)}
+Body: {"chain_type": "ethereum"}
+Response: {"id": "wallet_xxx", "address": "0x..."}</code></pre>
+      <p>这本质上是<strong>让 LLM 当 HTTP 客户端</strong> — 能力上限取决于 LLM 对 REST API 的理解。适合简单场景，不适合需要精确参数的链上操作。</p>
+      <hr>
+
+      <h2 id="rest-api">6. REST API（最原始）</h2>
+      <pre class="memo-pre"><code>Agent &rarr; 自定义 adapter 代码 &rarr; HTTP client &rarr; Provider REST API</code></pre>
+      <h3>特点</h3>
+      <table class="data-table">
+        <thead><tr><th>优势</th><th>局限</th></tr></thead>
+        <tbody>
+          <tr><td>最灵活，任何语言/框架可用</td><td>接入成本最高</td></tr>
+          <tr><td>完全控制请求/响应</td><td>需自行处理认证、序列化、重试</td></tr>
+          <tr><td>无中间层开销</td><td>Agent 无法自动发现能力</td></tr>
+          <tr><td>适合定制化需求</td><td>每个 provider 的 API 风格不同</td></tr>
+        </tbody>
+      </table>
+      <p>REST API 是所有其他方式的<strong>底层基础</strong> — MCP Server、SDK、CLI 最终都是在调用 REST API。直接用 REST API 给了最大灵活性，但代价是最高的集成成本。</p>
+      <hr>
+
+      <h2 id="comparison">综合对比</h2>
+      <h3>定量评估</h3>
+      <div style="overflow-x: auto;">
+        <table class="data-table">
+          <thead>
+            <tr><th>维度</th><th style="text-align:center">MCP</th><th style="text-align:center">Plugin</th><th style="text-align:center">SDK</th><th style="text-align:center">CLI</th><th style="text-align:center">SKILL.md</th><th style="text-align:center">REST</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>接入代码量</td><td style="text-align:center"><strong>0 行</strong></td><td style="text-align:center"><strong>0 行</strong></td><td style="text-align:center">~50 行</td><td style="text-align:center">~30 行</td><td style="text-align:center"><strong>0 行</strong></td><td style="text-align:center">~200 行</td></tr>
+            <tr><td>类型安全</td><td style="text-align:center">✅ Zod</td><td style="text-align:center">✅ TS</td><td style="text-align:center">✅</td><td style="text-align:center">❌</td><td style="text-align:center">❌</td><td style="text-align:center">❌</td></tr>
+            <tr><td>自动 tool 发现</td><td style="text-align:center">✅ <code class="memo-code">list_tools</code></td><td style="text-align:center">✅</td><td style="text-align:center">❌</td><td style="text-align:center">❌</td><td style="text-align:center">❌</td><td style="text-align:center">❌</td></tr>
+            <tr><td>跨框架复用</td><td style="text-align:center">✅</td><td style="text-align:center">❌ OpenClaw only</td><td style="text-align:center">❌ 语言绑定</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td></tr>
+            <tr><td>调用延迟</td><td style="text-align:center">~同 REST</td><td style="text-align:center">进程内更低</td><td style="text-align:center">~同 REST</td><td style="text-align:center">+200ms 进程开销</td><td style="text-align:center">~同 REST</td><td style="text-align:center">基准</td></tr>
+            <tr><td>出错可追溯性</td><td style="text-align:center">✅ structured</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">⚠️ stderr</td><td style="text-align:center">❌</td><td style="text-align:center">⚠️ HTTP code</td></tr>
+            <tr><td>Agent 自主度</td><td style="text-align:center">⭐⭐⭐⭐⭐</td><td style="text-align:center">⭐⭐⭐⭐</td><td style="text-align:center">⭐⭐⭐</td><td style="text-align:center">⭐⭐⭐</td><td style="text-align:center">⭐⭐</td><td style="text-align:center">⭐⭐</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3>决策树</h3>
+      <pre class="memo-pre"><code>你的 Agent 运行在什么框架上？
+├─ OpenClaw → 优先用 Plugin，没有则用 MCP
+├─ Claude Desktop / Cursor → 用 MCP
+├─ LangChain / AutoGen → 用 MCP 或 SDK
+├─ 自建框架 (Python) → 用 SDK，没有则 REST
+└─ 自建框架 (其他) → 用 CLI，没有则 REST</code></pre>
+      <hr>
+
+      <h2 id="provider-integrations">wallet-bench 中各 Provider 的集成方式</h2>
+      <div style="overflow-x: auto;">
+      <table class="data-table">
+        <thead><tr><th>Provider</th><th>主要集成方式</th><th>替代路径</th><th>独特能力</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Privy Agentic Wallets</strong></td><td><code class="memo-code">mcp_server_stdio</code> (@privy-io/mcp-server)</td><td>REST API, OpenClaw Skill</td><td>策略引擎 + 多签 Quorum</td></tr>
+          <tr><td><strong>BNB Chain MCP</strong></td><td><code class="memo-code">mcp_server_stdio</code> (@bnb-chain/mcp)</td><td>—</td><td>零注册，毫秒级</td></tr>
+          <tr><td><strong>Crossmint Wallets</strong></td><td><code class="memo-code">mcp_server_stdio</code> (mcp-crossmint-checkout)</td><td>OpenClaw Plugin (lobster.cash), REST API</td><td>Visa 虚拟卡 + x402</td></tr>
+          <tr><td><strong>MoonPay Agents</strong></td><td><code class="memo-code">cli_subprocess</code> (@moonpay/cli)</td><td><code class="memo-code">mp mcp</code> 转 MCP Server</td><td>54 工具, 10 链</td></tr>
+          <tr><td><strong>Coinbase AgentKit</strong></td><td><code class="memo-code">python_sdk</code> (coinbase-agentkit)</td><td>—</td><td>内置 faucet</td></tr>
+          <tr><td><strong>Minara AI</strong></td><td><code class="memo-code">cli_subprocess</code> (minara)</td><td>—</td><td>DeFi 一站式</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <hr>
+
+      <h2 id="trends">趋势观察</h2>
+      <h3>2025 → 2026 的变化</h3>
+      <pre class="memo-pre"><code>2025: Provider → REST API → 你的代码调用
+2026: Provider → MCP Server / Skill → AI Agent 平台自动发现和调用</code></pre>
+      <ul>
+        <li><strong>Privy</strong> 从纯 REST API 演化为 MCP Server + OpenClaw Skill</li>
+        <li><strong>Crossmint</strong> 从纯 REST API 演化为 MCP Server + OpenClaw Plugin (lobster.cash)</li>
+        <li><strong>MoonPay</strong> 的 CLI 可通过 <code class="memo-code">mp mcp</code> 一键转为 MCP Server</li>
+        <li><strong>MCP 协议</strong>正在成为 AI Agent 工具集成的事实标准</li>
+      </ul>
+      <h3>对开发者的建议</h3>
+      <ol>
+        <li><strong>新项目首选 MCP</strong> — 如果 provider 有官方 MCP Server，不要再手写 REST adapter</li>
+        <li><strong>评估 provider 时看 <code class="memo-code">integration_type</code></strong> — 这直接决定 Agent 的接入成本</li>
+        <li><strong>CLI 谨慎信任</strong> — <code class="memo-code">--json</code> flag 不等于真的输出 JSON，实际验证不可省略</li>
+        <li><strong>SKILL.md 适合探索，不适合生产</strong> — 它本质是让 LLM 读说明书自己调 API</li>
+      </ol>
+      <hr>
+      <p><em>本文是 <a href="index.html">wallet-bench</a> 项目的一部分。每个 provider 详情页的「Agent Skill 集成信息」section 中的集成方式标签均可跳转至本文。</em></p>
+
+    </article>
+    <aside class="article-toc" id="article-toc">
+      <h3 class="toc-title">目录</h3>
+      <ul class="toc-list">
+        <li><a href="#why-integration-matters">为什么重要</a></li>
+        <li><a href="#six-methods">六种方式</a></li>
+        <li><a href="#mcp-server">1. MCP Server</a></li>
+        <li><a href="#openclaw-plugin">2. OpenClaw Plugin</a></li>
+        <li><a href="#sdk">3. SDK</a></li>
+        <li><a href="#cli">4. CLI</a></li>
+        <li><a href="#skill-md">5. SKILL.md</a></li>
+        <li><a href="#rest-api">6. REST API</a></li>
+        <li><a href="#comparison">综合对比</a></li>
+        <li><a href="#provider-integrations">Provider 集成</a></li>
+        <li><a href="#trends">趋势观察</a></li>
+      </ul>
+    </aside>
+  </div>
+
+  <footer>
+    <p>wallet-bench &middot; 仅限测试网 &middot; 无真实资产</p>
+  </footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const tocLinks = document.querySelectorAll('.toc-list a');
+    const articleContent = document.getElementById('article-content');
+    const headings = articleContent.querySelectorAll('h1, h2, h3');
+
+    const observer = new IntersectionObserver(entries => {
+        let activeId = '';
+        entries.forEach(entry => {
+            if (entry.isIntersecting && entry.intersectionRatio > 0) {
+                if (!activeId) { // Only set the first one that is intersecting
+                  activeId = entry.target.id;
+                }
+            }
+        });
+
+        tocLinks.forEach(link => {
+            link.classList.remove('is-active');
+            const href = link.getAttribute('href').substring(1);
+            if (href === activeId) {
+                link.classList.add('is-active');
+            }
+        });
+        if (!activeId && tocLinks.length > 0) {
+            const firstVisible = Array.from(headings).find(h => h.getBoundingClientRect().top > 0);
+            if(firstVisible) {
+                const link = document.querySelector(`.toc-list a[href="#${firstVisible.id}"]`);
+                if(link) link.classList.add('is-active');
+            }
+        }
+
+    }, {
+        rootMargin: '0px 0px -80% 0px',
+        threshold: 0.1
+    });
+
+    headings.forEach(heading => {
+        observer.observe(heading);
+    });
+
+    // Fallback for initial load
+     setTimeout(() => {
+        if (!document.querySelector('.toc-list a.is-active')) {
+            const firstLink = document.querySelector('.toc-list a');
+            if (firstLink) firstLink.classList.add('is-active');
+        }
+    }, 200);
+});
+</script>
+
+</body>
+</html>

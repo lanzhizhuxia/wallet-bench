@@ -1,0 +1,35 @@
+name: Minara AI
+class: mpc_aa
+custody_model: Custodial-Smart-Wallet
+signing_modes: [raw_tx]
+submission_mode: provider_submit
+chains: [ethereum, base, arbitrum, optimism, polygon, avalanche, bnb, berachain, solana]
+required_secrets: []
+network_modes:
+  testnet: null
+  mainnet: base
+viability: ready
+viability_note: |
+  minara CLI v0.2.9。Custodial agent wallet，无签名原语暴露。
+  支持 transfer/swap/perps/deposit。需 email 登录（一次性）。
+  --json flag 不输出结构化 JSON，需文本解析。
+
+skill:
+  package: "minara"
+  package_registry: npm
+  integration_type: cli_subprocess
+  docs_url: https://github.com/Minara-AI/skills
+  description: "Minara AI DeFi 助手，custodial wallet + swap/perps/transfer"
+  license: MIT
+  last_verified: "2026-03-05"
+
+governance:
+  policy_engine: false
+  spend_limit: false
+  address_allowlist: false
+  human_in_loop: true
+  notes: "CLI 内置交易确认流程（-y 可跳过），服务端托管密钥"
+
+takeaways:
+  learn: "一站式 DeFi 助手（swap/perps/transfer/deposit），支持 Hyperliquid 永续合约，AI chat 内置"
+  avoid: "无签名原语（sign_message/sign_typed_data），--json 不输出 JSON，交互式 token 选择器阻塞自动化，custodial 不适合需要密钥自持的场景"

@@ -1,0 +1,36 @@
+name: MoonPay Agents
+class: local
+custody_model: Local
+signing_modes: [personal_sign, raw_tx]
+submission_mode: client_submit
+chains: [ethereum, base, polygon, arbitrum, optimism, bnb, avalanche, solana, bitcoin, tron]
+required_secrets: []  # email login via hCaptcha, no API key
+network_modes:
+  testnet: null  # MoonPay CLI uses mainnet by default, no testnet toggle
+  mainnet: ethereum
+viability: ready
+viability_note: |
+  @moonpay/cli v0.12.11。非托管 BIP39 HD 钱包 + OS Keychain 加密。
+  54 tools / 17 skills。支持 wallet create/sign/send + 10 链。
+  需 email+hCaptcha 注册（一次性），之后 AI 自主。
+  MCP server 模式 (mp mcp) 可集成到 Claude Desktop/Cursor。
+
+skill:
+  package: "@moonpay/cli"
+  package_registry: npm
+  integration_type: cli_subprocess
+  docs_url: https://support.moonpay.com/en/articles/586583-moonpay-cli-for-ai-agents
+  description: "MoonPay 非托管 AI agent 钱包，54 tools/17 skills，支持 10 链"
+  license: Proprietary
+  last_verified: "2026-03-05"
+
+governance:
+  policy_engine: false
+  spend_limit: false
+  address_allowlist: false
+  human_in_loop: false
+  notes: "纯本地方案，BIP39 HD 钱包，OS Keychain 加密，密钥不出机"
+
+takeaways:
+  learn: "54 个工具覆盖完整（钱包/交易/swap/bridge/预测市场/虚拟账户），CLI --json 输出机器友好，mp mcp 一键 MCP server"
+  avoid: "需 hCaptcha 注册（AI 不能自主），无 EIP-712 签名，token transfer 是高层接口（无法构建自定义 calldata 交易）"

@@ -1,0 +1,59 @@
+name: Privy Agentic Wallets
+class: tee
+custody_model: TEE+Shard
+signing_modes: [personal_sign, eip712, raw_tx, secp256k1_raw]
+submission_mode: provider_submit
+chains: [ethereum, base, polygon, arbitrum, optimism, solana, bitcoin-spark]
+required_secrets: [PRIVY_APP_ID, PRIVY_APP_SECRET]
+network_modes:
+  testnet: sepolia
+  mainnet: ethereum
+viability: ready
+viability_note: |
+  官方 MCP Server (@privy-io/mcp-server) 可用，npx 一键启动。
+  同时保留 REST API（llms.txt 可用）。支持:
+  - 创建钱包: create_wallet (批量: batch-create)
+  - EVM 签名: personal_sign, eth_signTypedData_v4, eth_signTransaction, eth_sendTransaction, secp256k1_sign, raw_sign
+  - Solana: signMessage, signTransaction, signAndSendTransaction
+  - Bitcoin/Spark: Lightning invoice, transfer
+  - 策略引擎: create_policy, update_policy, add_rule_to_policy + condition sets
+  - 多签 Quorum: create_key_quorum, update_key_quorum, delete_key_quorum
+  - 钱包导出: /wallets/export (可导出私钥)
+  Onboarding: 注册 Privy Dashboard → 创建 App → 获取 App ID + App Secret。
+  MCP 配置: npx @privy-io/mcp-server + PRIVY_APP_ID/PRIVY_APP_SECRET 环境变量。
+  idempotency_key 支持幂等操作。Webhook 支持 (transaction broadcasted 等)。
+  另有 OpenClaw Skill (privy-io/privy-agentic-wallets-skill) 以 SKILL.md 形式发布于 ClawHub。
+
+# Skill metadata (ISSUE-002)
+skill:
+  github: https://github.com/privy-io/privy-mcp-server
+  package: "@privy-io/mcp-server"
+  package_registry: npm
+  integration_type: mcp_server_stdio
+  docs_url: https://docs.privy.io/guide/server-wallets
+  description: "Privy 官方 MCP Server，npx 一键启动，25+ typed tools，覆盖钱包/签名/策略引擎/多签 Quorum"
+  stars: null
+  license: null
+  last_verified: "2026-03-05"
+  # 额外集成形态
+  alt_integrations:
+    - type: rest_api
+      docs_url: https://docs.privy.io/guide/server-wallets
+      notes: "原始 REST API，MCP Server 底层即调用此 API"
+    - type: openclaw_skill
+      github: https://github.com/privy-io/privy-agentic-wallets-skill
+      registry: clawhub.ai/tedim52/privy
+      notes: "SKILL.md 形式的 prompt 注入，适用于 OpenClaw/Claude/Cursor"
+
+# Signing governance (ISSUE-002)
+governance:
+  policy_engine: true
+  spend_limit: true
+  address_allowlist: true
+  human_in_loop: false
+  notes: "策略引擎支持 policies + rules + condition sets + key quorums，是四家中治理能力最强的"
+
+# Decision takeaways (ISSUE-002)
+takeaways:
+  learn: "官方 MCP Server npx 一键启动（零代码集成），25+ typed tools，策略引擎+多签 Quorum 是所有 provider 中治理能力最强的，签名延迟最低（~170ms）"
+  avoid: "Cloudflare bot protection 拦截标准 HTTP 客户端（MCP 模式下不受影响），caip2/primary_type 等命名与标准不一致"

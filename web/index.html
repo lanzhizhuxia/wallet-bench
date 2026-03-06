@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>wallet-bench — AI Agent 钱包服务横向对比</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <h1>wallet-bench</h1>
+      <button id="menu-toggle" class="menu-toggle" aria-label="菜单">
+        <span></span><span></span><span></span>
+      </button>
+      <nav id="view-tabs">
+        <button class="tab active" data-view="overview">评测总览</button>
+        <button class="tab" data-view="filter">需求筛选</button>
+        <button class="tab" data-view="learn">了解更多</button>
+      </nav>
+    </div>
+    <div id="nav-backdrop" class="nav-backdrop"></div>
+  </header>
+
+  <div id="coverage-banner"></div>
+  <main>
+    <!-- Tab 1: 评测总览 (子 Tab: 功能对比 / 能力雷达 / 延迟分析) -->
+    <section id="overview-section" class="tab-content">
+      <nav class="sub-tabs">
+        <button class="sub-tab active" data-sub="comparison">功能对比</button>
+        <button class="sub-tab" data-sub="radar">能力雷达</button>
+        <button class="sub-tab" data-sub="latency">延迟分析</button>
+      </nav>
+      <div id="comparison-pane" class="sub-tab-pane">
+        <div id="summary-table-container">
+          <p class="loading">加载中...</p>
+        </div>
+      </div>
+      <div id="radar-pane" class="sub-tab-pane hidden">
+        <div id="radar-toggle-container"></div>
+        <div class="radar-layout">
+          <div id="radar-container" class="radar-chart-panel"></div>
+          <div id="radar-legend" class="radar-legend-panel"></div>
+        </div>
+        <div id="radar-defi-heatmap"></div>
+      </div>
+      <div id="latency-pane" class="sub-tab-pane hidden">
+        <div id="heatmap-stats-container" class="heatmap-stats-container"></div>
+        <div id="heatmap-container"></div>
+      </div>
+    </section>
+
+    <!-- Tab 2: 需求筛选 -->
+    <section id="filter-section" class="tab-content hidden">
+      <div id="usecase-presets"></div>
+      <div id="requirement-filter-container"></div>
+      <div id="matrix-legend-container"></div>
+      <div id="matrix-container">
+        <p class="loading">加载中...</p>
+      </div>
+    </section>
+
+    <!-- Tab 3: 了解更多 (子 Tab: 钱包集成类型 / placeholders) -->
+    <section id="learn-section" class="tab-content hidden">
+      <nav class="sub-tabs">
+        <button class="sub-tab active" data-sub="wallet-types">钱包集成类型</button>
+        <button class="sub-tab" data-sub="test-design">测试项设计思路</button>
+        <button class="sub-tab" data-sub="test-detail">测试项详解</button>
+        <button class="sub-tab" data-sub="next-steps">下一步计划</button>
+      </nav>
+      <div id="wallet-types-pane" class="sub-tab-pane">
+        <div id="wallet-types-container"></div>
+      </div>
+      <div id="test-design-pane" class="sub-tab-pane hidden">
+        <div id="test-design-container" class="md-article"><p class="loading">加载中...</p></div>
+      </div>
+      <div id="test-detail-pane" class="sub-tab-pane hidden">
+        <div id="test-detail-container" class="md-article"><p class="loading">加载中...</p></div>
+      </div>
+      <div id="next-steps-pane" class="sub-tab-pane hidden">
+        <div id="next-steps-container" class="md-article"><p class="loading">加载中...</p></div>
+      </div>
+    </section>
+
+
+
+    <!-- Detail Page (hidden by default) -->
+    <section id="detail-section" class="hidden">
+      <div class="detail-title-row">
+        <h2>服务商详情 — <span id="detail-provider-name"></span></h2>
+        <button id="close-detail">返回 &rarr;</button>
+      </div>
+      <div id="detail-decision-bar"></div>
+      <nav id="detail-nav">
+        <a href="#detail-basics">基本信息</a>
+        <a href="#detail-tests">测试结果</a>
+        <a href="#detail-eval">开发者评估</a>
+        <a href="#detail-memo">Agent 评估</a>
+      </nav>
+      <div id="detail-container"></div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-links">
+      <a href="https://github.com/lanzhizhuxia/wallet-bench" target="_blank" rel="noopener">
+        <svg height="16" width="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        GitHub
+      </a>
+      <a href="https://github.com/lanzhizhuxia/wallet-bench/issues/new?template=provider-request.md&title=%5BProvider+Request%5D+" target="_blank" rel="noopener">
+        <svg height="16" width="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 9.5a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"/><path fill-rule="evenodd" d="M8 0a8 8 0 100 16A8 8 0 008 0zM1.5 8a6.5 6.5 0 1113 0 6.5 6.5 0 01-13 0z"/></svg>
+        提交新钱包供应商
+      </a>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

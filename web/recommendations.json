@@ -1,0 +1,14 @@
+{
+  "title": "跨 Provider 踩坑经验 Top 7",
+  "updated": "2026-03-05",
+  "note": "基于 6 个 provider 集成过程中的实际教训",
+  "items": [
+    "金额单位是最大陷阱：BNB 用 ether 字符串、Crossmint 用 wei 字符串、Coinbase 用 int (wei)、Privy 用 hex string、MoonPay 用 ether 浮点。绝对不要在 adapter 外部做单位转换。",
+    "CLI --json 不可信：Minara 声称支持 --json 但实际输出仍是格式化文本。集成任何 CLI 工具前务必验证输出格式。",
+    "subprocess 自动化防卡死：CLI 工具可能弹出交互式 UI（如 Minara token 选择器），始终用 stdin=DEVNULL + 超时控制。",
+    "HD 钱包不等于确定性：MoonPay 每次 wallet create 生成新助记词（非同一 seed 派生）。需缓存已有钱包地址，不能假设幂等。",
+    "先读 schema 再写代码：MCP 用 list_tools()、REST API 读 OpenAPI spec、SDK 看类型签名、CLI 用 --help。凭经验猜参数名是 Bug 温床。",
+    "Cloudflare bot 防护会拦截标准 HTTP 客户端（Privy）。务必设 User-Agent header，推荐用 requests 而非 urllib。",
+    "人类依赖都是一次性的：注册/faucet/hCaptcha 做一次后 AI agent 就完全自主，不要因此排除优秀 provider。"
+  ]
+}

@@ -1,0 +1,114 @@
+provider: moonpay
+evaluator: claude-opus-4.6 (AI agent)
+date: "2026-03-05"
+
+summary: |
+  MoonPay Agents 是**私钥不出本机**的方案，密钥加密存储在操作系统安全区，用户完全掌控。
+  提供 **54 个工具**和 17 个 AI 技能，支持 **10 条主流区块链**，工具数量在六家中最多。
+  命令行输出格式对 AI 友好，还可一键启动标准化服务接口。
+  关键限制：所有交易接口都是高层封装，**无法构建自定义合约调用**——
+  导致 Uniswap 兑换和借贷协议直接不可行。
+  集成过程中发现 3 个适配问题，修复后全部测试通过。
+  适合**标准转账、跨链桥、聚合器兑换**等不需要底层合约交互的场景。
+
+scores:
+  onboarding_ease: 4          # 1-5, 1=极难上手 5=零摩擦
+  doc_quality: 4               # 1-5, 1=严重误导 5=完美
+  api_consistency: 4           # 1-5, 1=处处意外 5=完全一致
+  error_message_quality: 4     # 1-5, 1=不可读 5=清晰可操作
+  agent_autonomy: 3            # 1-5, 1=完全依赖人类 5=全自主
+  time_to_first_success_min: 10
+  # --- ISSUE-008 新增评分 (e01-e06) ---
+  governance_completeness: 2   # e01, 1-5. 仅基础 funding caps, 无策略引擎
+  network_environment: 3       # e02, 1-5. Sandbox for on-ramp, blockchain testnet 未明确文档
+  sdk_doc_quality: 3           # e03, 1-5. 文档可用但需试错, 无 llms.txt
+  app_tool_coverage: 5         # t27, 1-5. 54 个工具 + 17 个 AI skills, 全覆盖 swap/DeFi/bridge/perps
+  app_execution_quality: 3     # e04, 1-5. 可靠执行, 无滑点优化或 MEV 保护
+  cost_transparency: 3         # e05, 1-5. 基础定价信息可用, 无 per-API billing dashboard
+  kyc_requirement_clarity: 3   # e06, 1-5. 需 KYC (documented as mandatory), 流程中等复杂
+
+human_interventions:
+  - type: account_registration
+    reason: "mp login 需要在浏览器完成 hCaptcha 验证"
+    blocker: true
+  - type: config_dir_permission
+    reason: "~/.config 目录 owner 是 root，需 sudo chown 修复"
+    blocker: true
+
+integration_bugs:
+  - id: BUG-1
+    description: "token transfer --amount 0 被拒（Amount must be greater than zero），导致 t13 审计测试 FAIL"
+    root_cause: our_code
+    fix_time_min: 2
+  - id: BUG-2
+    description: "create_wallet 每次生成新 HD 钱包（新助记词），tc01/tc03 确定性测试 FAIL"
+    root_cause: our_code
+    fix_time_min: 5
+  - id: BUG-3
+    description: "tc02 keychain_lock 测试硬编码 BNB 构造参数，MoonPay adapter 参数不匹配导致误用已有钱包"
+    root_cause: our_code
+    fix_time_min: 3
+
+doc_gaps:
+  - "CLI 支持的链列表在文档中散布于多处，无统一表格"
+  - "transaction sign 需要 base64 编码的 RLP 交易，但文档未说明如何构建 RLP"
+  - "无 EIP-712 signTypedData 支持，文档未明确说明此限制"
+
+agent_experience: |
+  ## 作为 AI Agent 的集成体验
+
+  ### 优点
+  - npm 全局安装后即可使用，`--json` flag 让所有命令输出结构化 JSON，非常适合 AI agent 消费
+  - `wallet create` 一步生成 10 链地址，无需分链操作
+  - 签名支持 EIP-191 和 ed25519（Solana），覆盖面广
+
+  ### 痛点
+  - 注册需 hCaptcha 验证，AI 无法自主完成
+  - 缺少 EIP-712 结构化签名支持
+  - token transfer 是高层封装（build+sign+broadcast 一体化），无法构建自定义 calldata 裸交易
+
+  ### 人类依赖
+  - 注册账号需人类完成 hCaptcha（一次性），之后 AI 完全自主
+
+  ### 总体评价
+  CLI 工具链丰富（54 工具 / 10 链），输出格式对 AI 友好。与 BNB Chain MCP 相比，MoonPay 支持签名、覆盖更多链（10 vs 2），且有完整 DeFi 工具链。延迟略高（CLI subprocess 开销），但仍在秒级。
+
+agent_memo: |
+  ## MoonPay Agents — Agent 集成速查表
+
+  ### 安装与认证
+  ```bash
+  npm install -g @moonpay/cli
+  mp consent accept
+  mp login --email <email>    # 需人工浏览器 hCaptcha
+  mp verify --email <email> --code <code>
+  mp wallet create --name bench
+  ```
+
+  ### 核心操作（全部支持 --json）
+  - 创建钱包: `mp wallet create --name <name> --json`
+  - 查看钱包: `mp wallet retrieve --wallet <name> --json`
+  - 签名消息: `mp message sign --wallet <name> --chain <chain> --message <msg> --json`
+  - 转账: `mp token transfer --wallet <name> --chain <chain> --token <addr> --amount <amt> --to <addr> --json`
+  - Swap: `mp token swap --wallet <name> --chain <chain> --from <token> --to <token> --amount <amt> --json`
+
+  ### 链名映射
+  CLI 链名: ethereum, base, polygon, arbitrum, optimism, bnb, avalanche, solana, bitcoin, tron
+  EVM 链共享同一地址。Solana/Bitcoin/TRON 各自独立地址。
+
+  ### 原生代币地址
+  - EVM: 0x0000000000000000000000000000000000000000
+  - Solana: So11111111111111111111111111111111111111111
+
+  ### 已知限制
+  1. 无 EIP-712 signTypedData — sign_typed_data 必须标记 N/A
+  2. token transfer --amount 0 会报错 "Amount must be greater than zero"
+  3. transaction sign 需要预构建的 base64 编码交易（RLP/VersionedTransaction/PSBT）
+  4. wallet create 每次生成新 HD 钱包（新助记词），不是从同一 seed 派生
+  5. hCaptcha 登录是一次性的，credentials 自动持久化在 ~/.config/moonpay/
+
+  ### 性能数据（本机实测）
+  - 钱包创建: ~800ms (CLI subprocess 开销)
+  - 消息签名: ~850ms
+  - 转账（含 build+sign+broadcast）: ~4000ms
+  - 并发 3 ops: ~1000ms

@@ -1,0 +1,56 @@
+name: Crossmint Wallets
+class: intent
+custody_model: Fireblocks-Custodial
+signing_modes: [personal_sign, eip712, raw_tx]
+submission_mode: provider_submit
+chains: [base-sepolia, ethereum-sepolia, polygon-amoy, arbitrum-sepolia, optimism-sepolia, solana]
+required_secrets: [CROSSMINT_API_KEY]
+network_modes:
+  testnet: base-sepolia
+  mainnet: base  # BLOCKED by safety constraint
+viability: ready
+api_base: https://staging.crossmint.com/api/v1-alpha2
+viability_note: |
+  三种集成形态可用:
+  1) MCP Server (Crossmint/mcp-crossmint-checkout) — stdio 传输，3 个 tools (create-order, check-order, get-usd-balance)。
+     封装了订单创建 + 交易提交为单一 tool call。支持 Amazon/Shopify product locator。
+  2) OpenClaw Plugin (@crossmint/lobster.cash v0.3.9) — OpenClaw 生态原生插件。
+     本地 ed25519 密钥托管 + 委托签名 + Visa 虚拟信用卡 + x402 支付协议。
+     安装: openclaw plugins install @crossmint/lobster.cash
+  3) REST API — 原始 Crossmint Smart Wallet API，异步签名+交易。
+  Onboarding: 注册 Crossmint Console → 获取 API Key。Staging 环境即开即用。
+
+# Skill metadata (ISSUE-002)
+skill:
+  github: https://github.com/Crossmint/mcp-crossmint-checkout
+  package: ""  # clone-and-run, 未发布 npm
+  package_registry: ""
+  integration_type: mcp_server_stdio
+  docs_url: https://docs.crossmint.com/wallets/smart-wallets/overview
+  description: "Crossmint MCP Server (checkout)，封装订单+交易为单一 tool call，Fireblocks 托管"
+  stars: null
+  license: null
+  last_verified: "2026-03-05"
+  # 额外集成形态
+  alt_integrations:
+    - type: openclaw_plugin
+      package: "@crossmint/lobster.cash"
+      package_registry: npm
+      docs_url: https://www.lobster.cash/docs/skill-compatibility-guide
+      notes: "OpenClaw 原生插件，本地 ed25519 密钥 + Visa 虚拟卡 + x402 支付协议 + Solana USDC"
+    - type: rest_api
+      api_base: https://staging.crossmint.com/api/v1-alpha2
+      docs_url: https://docs.crossmint.com/wallets/smart-wallets/overview
+      notes: "原始 REST API，异步签名需轮询，最重集成路径"
+
+# Signing governance (ISSUE-002)
+governance:
+  policy_engine: false
+  spend_limit: false
+  address_allowlist: false
+  human_in_loop: false
+  notes: "Fireblocks 后端可能有策略能力，但 Crossmint API 层未暴露"
+
+takeaways:
+  learn: "MCP Server 封装度高（单 tool call 完成订单+签名+提交），lobster.cash 插件引入 Visa 虚拟卡+x402 支付协议是独特的法币支付能力，文档有 OpenAPI spec"
+  avoid: "MCP Server 未发布 npm（需 clone-and-run），异步模式需轮询（签名 ~10s），EIP-712 domain 字段比标准更严格"

@@ -1,0 +1,16 @@
+[project]
+name = "wallet-bench"
+version = "0.1.0"
+description = "AI Agent wallet provider benchmark"
+requires-python = ">=3.10"
+dependencies = [
+    "mcp>=1.20",
+    "pyyaml>=6.0",
+    "pydantic>=2.0",
+    "web3>=7.0",
+    "eth-account>=0.13",
+    "coinbase-agentkit>=0.1",
+]
+
+[project.scripts]
+wallet-bench = "runner:main"

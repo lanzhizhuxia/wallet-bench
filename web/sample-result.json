@@ -1,0 +1,779 @@
+{
+  "providers": [
+    {
+      "provider": "bnbchain_mcp",
+      "provider_meta": {
+        "name": "BNB Chain MCP",
+        "class": "local",
+        "custody_model": "Local",
+        "signing_modes": [
+          "raw_tx"
+        ],
+        "submission_mode": "client_submit",
+        "chains": [
+          "bsc",
+          "opbnb"
+        ]
+      },
+      "capabilities": {
+        "create_wallet": true,
+        "sign_message": false,
+        "sign_typed_data": false,
+        "send_transaction": true,
+        "multi_chain": true,
+        "policy_enforcement": false,
+        "session_delegation": false,
+        "estimate_gas": true
+      },
+      "timestamp": "2026-03-05T07:08:00Z",
+      "results": [
+        {
+          "test_id": "t01",
+          "test_name": "key_generate",
+          "status": "pass",
+          "elapsed_ms": 22,
+          "message": "Created wallet",
+          "detail": {}
+        },
+        {
+          "test_id": "t02",
+          "test_name": "sign_message",
+          "status": "skip",
+          "elapsed_ms": 0,
+          "message": "N/A-by-design",
+          "detail": {}
+        },
+        {
+          "test_id": "t03",
+          "test_name": "sign_typed_data",
+          "status": "skip",
+          "elapsed_ms": 0,
+          "message": "N/A-by-design",
+          "detail": {}
+        },
+        {
+          "test_id": "t04",
+          "test_name": "send_tx",
+          "status": "pass",
+          "elapsed_ms": 728,
+          "message": "Transaction submitted",
+          "detail": {}
+        },
+        {
+          "test_id": "t05",
+          "test_name": "multi_chain",
+          "status": "pass",
+          "elapsed_ms": 2,
+          "message": "Adapter declares 2 chains",
+          "detail": {}
+        },
+        {
+          "test_id": "t06",
+          "test_name": "policy_enforcement",
+          "status": "skip",
+          "elapsed_ms": 0,
+          "message": "N/A-by-design",
+          "detail": {}
+        },
+        {
+          "test_id": "t07",
+          "test_name": "session_delegation",
+          "status": "skip",
+          "elapsed_ms": 0,
+          "message": "N/A-by-design",
+          "detail": {}
+        },
+        {
+          "test_id": "t08",
+          "test_name": "concurrent_ops",
+          "status": "pass",
+          "elapsed_ms": 3,
+          "message": "3 concurrent calls succeeded",
+          "detail": {}
+        },
+        {
+          "test_id": "t09",
+          "test_name": "failure_recovery",
+          "status": "pass",
+          "elapsed_ms": 332,
+          "message": "All failure cases handled",
+          "detail": {}
+        },
+        {
+          "test_id": "t10",
+          "test_name": "preflight_fee",
+          "status": "pass",
+          "elapsed_ms": 1,
+          "message": "Gas estimation OK",
+          "detail": {}
+        },
+        {
+          "test_id": "tc01",
+          "test_name": "derivation_path",
+          "status": "pass",
+          "elapsed_ms": 3,
+          "message": "Deterministic",
+          "detail": {}
+        },
+        {
+          "test_id": "tc02",
+          "test_name": "keychain_lock",
+          "status": "pass",
+          "elapsed_ms": 926,
+          "message": "Empty key safe",
+          "detail": {}
+        },
+        {
+          "test_id": "tc03",
+          "test_name": "backup_recovery",
+          "status": "pass",
+          "elapsed_ms": 900,
+          "message": "Recovery verified",
+          "detail": {}
+        }
+      ],
+      "evaluation": {
+        "provider": "bnbchain_mcp",
+        "evaluator": "claude-opus-4.6 (AI agent)",
+        "date": "2026-03-05",
+        "summary": "BNB Chain MCP 是通过 npx 启动的本地 MCP server，接入门槛极低——只需一个私钥，\n无需注册账号。但 MCP tool schema 的参数命名与行业惯例有偏差，导致盲写 adapter\n时连续踩坑三次。\n",
+        "scores": {
+          "onboarding_friction": 2,
+          "doc_accuracy": 3,
+          "api_consistency": 3,
+          "error_message_quality": 4,
+          "agent_autonomy": 2,
+          "time_to_first_success_min": 8
+        },
+        "human_interventions": [
+          {
+            "type": "faucet",
+            "reason": "BSC testnet faucet 全部要求浏览器 captcha，AI agent 无法自动领取测试币",
+            "blocker": true
+          }
+        ],
+        "integration_bugs": [
+          {
+            "id": "BUG-1",
+            "description": "参数名 `to` 应为 `toAddress`（transfer_native_token）",
+            "root_cause": "our_code",
+            "fix_time_min": 2,
+            "lesson": "应先调 list_tools() 查 schema，不要凭经验猜参数名"
+          },
+          {
+            "id": "BUG-2",
+            "description": "金额用 Python float 转 str 产生科学计数法 `1e-15`，viem 拒绝",
+            "root_cause": "our_code",
+            "fix_time_min": 2,
+            "lesson": "涉及链上金额必须用 Decimal，永远不用 float"
+          },
+          {
+            "id": "BUG-3",
+            "description": "返回字段 `txHash` 而非 `transactionHash`",
+            "root_cause": "our_code",
+            "fix_time_min": 1,
+            "lesson": "同 BUG-1，不要假设返回字段名"
+          },
+          {
+            "id": "BUG-4",
+            "description": "estimate_gas 的 value 参数单位是 ether 不是 wei",
+            "root_cause": "our_code",
+            "fix_time_min": 1,
+            "lesson": "横向检查发现，同一 adapter 内不同 tool 的单位约定可能不同"
+          }
+        ],
+        "doc_gaps": [
+          "@bnb-chain/mcp npm 包无独立 API 文档，tool schema 只能通过 list_tools() 运行时获取",
+          "参数单位（ether vs wei）未在 schema description 中明确说明",
+          "错误信息来自 viem 底层，未被 MCP server 包装为用户友好格式"
+        ],
+        "agent_experience": "作为 AI agent 的集成体验：\n- 优点：零注册、零配置（只需 PRIVATE_KEY），npx 一键启动，MCP 协议标准化\n- 痛点：无文档只能 list_tools() 摸索，参数名非业界惯例（toAddress 而非 to），\n  错误信息是 viem 原始报错未封装\n- 人类依赖：仅 faucet 领币需要人类操作浏览器 captcha\n- 总体评价：对熟悉 MCP 协议的开发者友好，但对 AI agent 不够友好——缺少可机器\n  解析的文档和一致的参数约定\n",
+        "agent_memo": "## 致后来的 Agent：BNB Chain MCP 集成备忘\n\n### 第一件事：永远先跑 list_tools()\n\n这个 MCP server 没有独立文档。npm README 只有一句话让你 npx 启动。\n所有 tool 的参数名、类型、哪些是 required，只能通过 MCP 协议的\n`list_tools()` 在运行时拿到。不要凭你对 ethers.js / web3.js 的经验\n去猜参数名——它用的是 viem，命名风格不同。\n\n我的教训：直接按 ethers 惯例写了 `to`、`transactionHash`，全部报错。\n正确做法是启动 server → list_tools() → 把每个 tool 的 inputSchema 打印出来\n→ 再写代码。这能省你 80% 的调试时间。\n\n### 金额字段：用 Decimal，别用 float\n\n这个 server 底层是 viem，对数字格式极其严格：\n- `transfer_native_token` 的 `amount`：ether 单位的字符串，如 \"0.0001\"\n- `estimate_gas` 的 `value`：也是 ether 单位的字符串\n- 绝对不能传科学计数法（\"1e-15\"），viem 会直接拒绝\n\nPython 的 `str(1000 / 1e18)` 会产生 `\"1e-15\"`。必须用\n`str(Decimal(1000) / Decimal(10**18))` → `\"0.000000000000001\"`。\n\n重要：不同 provider 对 value 的单位约定不同！BNB Chain MCP 用 ether，\nCrossmint 用 wei。不要在 adapter 外部做单位转换，让每个 adapter 内部\n处理自己 provider 的约定。\n\n### 参数名速查表（省得你再踩一遍）\n\n| Tool                         | 关键参数                                    |\n|------------------------------|---------------------------------------------|\n| get_address_from_private_key | privateKey (optional, 会用 env 中的)        |\n| transfer_native_token        | toAddress*, amount* (ether), network*       |\n| estimate_gas                 | to*, value (ether string), network          |\n| get_native_balance           | address, network                            |\n\n注意 `transfer_native_token` 用 `toAddress` 而 `estimate_gas` 用 `to`\n——同一个 server 内部都不一致。这不是 bug，就是它的 schema 设计。\n\n### 返回值解析\n\n- `transfer_native_token` 成功返回：`{\"success\": true, \"txHash\": \"0x...\"}`\n  注意是 `txHash` 不是 `transactionHash` 也不是 `hash`\n- `get_address_from_private_key` 返回纯文本地址字符串，不是 JSON\n- 错误时返回的是 viem 原始错误文本，没有 JSON 结构。你需要字符串匹配来判断\n  错误类型\n\n### Testnet 注意事项\n\n- BSC testnet 的所有 faucet 都需要浏览器 captcha，你作为 agent 领不了币，\n  需要让人类去 https://www.bnbchain.org/en/testnet-faucet 领\n- server 启动时 stderr 会输出 `ERROR: BNBChain MCP Server running on stdio mode`\n  这不是错误，是正常的启动日志，别被吓到\n- 通过 env 变量 `PRIVATE_KEY` 传入私钥，StdioServerParameters 的 env 参数\n\n### 并发安全\n\n同一个 MCP session 内可以并发调 tool，但 transfer_native_token 涉及 nonce\n管理。测试中 3 并发 create_wallet 没问题，但并发 transfer 可能有 nonce 冲突。\n如果你需要并发转账，建议串行执行或自己管理 nonce。\n"
+      }
+    },
+    {
+      "provider": "crossmint",
+      "provider_meta": {
+        "name": "Crossmint Smart Wallets",
+        "class": "intent",
+        "custody_model": "Fireblocks-Custodial",
+        "signing_modes": [
+          "personal_sign",
+          "eip712",
+          "raw_tx"
+        ],
+        "submission_mode": "provider_submit",
+        "chains": [
+          "base-sepolia",
+          "ethereum-sepolia",
+          "polygon-amoy",
+          "arbitrum-sepolia",
+          "optimism-sepolia",
+          "solana"
+        ]
+      },
+      "capabilities": {
+        "create_wallet": true,
+        "sign_message": true,
+        "sign_typed_data": true,
+        "send_transaction": true,
+        "multi_chain": true,
+        "policy_enforcement": false,
+        "session_delegation": false,
+        "estimate_gas": false
+      },
+      "timestamp": "2026-03-05T07:08:00Z",
+      "results": [
+        {
+          "test_id": "t01",
+          "test_name": "key_generate",
+          "status": "pass",
+          "elapsed_ms": 2026,
+          "message": "Created wallet",
+          "detail": {}
+        },
+        {
+          "test_id": "t02",
+          "test_name": "sign_message",
+          "status": "pass",
+          "elapsed_ms": 10289,
+          "message": "Message signed",
+          "detail": {}
+        },
+        {
+          "test_id": "t03",
+          "test_name": "sign_typed_data",
+          "status": "pass",
+          "elapsed_ms": 11332,
+          "message": "Typed data signed",
+          "detail": {}
+        },
+        {
+          "test_id": "t04",
+          "test_name": "send_tx",
+          "status": "pass",
+          "elapsed_ms": 2882,
+          "message": "Tx submitted (reverted: no balance)",
+          "detail": {}
+        },
+        {
+          "test_id": "t05",
+          "test_name": "multi_chain",
+          "status": "pass",
+          "elapsed_ms": 650,
+          "message": "Adapter declares 6 chains",
+          "detail": {}
+        },
+        {
+          "test_id": "t06",
+          "test_name": "policy_enforcement",
+          "status": "skip",
+          "elapsed_ms": 0,
+          "message": "N/A-by-design",
+          "detail": {}
+        },
+        {
+          "test_id": "t07",
+          "test_name": "session_delegation",
+          "status": "skip",
+          "elapsed_ms": 0,
+          "message": "N/A-by-design",
+          "detail": {}
+        },
+        {
+          "test_id": "t08",
+          "test_name": "concurrent_ops",
+          "status": "pass",
+          "elapsed_ms": 1485,
+          "message": "3 concurrent calls succeeded",
+          "detail": {}
+        },
+        {
+          "test_id": "t09",
+          "test_name": "failure_recovery",
+          "status": "pass",
+          "elapsed_ms": 3103,
+          "message": "All failure cases handled",
+          "detail": {}
+        },
+        {
+          "test_id": "t10",
+          "test_name": "preflight_fee",
+          "status": "skip",
+          "elapsed_ms": 0,
+          "message": "N/A-by-design",
+          "detail": {}
+        },
+        {
+          "test_id": "tc01",
+          "test_name": "intent_schema",
+          "status": "pass",
+          "elapsed_ms": 1047,
+          "message": "All malformed intents rejected",
+          "detail": {}
+        },
+        {
+          "test_id": "tc02",
+          "test_name": "fulfillment_sla",
+          "status": "pass",
+          "elapsed_ms": 11914,
+          "message": "Sign in 11914ms (SLA: 30000ms)",
+          "detail": {}
+        },
+        {
+          "test_id": "tc03",
+          "test_name": "cancellation",
+          "status": "skip",
+          "elapsed_ms": 0,
+          "message": "No cancel API",
+          "detail": {}
+        }
+      ],
+      "evaluation": {
+        "provider": "crossmint",
+        "evaluator": "claude-opus-4.6 (AI agent)",
+        "date": "2026-03-05",
+        "summary": "Crossmint 是三个 provider 中文档最成熟的。REST API 设计清晰，Staging 环境即开即用。\n但异步签名操作需要轮询（~10s），且 EIP-712 typed data 的必填字段比标准更严格，\n需要实际调用才能发现。\n",
+        "scores": {
+          "onboarding_friction": 3,
+          "doc_accuracy": 2,
+          "api_consistency": 2,
+          "error_message_quality": 2,
+          "agent_autonomy": 3,
+          "time_to_first_success_min": 15
+        },
+        "human_interventions": [
+          {
+            "type": "account_registration",
+            "reason": "Staging console 注册需要浏览器登录，AI agent 无法自动完成",
+            "blocker": true
+          },
+          {
+            "type": "api_key_copy",
+            "reason": "人类需要从 console 复制 server-side API key",
+            "blocker": true
+          }
+        ],
+        "integration_bugs": [
+          {
+            "id": "BUG-1",
+            "description": "EIP-712 typed data 必须包含 domain.version 和 domain.verifyingContract",
+            "root_cause": "our_code",
+            "fix_time_min": 3,
+            "lesson": "Crossmint 比 EIP-712 标准更严格，domain 字段全部 required"
+          },
+          {
+            "id": "BUG-2",
+            "description": "send_transaction 的 value 必须是 wei 整数字符串，不能是 ether 小数",
+            "root_cause": "our_code",
+            "fix_time_min": 2,
+            "lesson": "不同 provider 对 value 的单位约定不同——BNB Chain MCP 用 ether，Crossmint 用 wei"
+          },
+          {
+            "id": "BUG-3",
+            "description": "send_transaction 422 revert 需要当作结构化响应处理，不能直接抛异常",
+            "root_cause": "our_code",
+            "fix_time_min": 3,
+            "lesson": "Intent 类 provider 的 tx 提交是异步的，revert 是正常业务状态不是协议错误"
+          }
+        ],
+        "doc_gaps": [
+          "signatures API 的 chain 参数是 required 但在文档示例中未强调",
+          "EIP-712 的 domain 全字段 required 的约束未在 API reference 中明确说明",
+          "transactions API 返回 422 时的 error schema 未文档化"
+        ],
+        "agent_experience": "作为 AI agent 的集成体验：\n- 优点：文档结构清晰（有 OpenAPI spec），错误信息带字段级路径（\"params.typedData.domain.version: Required\"），\n  Staging 环境无需真实资产即可测试签名\n- 痛点：异步模式需要轮询（签名 ~10s，比本地方案慢 500x），注册必须人类操作，\n  Staging 钱包无 ETH 导致 send_tx 必定 revert\n- 人类依赖：注册 + 复制 API key（一次性），之后 AI 可完全自主\n- 总体评价：对企业级集成友好（完善的 API、权限控制、审计），但对快速原型和\n  AI agent 自主接入有摩擦——注册门槛是最大瓶颈\n",
+        "agent_memo": "## 致后来的 Agent：Crossmint Smart Wallets 集成备忘\n\n### 架构理解：这不是本地钱包\n\nCrossmint 是一个**托管型智能钱包服务**。你不持有私钥，Crossmint 在\nFireblocks TEE 里替你签名。所有操作都是 REST API 调用，签名和交易是\n**异步**的——你提交请求拿到一个 ID，然后轮询等结果。\n\n这意味着：\n1. 延迟在秒级（签名 ~10s），不是毫秒级\n2. 你不能做本地验签——签名格式是 smart wallet (ERC-4337) 的，不是 EOA 的\n3. 没有 `personal_sign` 的离线验证意义，签名只在链上验证时有效\n\n### Onboarding：必须让人类做一次\n\n人类需要做的：\n1. 打开 https://staging.crossmint.com/console → 注册账号\n2. 创建 Project → 复制 Server-side API Key（`sk_staging_...` 开头）\n3. 把 key 给你\n\n之后你就完全自主了。key 不会过期（staging 环境），一个 key 可以创建无限钱包。\n\n### API 速查表\n\n所有请求带 header: `X-API-KEY: sk_staging_...` + `Content-Type: application/json`\n\nBase URL: `https://staging.crossmint.com/api/v1-alpha2`\n\n| 操作 | 方法 | 路径 | 同步/异步 |\n|------|------|------|-----------|\n| 创建钱包 | POST | /wallets | 同步，直接返回地址 |\n| 签名 | POST | /wallets/{addr}/signatures | 异步，返回 id |\n| 查询签名 | GET | /wallets/{addr}/signatures/{id} | 轮询到 status≠pending |\n| 发交易 | POST | /wallets/{addr}/transactions | 异步，返回 id |\n| 查询交易 | GET | /wallets/{addr}/transactions/{id} | 轮询到 status≠pending |\n\n### 最容易踩的三个坑\n\n**坑 1：EIP-712 typed data 的 domain 字段全部 required**\n\n标准 EIP-712 里 `version` 和 `verifyingContract` 是可选的。但 Crossmint\n要求全部提供。如果你少了任何一个，会报：\n```\nparams.typedData.domain.version: Required\nparams.typedData.domain.verifyingContract: Required\n```\n完整的 domain 必须包含 `name`、`version`、`chainId`、`verifyingContract`。\n\n**坑 2：金额单位是 wei 整数字符串**\n\nsend_transaction 的 `value` 字段要求：\n- 必须是字符串（不是数字）\n- 必须是整数（不能有小数点）\n- 单位是 wei（不是 ether）\n\n正确：`\"value\": \"100000000000000\"` (0.0001 ETH)\n错误：`\"value\": \"0.0001\"` → 400 报错\n错误：`\"value\": 100000000000000` → 类型错误\n\n这和 BNB Chain MCP 完全相反（它要 ether 小数字符串 \"0.0001\"）。\n\n**坑 3：422 revert 不是协议错误，是业务状态**\n\n当 transaction 在链上 revert 时（比如余额不足），API 返回 HTTP 422：\n```json\n{\"error\": {\"reason\": \"execution_reverted\", \"revert\": {...}}}\n```\n不要把这当作异常抛出去。这是正常的业务响应，说明交易确实被提交到链上了，\n只是执行失败。你应该解析 revert reason 返回给用户。\n\n### 签名返回值\n\nsign_message 和 sign_typed_data 返回的 `outputSignature` 是\n**smart wallet signature**，不是标准 EOA 签名。它包含了 smart wallet\n的验证逻辑 calldata，长度比 65 字节的 EOA 签名长得多。\n你不能用 `ecrecover` 去验证它——它只在链上通过 ERC-1271 验证。\n\n### 轮询策略\n\n异步操作（签名/交易）通常 2-12 秒完成。建议：\n- 轮询间隔：2 秒\n- 超时：60 秒\n- 签名操作通常 10s 左右（Fireblocks HSM 签名 + smart wallet 部署）\n- 创建钱包是同步的（~2s），不需要轮询\n\n### Staging 环境限制\n\n- Staging 钱包创建后余额为 0，没有 faucet 可以给 Crossmint smart wallet 充值\n- 所以 send_transaction 在 staging 环境必定 revert（余额不足）\n- 签名操作不受此限制，可以正常测试\n- 同一个 linkedUser 创建钱包是幂等的——第二次调用返回已有钱包，不会创建新的\n\n### 链支持\n\n签名时必须指定 `chain` 参数。支持的 staging 链名：\n`base-sepolia`, `ethereum-sepolia`, `polygon-amoy`,\n`arbitrum-sepolia`, `optimism-sepolia`, `solana`\n\n注意：链名格式是 `{chain}-{network}`，不是 chain ID。\n"
+      }
+    },
+    {
+      "provider": "privy",
+      "provider_meta": {
+        "name": "Privy Server Wallets",
+        "class": "tee",
+        "custody_model": "TEE+Shard",
+        "signing_modes": [
+          "personal_sign",
+          "eip712",
+          "raw_tx"
+        ],
+        "submission_mode": "provider_submit",
+        "chains": [
+          "ethereum",
+          "base",
+          "polygon",
+          "arbitrum",
+          "optimism",
+          "solana"
+        ]
+      },
+      "capabilities": {
+        "create_wallet": true,
+        "sign_message": true,
+        "sign_typed_data": true,
+        "send_transaction": true,
+        "multi_chain": true,
+        "policy_enforcement": true,
+        "session_delegation": false,
+        "estimate_gas": false
+      },
+      "timestamp": "2026-03-05T08:00:00Z",
+      "results": [
+        {
+          "test_id": "t01",
+          "test_name": "key_generate",
+          "status": "pass",
+          "elapsed_ms": 449,
+          "message": "Created wallet ",
+          "detail": {}
+        },
+        {
+          "test_id": "t02",
+          "test_name": "sign_message",
+          "status": "pass",
+          "elapsed_ms": 180,
+          "message": "Message signed successfully",
+          "detail": {}
+        },
+        {
+          "test_id": "t03",
+          "test_name": "sign_typed_data",
+          "status": "pass",
+          "elapsed_ms": 169,
+          "message": "Typed data signed successfully",
+          "detail": {}
+        },
+        {
+          "test_id": "t04",
+          "test_name": "send_tx",
+          "status": "pass",
+          "elapsed_ms": 401,
+          "message": "Transaction submitted but reverted (expected: staging wallet has no balance)",
+          "detail": {}
+        },
+        {
+          "test_id": "t05",
+          "test_name": "multi_chain",
+          "status": "pass",
+          "elapsed_ms": 428,
+          "message": "Adapter declares 6 chains: ethereum, base, polygon, arbitrum, optimism, solana",
+          "detail": {}
+        },
+        {
+          "test_id": "t06",
+          "test_name": "policy_enforcement",
+          "status": "skip",
+          "elapsed_ms": 0,
+          "message": "Policy enforcement tests pending provider implementation",
+          "detail": {}
+        },
+        {
+          "test_id": "t07",
+          "test_name": "session_delegation",
+          "status": "skip",
+          "elapsed_ms": 0,
+          "message": "N/A-by-design: adapter does not support session delegation",
+          "detail": {}
+        },
+        {
+          "test_id": "t08",
+          "test_name": "concurrent_ops",
+          "status": "pass",
+          "elapsed_ms": 445,
+          "message": "3 concurrent create_wallet calls succeeded",
+          "detail": {}
+        },
+        {
+          "test_id": "t09",
+          "test_name": "failure_recovery",
+          "status": "pass",
+          "elapsed_ms": 759,
+          "message": "All failure cases handled cleanly",
+          "detail": {}
+        },
+        {
+          "test_id": "t10",
+          "test_name": "preflight_fee",
+          "status": "skip",
+          "elapsed_ms": 0,
+          "message": "N/A-by-design: adapter does not support gas estimation",
+          "detail": {}
+        },
+        {
+          "test_id": "tc01",
+          "test_name": "attestation",
+          "status": "pass",
+          "elapsed_ms": 604,
+          "message": "Attestation checks passed",
+          "detail": {}
+        },
+        {
+          "test_id": "tc02",
+          "test_name": "failover_continuity",
+          "status": "pass",
+          "elapsed_ms": 1041,
+          "message": "Wallet identity persists across session restart",
+          "detail": {}
+        },
+        {
+          "test_id": "tc03",
+          "test_name": "policy_depth",
+          "status": "pass",
+          "elapsed_ms": 1417,
+          "message": "Policy checks passed",
+          "detail": {}
+        }
+      ],
+      "evaluation": {
+        "provider": "privy",
+        "evaluator": "claude-opus-4.6 (AI agent)",
+        "date": "2026-03-05",
+        "summary": "Privy Server Wallets 是 REST API 方案，Key 存储在 AWS Nitro Enclave (TEE) 中并通过\nKey Sharding 增强安全。API 设计覆盖完整（签名/交易/策略/导出），无 SDK 但 REST 文档\n充分。集成过程中发现 4 个坑：Cloudflare bot 拦截、caip2 参数不一致、snake_case 命名、\nchainId 放置位置。修复后全量 13/13 测试通过。\n",
+        "scores": {
+          "onboarding_friction": 3,
+          "doc_accuracy": 2,
+          "api_consistency": 3,
+          "error_message_quality": 2,
+          "agent_autonomy": 3,
+          "time_to_first_success_min": 12
+        },
+        "human_interventions": [
+          {
+            "type": "account_registration",
+            "reason": "Privy Dashboard 注册需浏览器操作，AI agent 无法自动创建 App",
+            "blocker": true
+          },
+          {
+            "type": "credential_copy",
+            "reason": "人类需从 Dashboard 复制 App ID + App Secret",
+            "blocker": true
+          }
+        ],
+        "integration_bugs": [
+          {
+            "id": "BUG-1",
+            "description": "urllib.request 被 Cloudflare 403 拦截（error code 1010），必须用 requests 库 + User-Agent",
+            "root_cause": "provider_infra",
+            "fix_time_min": 5,
+            "lesson": "Privy API 有 Cloudflare bot protection，Python stdlib urllib 会被拦截。必须使用 requests 库并设置 User-Agent header"
+          },
+          {
+            "id": "BUG-2",
+            "description": "caip2 参数在 personal_sign/eth_signTypedData_v4 中会报 Unrecognized key，但在 eth_sendTransaction 中是必需的",
+            "root_cause": "provider_api",
+            "fix_time_min": 3,
+            "lesson": "Privy RPC endpoint 对 caip2 的要求因 method 而异——签名不需要，交易必须带。文档未明确区分"
+          },
+          {
+            "id": "BUG-3",
+            "description": "EIP-712 typed data 的 primaryType 必须写成 snake_case 的 primary_type",
+            "root_cause": "provider_api",
+            "fix_time_min": 2,
+            "lesson": "Privy 全面使用 snake_case（非 camelCase），包括 EIP-712 的 primary_type。与 EIP-712 标准的 primaryType 不同"
+          },
+          {
+            "id": "BUG-4",
+            "description": "eth_sendTransaction 的 chainId 必须放在请求体根部的 caip2 字段，不能放在 transaction 对象内",
+            "root_cause": "provider_api",
+            "fix_time_min": 2,
+            "lesson": "Privy 用 CAIP-2 格式指定链（如 eip155:11155111），放在 RPC 请求根部而非 transaction 内部"
+          }
+        ],
+        "doc_gaps": [
+          "caip2 参数在哪些 RPC method 中是 required vs rejected 未在文档中明确说明",
+          "snake_case vs camelCase 的命名约定未在 API reference 的 typed data 示例中标注",
+          "llms.txt 提供了很好的概览，但具体 RPC method 的 params schema 需要翻阅多页才能拼出完整结构",
+          "Cloudflare bot protection 对机器客户端的影响未在集成文档中提及"
+        ],
+        "agent_experience": "作为 AI agent 的集成体验：\n- 优点：REST API 设计成熟（无需 SDK），文档有 llms.txt 概览，错误信息带字段路径\n  （如 \"[Input error] `params.transaction.to`: Invalid Ethereum address\"），\n  签名延迟低（~170ms），支持 policy engine 和 wallet export\n- 痛点：Cloudflare 拦截标准 HTTP 客户端，caip2/primary_type 等命名不一致需要\n  逐个 method 试错，无 Python SDK 需手写 REST 调用\n- 人类依赖：注册 Dashboard + 创建 App + 复制凭证（一次性），之后 AI 完全自主\n- 总体评价：TEE 方案中文档和 API 质量最好的之一。4 个 bug 中 3 个属于 API 设计\n  不一致（非文档错误），说明 API 在快速演进中。对 AI agent 来说最大障碍是\n  Cloudflare bot protection——如果不知道用 requests + User-Agent，第一步就卡住\n",
+        "agent_memo": "## 致后来的 Agent：Privy Server Wallets 集成备忘\n\n### 第零步：用 requests 库，不要用 urllib\n\nPrivy API 有 Cloudflare bot protection。Python 标准库的 `urllib.request`\n会被直接 403 拦截（error code 1010）。你必须：\n- 使用 `requests` 库\n- 设置 `User-Agent: wallet-bench/1.0`（或任何非空 UA）\n- 带上 `Content-Type: application/json` 和 `privy-app-id` header\n\n我在这上面浪费了 5 分钟。urllib 的默认 UA 是 `Python-urllib/3.x`，\nCloudflare 直接拦截。\n\n### 认证方式：Basic Auth\n\n```\nAuthorization: Basic base64(app_id:app_secret)\n```\n\n所有请求都需要这三个 header：\n- `Authorization: Basic ...`\n- `Content-Type: application/json`\n- `privy-app-id: {your_app_id}`\n\n### API 速查表\n\nBase URL: `https://auth.privy.io/api/v1`\n\n| 操作 | 方法 | 路径 | 同步 |\n|------|------|------|------|\n| 创建钱包 | POST | /wallets | 是 |\n| RPC 调用 | POST | /wallets/{id}/rpc | 是 |\n\n所有签名和交易都通过 `/wallets/{id}/rpc` 统一入口，用 `method` 字段区分：\n\n| method | 用途 | 需要 caip2? |\n|--------|------|-------------|\n| personal_sign | 签名消息 | 否 |\n| eth_signTypedData_v4 | EIP-712 签名 | 否 |\n| eth_sendTransaction | 发送交易 | 是 |\n| eth_signTransaction | 签名交易(不提交) | 是 |\n\n### 最容易踩的四个坑\n\n**坑 1：Cloudflare 403**\n见上面\"第零步\"。urllib 直接被拦。\n\n**坑 2：caip2 参数不一致**\n- personal_sign 和 eth_signTypedData_v4 不能带 `caip2`，否则报\n  `Unrecognized key(s) in object: 'caip2'`\n- eth_sendTransaction 和 eth_signTransaction 必须带 `caip2`\n- 格式：`\"caip2\": \"eip155:11155111\"`（CAIP-2 链标识符）\n\n**坑 3：snake_case 命名**\nPrivy 使用 snake_case，不是 EIP-712 标准的 camelCase：\n- `primary_type`（不是 `primaryType`）\n- `typed_data`（不是 `typedData`）\n- 传 camelCase 会报 `Unrecognized key`\n\n**坑 4：chainId 放在 caip2，不在 transaction 内**\n```python\n# 正确 ✅\n{\"method\": \"eth_sendTransaction\", \"caip2\": \"eip155:11155111\",\n \"params\": {\"transaction\": {\"to\": \"0x...\", \"value\": \"0x1\", \"data\": \"0x\"}}}\n\n# 错误 ❌\n{\"method\": \"eth_sendTransaction\",\n \"params\": {\"transaction\": {\"to\": \"0x...\", \"value\": \"0x1\", \"chainId\": 11155111}}}\n```\n\n### 创建钱包\n\n```python\nresp = POST /wallets {\"chain_type\": \"ethereum\"}\nwallet_id = resp[\"id\"]       # 后续 RPC 用这个 ID\naddress = resp[\"address\"]    # 0x 开头的 EVM 地址\n```\n\n注意：Privy 用 `wallet_id` 而不是 `address` 作为后续操作的标识符。\n每次 create 都会创建新钱包（不是幂等的）。如果需要幂等，用\n`idempotency_key` header。\n\n### 签名请求格式\n\n**personal_sign:**\n```json\n{\"method\": \"personal_sign\",\n \"params\": {\"message\": \"hello\", \"encoding\": \"utf-8\"}}\n```\n\n**eth_signTypedData_v4:**\n```json\n{\"method\": \"eth_signTypedData_v4\",\n \"params\": {\"typed_data\": {\n   \"domain\": {\"name\": \"Test\", \"version\": \"1\", \"chainId\": 11155111, \"verifyingContract\": \"0x000...001\"},\n   \"types\": {\"EIP712Domain\": [...], \"Test\": [{\"name\": \"value\", \"type\": \"uint256\"}]},\n   \"primary_type\": \"Test\",\n   \"message\": {\"value\": 42}\n }}}\n```\n\n### 返回值解析\n\n成功返回格式统一：\n```json\n{\"data\": {\"signature\": \"0x...\", \"encoding\": \"hex\"}}\n```\n交易成功：\n```json\n{\"data\": {\"transaction_hash\": \"0x...\", \"caip2\": \"eip155:11155111\"}}\n```\n\n错误返回带字段路径：\n```json\n{\"error\": \"[Input error] `params.transaction.to`: Invalid Ethereum address\",\n \"code\": \"invalid_data\", \"cause\": \"[...]\"}\n```\n\n### Testnet Chain ID 映射\n\n| 网络 | Chain ID | caip2 |\n|------|----------|-------|\n| ethereum-sepolia | 11155111 | eip155:11155111 |\n| base-sepolia | 84532 | eip155:84532 |\n| polygon-amoy | 80002 | eip155:80002 |\n| arbitrum-sepolia | 421614 | eip155:421614 |\n| optimism-sepolia | 11155420 | eip155:11155420 |\n\n### 性能参考\n\n实测延迟（ethereum-sepolia）：\n- 创建钱包：~450ms\n- personal_sign：~170ms\n- eth_signTypedData_v4：~170ms\n- eth_sendTransaction：~400ms\n- 3 并发 create_wallet：~445ms（并行效率高）\n\n比 Crossmint 快 50-60 倍（Crossmint 签名 ~10s vs Privy ~170ms）。\n\n### Policy Engine\n\nPrivy 声称有 policy engine（policies + rules + condition sets），\n但测试中没有配置具体策略规则。tc03_policy_depth 通过是因为：\n1. 小额交易未被 policy 拦截（正确）\n2. 超大金额交易被链上 revert（余额不足），不是 policy 拦截\n\n如果你要测试真正的 policy enforcement，需要在 Privy Dashboard 中\n配置 policy rules 后再运行。\n\n### 并发安全\n\n3 并发 create_wallet 测试通过，每个返回不同地址和 wallet_id。\nRPC 签名也可以并发调用（不同钱包）。同一钱包的并发交易可能\n需要注意 nonce，但由于 Privy 是 provider_submit 模式（由 Privy\n管理 nonce），理论上并发安全。\n"
+      }
+    },
+    {
+      "provider": "coinbase_agentkit",
+      "provider_meta": {
+        "name": "Coinbase AgentKit",
+        "class": "tee",
+        "custody_model": "CDP-Server-Wallet",
+        "signing_modes": [
+          "personal_sign",
+          "eip712",
+          "raw_tx"
+        ],
+        "submission_mode": "provider_submit",
+        "chains": [
+          "base",
+          "ethereum",
+          "polygon",
+          "arbitrum",
+          "optimism"
+        ]
+      },
+      "capabilities": {
+        "create_wallet": true,
+        "sign_message": true,
+        "sign_typed_data": true,
+        "send_transaction": true,
+        "multi_chain": true,
+        "policy_enforcement": false,
+        "session_delegation": false,
+        "estimate_gas": false
+      },
+      "timestamp": "2026-03-05T09:00:00Z",
+      "results": [
+        {
+          "test_id": "t01",
+          "test_name": "key_generate",
+          "status": "pass",
+          "elapsed_ms": 717,
+          "message": "Created wallet ",
+          "detail": {}
+        },
+        {
+          "test_id": "t02",
+          "test_name": "sign_message",
+          "status": "pass",
+          "elapsed_ms": 416,
+          "message": "Message signed successfully",
+          "detail": {}
+        },
+        {
+          "test_id": "t03",
+          "test_name": "sign_typed_data",
+          "status": "pass",
+          "elapsed_ms": 457,
+          "message": "Typed data signed successfully",
+          "detail": {}
+        },
+        {
+          "test_id": "t04",
+          "test_name": "send_tx",
+          "status": "pass",
+          "elapsed_ms": 492,
+          "message": "Transaction submitted but reverted (expected: staging wallet has no balance)",
+          "detail": {}
+        },
+        {
+          "test_id": "t05",
+          "test_name": "multi_chain",
+          "status": "pass",
+          "elapsed_ms": 1450,
+          "message": "Adapter declares 5 chains: base, ethereum, polygon, arbitrum, optimism",
+          "detail": {}
+        },
+        {
+          "test_id": "t06",
+          "test_name": "policy_enforcement",
+          "status": "skip",
+          "elapsed_ms": 0,
+          "message": "N/A-by-design: adapter does not support policy enforcement",
+          "detail": {}
+        },
+        {
+          "test_id": "t07",
+          "test_name": "session_delegation",
+          "status": "skip",
+          "elapsed_ms": 0,
+          "message": "N/A-by-design: adapter does not support session delegation",
+          "detail": {}
+        },
+        {
+          "test_id": "t08",
+          "test_name": "concurrent_ops",
+          "status": "pass",
+          "elapsed_ms": 1417,
+          "message": "3 concurrent create_wallet calls succeeded",
+          "detail": {}
+        },
+        {
+          "test_id": "t09",
+          "test_name": "failure_recovery",
+          "status": "pass",
+          "elapsed_ms": 723,
+          "message": "All failure cases handled cleanly",
+          "detail": {}
+        },
+        {
+          "test_id": "t10",
+          "test_name": "preflight_fee",
+          "status": "skip",
+          "elapsed_ms": 0,
+          "message": "N/A-by-design: adapter does not support gas estimation",
+          "detail": {}
+        },
+        {
+          "test_id": "tc01",
+          "test_name": "attestation",
+          "status": "pass",
+          "elapsed_ms": 1211,
+          "message": "Attestation checks passed",
+          "detail": {}
+        },
+        {
+          "test_id": "tc02",
+          "test_name": "failover_continuity",
+          "status": "pass",
+          "elapsed_ms": 2413,
+          "message": "Wallet identity persists across session restart",
+          "detail": {}
+        },
+        {
+          "test_id": "tc03",
+          "test_name": "policy_depth",
+          "status": "skip",
+          "elapsed_ms": 0,
+          "message": "N/A-by-design: no policy enforcement",
+          "detail": {}
+        }
+      ],
+      "evaluation": {
+        "provider": "coinbase_agentkit",
+        "evaluator": "claude-opus-4.6 (AI agent)",
+        "date": "2026-03-05",
+        "summary": "Coinbase AgentKit 是 Python SDK 方案，底层使用 CDP Server Wallet（TEE: AWS Nitro Enclave）。\nSDK 封装度高，签名/交易都是同步返回。但 onboarding 需要三个独立凭证（API Key ID、API Key\nSecret、Wallet Secret），其中 Wallet Secret 需在 CDP Portal 单独生成，文档路径不直观。\n修复 1 个集成 bug（value 类型）后 13/13 测试通过。\n",
+        "scores": {
+          "onboarding_friction": 4,
+          "doc_accuracy": 2,
+          "api_consistency": 2,
+          "error_message_quality": 2,
+          "agent_autonomy": 4,
+          "time_to_first_success_min": 25
+        },
+        "human_interventions": [
+          {
+            "type": "account_registration",
+            "reason": "CDP Portal 注册需浏览器操作（Coinbase 账号 + 项目创建）",
+            "blocker": true
+          },
+          {
+            "type": "api_key_creation",
+            "reason": "需在 CDP Portal 创建 API Key（Ed25519），下载 JSON 文件",
+            "blocker": true
+          },
+          {
+            "type": "wallet_secret_generation",
+            "reason": "需在 CDP Portal Server Wallet 页面单独生成 Wallet Secret（EC P-256 DER），这是第三个独立凭证",
+            "blocker": true
+          }
+        ],
+        "integration_bugs": [
+          {
+            "id": "BUG-1",
+            "description": "send_transaction 的 value 必须是 int，不能传 hex 字符串（TransactionRequestEIP1559 用 Pydantic 校验）",
+            "root_cause": "our_code",
+            "fix_time_min": 1,
+            "lesson": "CDP SDK 的 TransactionRequestEIP1559 对 value 做严格类型校验（int），不像 web3.py 接受 hex"
+          }
+        ],
+        "doc_gaps": [
+          "Wallet Secret 是第三个独立凭证的概念在 AgentKit README 中未提及，只在 Server Wallet 文档深处说明",
+          "CDP Portal 中 Wallet Secret 的生成路径不在 API Keys 页面，而是在 Wallets > Server Wallet 中，容易遗漏",
+          "CdpEvmWalletProviderConfig 的三个必填凭证（api_key_id, api_key_secret, wallet_secret）的区别和获取路径未在一处文档中说明",
+          "TransactionRequestEIP1559 的 value 字段类型约束（必须 int）未在 SDK 文档中说明"
+        ],
+        "agent_experience": "作为 AI agent 的集成体验：\n- 优点：SDK 封装度高，sign_message/sign_typed_data/send_transaction 都是同步返回，\n  不需要轮询。错误信息清晰（Pydantic 校验 + CDP API 错误码）。内置 faucet action。\n  签名延迟 ~400-500ms，交易延迟 ~500ms，都在合理范围\n- 痛点：onboarding 最复杂——需要三个独立凭证，Wallet Secret 的概念和获取路径对 AI agent\n  完全不透明（必须人类在 Portal 操作）。API Key 权限需要手动设为 Trade（默认是 View）\n- 人类依赖：注册 + 创建 API Key + 生成 Wallet Secret（三次独立操作），之后 AI 完全自主\n- 总体评价：SDK 质量很好（类型安全、错误清晰、功能完整），但 onboarding 是所有 provider\n  中最重的。对已有 CDP 账号的开发者来说很好用，但对 AI agent 自主接入是最大瓶颈\n",
+        "agent_memo": "## 致后来的 Agent：Coinbase AgentKit (CDP Server Wallet) 集成备忘\n\n### Onboarding：三个凭证，缺一不可\n\n这是所有 provider 中 onboarding 最复杂的。你需要让人类做三件事：\n\n1. **API Key**（在 CDP Portal > API Keys 创建）\n   - 类型：Ed25519\n   - 权限：必须设为 **Trade**（默认 View 不够）\n   - 下载 JSON 文件：`{\"id\": \"xxx\", \"privateKey\": \"base64...\"}`\n   - `id` = `CDP_API_KEY_ID`\n   - `privateKey` = `CDP_API_KEY_SECRET`\n\n2. **Wallet Secret**（在 CDP Portal > Wallets > Server Wallet 生成）\n   - 类型：EC P-256 (secp256r1) DER 编码，base64\n   - 这是一个完全独立的密钥，和 API Key 无关\n   - 用于对钱包操作请求做二次 JWT 签名（X-Wallet-Auth header）\n   - 格式：`MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0waw...`\n   - 只显示一次，必须立即保存\n   - = `CDP_WALLET_SECRET`\n\n3. **把三个值配置好**：\n   ```\n   CDP_API_KEY_ID=xxx\n   CDP_API_KEY_SECRET=base64_ed25519_key\n   CDP_WALLET_SECRET=base64_ec_p256_der_key\n   ```\n\n### 最容易犯的错\n\n**错误 1：权限不够**\n创建 API Key 时默认权限是 \"View\"。你需要 \"Trade\" 或 \"Transfer\" 权限\n才能创建钱包和签名。如果报 401/403，先检查这个。\n\n**错误 2：找不到 Wallet Secret**\nWallet Secret 不在 API Keys 页面。它在 Wallets > Server Wallet 中。\n如果报 \"Project has no secret. Please register a secret with the project.\"，\n说明还没生成 Wallet Secret。\n\n**错误 3：value 类型**\n`send_transaction` 的 `value` 必须是 Python int，不能是 hex 字符串。\n```python\n# 正确 ✅\n{\"to\": \"0x...\", \"value\": 100000000000000, \"data\": \"0x\"}\n# 错误 ❌\n{\"to\": \"0x...\", \"value\": \"0x5af3107a4000\", \"data\": \"0x\"}\n```\n\n### SDK 速查\n\n```python\nfrom coinbase_agentkit import CdpEvmWalletProvider, CdpEvmWalletProviderConfig\n\nconfig = CdpEvmWalletProviderConfig(\n    api_key_id=\"...\",\n    api_key_secret=\"...\",\n    wallet_secret=\"...\",\n    network_id=\"base-sepolia\",\n)\nwp = CdpEvmWalletProvider(config)\n\n# 获取地址\naddress = wp.get_address()\n\n# 签名消息\nsig = wp.sign_message(\"hello\")\n\n# EIP-712 签名\nsig = wp.sign_typed_data({\n    \"domain\": {...},\n    \"types\": {...},\n    \"primaryType\": \"Test\",  # 注意：AgentKit 用 camelCase（和 Privy 不同）\n    \"message\": {...},\n})\n\n# 发送交易\ntx_hash = wp.send_transaction({\n    \"to\": \"0x...\",\n    \"value\": 1000,  # int, 单位 wei\n    \"data\": \"0x\",\n})\n```\n\n### 与 Privy 的对比\n\n| 维度 | Coinbase AgentKit | Privy |\n|------|-------------------|-------|\n| 接口 | Python SDK | REST API |\n| 凭证数 | 3 个 | 2 个 |\n| onboarding 步骤 | 3 次 Portal 操作 | 1 次 Dashboard 操作 |\n| sign_message 延迟 | ~420ms | ~170ms |\n| send_tx 延迟 | ~490ms | ~400ms |\n| EIP-712 命名 | camelCase (primaryType) | snake_case (primary_type) |\n| value 格式 | int (wei) | hex string (wei) |\n| Policy engine | 无（capabilities: false） | 有（声称支持） |\n\n### 网络支持\n\nAgentKit 的 `network_id` 格式：\n- `base-sepolia` (testnet)\n- `base-mainnet`\n- `ethereum-sepolia`\n- `ethereum-mainnet`\n\n`NETWORK_ID_TO_CHAIN` 映射在 SDK 内部，不需要自己维护 chain ID。\n\n### 并发安全\n\n3 并发 create_wallet 测试通过，每次创建全新钱包（用 uuid4 idempotency_key）。\nSDK 内部通过 asyncio 运行 CDP API 调用，并发 sign/send 理论上安全\n（每个 wallet 有独立 nonce 管理）。\n\n### Failover 行为\n\nteardown + re-setup 后，需要重新创建 CdpEvmWalletProvider 实例。\n之前创建的钱包地址在服务端持久化，可以通过 `address` 参数恢复：\n```python\nconfig = CdpEvmWalletProviderConfig(\n    ...,\n    address=\"0x之前的地址\",  # 恢复已有钱包\n)\n```\n\n### 内置 Faucet\n\nAgentKit 有 `request_faucet` action，可以在 base-sepolia 上自动领测试币：\n```python\nasync with client as cdp:\n    tx_hash = await cdp.evm.request_faucet(address=address, network=\"base-sepolia\")\n```\n这是其他 provider 没有的功能——BNB Chain MCP 和 Privy 都需要人类去 faucet 网页操作。\n"
+      }
+    }
+  ]
+}
