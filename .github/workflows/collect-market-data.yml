@@ -1,0 +1,42 @@
+name: Collect Market Data
+
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Run market data collection
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python3 scripts/collect_market_data.py
+
+      - name: Check for data changes
+        id: check_changes
+        run: git diff --quiet web/data/market_*.json || echo "has_changes=true" >> "$GITHUB_OUTPUT"
+
+      - name: Commit and push updated data
+        if: steps.check_changes.outputs.has_changes == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add web/data/market_*.json
+          git commit -m "[skip ci] chore: update market data $(date -u +%Y-%m-%d)"
+          git push

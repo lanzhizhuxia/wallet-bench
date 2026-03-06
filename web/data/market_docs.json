@@ -1,0 +1,111 @@
+{
+  "schema_version": "1.0",
+  "source": "github-docs",
+  "collected_at": "2026-03-06T10:41:11+00:00",
+  "period": "last-30d",
+  "providers": {
+    "privy": {
+      "repos": [
+        {
+          "repo": "privy-io/privy-mcp-server",
+          "doc_commits_30d": 0,
+          "breaking_change_commits_30d": 0,
+          "paths_checked": [],
+          "note": "no tracked docs paths"
+        }
+      ],
+      "total_doc_commits_30d": 0,
+      "total_breaking_change_commits_30d": 0,
+      "breaking_change_ratio": 0.0,
+      "partial": false
+    },
+    "coinbase": {
+      "repos": [
+        {
+          "repo": "coinbase/agentkit",
+          "doc_commits_30d": 0,
+          "breaking_change_commits_30d": 0,
+          "paths_checked": [
+            "python/coinbase-agentkit/CHANGELOG.md",
+            "python/coinbase-agentkit/changelog.d"
+          ]
+        },
+        {
+          "repo": "coinbase/cdp-sdk-python",
+          "doc_commits_30d": 0,
+          "breaking_change_commits_30d": 0,
+          "paths_checked": [],
+          "note": "no tracked docs paths"
+        }
+      ],
+      "total_doc_commits_30d": 0,
+      "total_breaking_change_commits_30d": 0,
+      "breaking_change_ratio": 0.0,
+      "partial": false
+    },
+    "crossmint": {
+      "repos": [
+        {
+          "repo": "Crossmint/crossmint-sdk",
+          "doc_commits_30d": 13,
+          "breaking_change_commits_30d": 0,
+          "paths_checked": [
+            ".changeset",
+            "packages/common/CHANGELOG.md",
+            "packages/wallets/CHANGELOG.md"
+          ]
+        },
+        {
+          "repo": "Crossmint/mcp-crossmint-checkout",
+          "doc_commits_30d": 0,
+          "breaking_change_commits_30d": 0,
+          "paths_checked": [],
+          "note": "no tracked docs paths"
+        }
+      ],
+      "total_doc_commits_30d": 13,
+      "total_breaking_change_commits_30d": 0,
+      "breaking_change_ratio": 0.0,
+      "partial": false
+    },
+    "bnbchain_mcp": {
+      "repos": [
+        {
+          "repo": "bnb-chain/bnbchain-mcp",
+          "doc_commits_30d": 0,
+          "breaking_change_commits_30d": 0,
+          "paths_checked": [],
+          "note": "no tracked docs paths"
+        }
+      ],
+      "total_doc_commits_30d": 0,
+      "total_breaking_change_commits_30d": 0,
+      "breaking_change_ratio": 0.0,
+      "partial": false
+    },
+    "moonpay": {
+      "repos": [],
+      "total_doc_commits_30d": null,
+      "total_breaking_change_commits_30d": null,
+      "breaking_change_ratio": null,
+      "partial": false,
+      "note": "no public repos to track"
+    },
+    "minara": {
+      "repos": [
+        {
+          "repo": "Minara-AI/skills",
+          "doc_commits_30d": 24,
+          "breaking_change_commits_30d": 0,
+          "paths_checked": [
+            "skills/minara/SKILL.md"
+          ]
+        }
+      ],
+      "total_doc_commits_30d": 24,
+      "total_breaking_change_commits_30d": 0,
+      "breaking_change_ratio": 0.0,
+      "partial": false
+    }
+  }
+}

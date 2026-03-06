@@ -2328,3 +2328,194 @@ td.defi-difficulty { font-size: 0.82rem; white-space: nowrap; text-align: center
   .md-article .wt-article h1 { font-size: 22px; }
   .md-article .wt-article h2 { margin-top: 32px; }
 }
+
+/* ================================================================
+   Tab 4: 市场活跃度
+   ================================================================ */
+
+#market-container {
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+  padding: var(--space-xl) var(--space-m);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+}
+
+.market-disclaimer {
+  background: var(--color-skip-alpha);
+  color: var(--color-skip);
+  border: 1px solid var(--color-skip);
+  border-radius: var(--radius-m);
+  padding: var(--space-s) var(--space-m);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.market-card {
+  background: var(--bg-card);
+  border: 1px solid var(--bg-border);
+  border-radius: var(--radius-l);
+  padding: var(--space-xl);
+}
+
+.market-card-title {
+  color: var(--text-primary);
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 var(--space-m) 0;
+}
+
+/* Bar chart (Card 1) */
+.market-bar-chart {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.market-bar-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-s);
+}
+
+.market-bar-label {
+  width: 150px;
+  flex-shrink: 0;
+  color: var(--text-secondary);
+  font-size: 13px;
+  text-align: right;
+}
+
+.market-bar-track {
+  flex: 1;
+  height: 22px;
+  background: var(--bg-subtle);
+  border-radius: var(--radius-xs);
+  overflow: hidden;
+}
+
+.market-bar-fill {
+  height: 100%;
+  background: var(--bg-muted);
+  border-radius: var(--radius-xs);
+  transition: width var(--duration-slow) ease;
+}
+
+.market-bar-fill.market-bar-max {
+  background: var(--brand-yellow);
+}
+
+.market-bar-value {
+  width: 90px;
+  flex-shrink: 0;
+  text-align: right;
+  font-size: 13px;
+  font-family: var(--font-mono);
+  color: var(--text-secondary);
+}
+
+.market-bar-max-text {
+  color: var(--brand-yellow);
+  font-weight: 600;
+}
+
+/* Tables (Card 2, 3, 4) */
+.market-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.market-table th {
+  text-align: left;
+  color: var(--text-tertiary);
+  font-weight: 500;
+  padding: var(--space-xs) var(--space-s);
+  border-bottom: 1px solid var(--bg-border);
+}
+
+.market-table td {
+  padding: var(--space-xs) var(--space-s);
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--bg-subtle);
+  font-family: var(--font-mono);
+}
+
+.market-table td:first-child {
+  font-family: var(--font-body);
+  color: var(--text-secondary);
+}
+
+.market-na {
+  color: var(--text-tertiary) !important;
+  font-style: italic;
+  font-family: var(--font-body) !important;
+}
+
+.market-fail-text {
+  color: var(--color-fail) !important;
+}
+
+.market-green {
+  color: var(--color-pass) !important;
+  font-weight: 600;
+}
+
+.market-red {
+  color: var(--color-fail) !important;
+  font-weight: 600;
+}
+
+.market-warn-icon {
+  font-style: normal;
+}
+
+.market-log-note {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  margin: var(--space-xs) 0 0;
+}
+
+/* Confidence tags */
+.market-confidence {
+  margin-top: var(--space-m);
+  font-size: 12px;
+  padding: var(--space-2xs) var(--space-s);
+  border-radius: var(--radius-pill);
+  display: inline-block;
+}
+
+/* Card 5 placeholder */
+.market-card-placeholder {
+  background: var(--bg-subtle);
+  border-style: dashed;
+}
+
+.market-placeholder-text {
+  color: var(--text-secondary);
+  font-size: 14px;
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* Freshness footer */
+.market-freshness {
+  color: var(--text-tertiary);
+  font-size: 12px;
+  text-align: center;
+  padding: var(--space-s) 0;
+}
+
+.market-stale-warn {
+  color: var(--color-skip);
+  font-weight: 600;
+}
+
+/* Mobile responsive */
+@media (max-width: 700px) {
+  .market-bar-label { width: 100px; font-size: 12px; }
+  .market-bar-value { width: 70px; font-size: 12px; }
+  .market-card { padding: var(--space-m); }
+  .market-table { font-size: 12px; }
+}

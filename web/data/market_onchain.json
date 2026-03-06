@@ -1,0 +1,40 @@
+{
+  "schema_version": "1.0",
+  "source": "bundlebear",
+  "collected_at": "2026-03-06T10:41:15+00:00",
+  "period": "last-30d",
+  "providers": {
+    "coinbase": {
+      "trackable": true,
+      "active_wallets_30d": 529796,
+      "source": "bundlebear",
+      "bundlebear_label": "coinbase_smart_wallet",
+      "note": "月度新激活账户数（BundleBear erc4337-activation timeframe=month），非存量活跃"
+    },
+    "privy": {
+      "trackable": false,
+      "active_wallets_30d": null,
+      "reason": "不部署自有工厂合约，复用底层实现（Coinbase/Kernel/Safe等），链上无法区分来源"
+    },
+    "crossmint": {
+      "trackable": false,
+      "active_wallets_30d": null,
+      "reason": "工厂地址未公开，全部通过 API 后端封装"
+    },
+    "bnbchain_mcp": {
+      "trackable": false,
+      "active_wallets_30d": null,
+      "reason": "本地 EOA 钱包，无工厂合约"
+    },
+    "moonpay": {
+      "trackable": false,
+      "active_wallets_30d": null,
+      "reason": "HD 钱包架构，链上无工厂合约"
+    },
+    "minara": {
+      "trackable": false,
+      "active_wallets_30d": null,
+      "reason": "托管钱包，链上不可追踪"
+    }
+  }
+}

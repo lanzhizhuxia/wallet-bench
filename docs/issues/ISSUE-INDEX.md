@@ -1,5 +1,7 @@
 # wallet-bench Issue Index
 
+**Last Updated**: 2026-03-06 (ISSUE-012/013 新增：Crossmint 工厂反查 + Privy Paymaster 归因调研)
+
 **Last Updated**: 2026-03-05 (ISSUE-008 Batch 1-6 全部完成，6 个 provider 真实测试数据已生成)
 
 ## Current Execution Focus
@@ -14,3 +16,8 @@
 | ISSUE-006 | Done     | 测试分类重构 — 基础设施 vs 应用层分离 + DeFi/Swap 新维度     | COMPLETE    | P1       | 新增 Swap/DeFi/Bridge/预测市场/永续合约测试维度，区分 infra vs app 层，N/A 不入评分分母，筛选器改为 PM 视角两层结构。 | docs/issues/active/ISSUE-006-test-taxonomy-restructure/ |
 | ISSUE-007 | Done     | 基础能力细分 — 钱包基础/权限治理/稳定性/运维能力四维度       | COMPLETE    | P2       | 将基础能力 13 项测试拆为 4 个子维度，PM 可按关注点精准筛选，矩阵表分组更清晰。 | docs/issues/active/ISSUE-007-infra-sub-dimensions/ |
 | ISSUE-008 | Done     | 测试矩阵扩展 — App 层真实测试 + Crossmint 升级 + 数据可信度            | COMPLETE   | P1       | Batch 1-6 全部完成。6 provider 全量真实测试运行，数据溯源 badge + 覆盖率横幅 + YAML 视觉降级。 | docs/issues/active/ISSUE-008-test-matrix-expansion/ |
+| ISSUE-009 | Done     | 功能对比融合 DeFi 集成难度矩阵                                          | COMPLETE   | P1       | DeFi 场景评级（即用/低门槛/中等/不可行）融入功能对比卡片和详情页，替代旧 app_layer 雷达维度。 | docs/issues/active/ISSUE-009-comparison-defi-fusion/ |
+| ISSUE-010 | Done     | 一级导航重构 — 评测合并 + 知识阅读扩充                                  | COMPLETE   | P1       | 3 Tab 导航重构 + 了解更多子 Tab（测试设计/测试详解/下一步）+ Markdown 渲染。 | docs/issues/active/ISSUE-010-nav-restructure/ |
+| ISSUE-011 | Planning | 竞品活跃度监控 — 链上数据 + SDK 下载量 + 社区指标                       | OPEN       | P2       | 持续监控 WaaS 竞品活跃用户数：链上工厂合约事件、npm/PyPI 下载量、GitHub 活跃度。 | docs/issues/active/ISSUE-011-competitor-monitoring/ |
+| ISSUE-012 | Planning | Crossmint 链上工厂合约反查 — 通过自测钱包提取 factory 地址               | OPEN       | P2       | 通过 wallet-bench 自身 Crossmint adapter 创建测试钱包，反查链上 UserOp 中的 factory 地址，打通 Crossmint 链上归因。 | docs/issues/active/ISSUE-012-crossmint-onchain-attribution/ |
+|| ISSUE-013 | Done     | Privy 链上归因突破 — Paymaster / Bundler 足迹调研                        | CLOSED     | P2       | 确认 Privy 链上不可追踪：paymaster 由开发者自配，Native Sponsorship 地址未公开，两条路径均失败。 | docs/issues/active/ISSUE-013-privy-paymaster-attribution/ |

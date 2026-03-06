@@ -1,0 +1,84 @@
+{
+  "schema_version": "1.0",
+  "source": "npm",
+  "collected_at": "2026-03-06T10:40:07+00:00",
+  "period": "last-week",
+  "providers": {
+    "privy": {
+      "packages": [
+        {
+          "package": "@privy-io/server-auth",
+          "weekly_downloads": 104555
+        },
+        {
+          "package": "@privy-io/react-auth",
+          "weekly_downloads": 139072
+        },
+        {
+          "package": "@privy-io/node",
+          "weekly_downloads": 94048
+        }
+      ],
+      "total_weekly_downloads": 337675,
+      "partial": false
+    },
+    "coinbase": {
+      "packages": [
+        {
+          "package": "@coinbase/agentkit",
+          "weekly_downloads": 3635
+        },
+        {
+          "package": "@coinbase/coinbase-sdk",
+          "weekly_downloads": 11503
+        }
+      ],
+      "total_weekly_downloads": 15138,
+      "partial": false
+    },
+    "crossmint": {
+      "packages": [
+        {
+          "package": "@crossmint/wallets-sdk",
+          "weekly_downloads": 9819
+        },
+        {
+          "package": "@crossmint/client-sdk-smart-wallet",
+          "weekly_downloads": 120
+        }
+      ],
+      "total_weekly_downloads": 9939,
+      "partial": false
+    },
+    "bnbchain_mcp": {
+      "packages": [
+        {
+          "package": "@bnb-chain/mcp",
+          "weekly_downloads": 398
+        }
+      ],
+      "total_weekly_downloads": 398,
+      "partial": false
+    },
+    "moonpay": {
+      "packages": [
+        {
+          "package": "@moonpay/cli",
+          "weekly_downloads": 2285
+        }
+      ],
+      "total_weekly_downloads": 2285,
+      "partial": false
+    },
+    "minara": {
+      "packages": [
+        {
+          "package": "minara",
+          "weekly_downloads": 136
+        }
+      ],
+      "total_weekly_downloads": 136,
+      "partial": false
+    }
+  }
+}

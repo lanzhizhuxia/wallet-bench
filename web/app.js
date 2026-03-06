@@ -16,6 +16,7 @@ const NAV_STRUCTURE = {
     overview: { label: '评测总览', defaultSub: 'comparison', subs: ['comparison', 'radar', 'latency'] },
     filter:   { label: '需求筛选', defaultSub: null, subs: [] },
     learn:    { label: '了解更多', defaultSub: 'wallet-types', subs: ['wallet-types', 'test-design', 'test-detail', 'next-steps'] },
+    market:   { label: '市场活跃度', defaultSub: null, subs: [] },
 };
 const SUB_TO_MAIN = {};
 for (const [mainId, cfg] of Object.entries(NAV_STRUCTURE)) {
@@ -525,6 +526,11 @@ function closeDetail() {
 // --------------------------------------------------------------------------
 
 function renderTabContent(tabId) {
+    // market tab 独立于 currentData，提前处理
+    if (tabId === 'market') {
+        loadAndRenderMarketTab();
+        return;
+    }
     if (!currentData) return;
 
     switch (tabId) {
@@ -2497,6 +2503,301 @@ Response: {"id": "wallet_xxx", "address": "0x..."}</code></pre>
       </ol>
       <p class="wt-footer"><em>本文是 wallet-bench 项目的一部分。每个 provider 详情页的「Agent 评估」section 中的集成方式标签均可跳转至本文。</em></p>
     </div>`;
+}
+
+// --------------------------------------------------------------------------
+// Tab 4: 市场活跃度
+// --------------------------------------------------------------------------
+
+const MARKET_PROVIDER_ORDER = ['privy', 'coinbase', 'crossmint', 'bnbchain_mcp', 'moonpay', 'minara'];
+const MARKET_PROVIDER_NAMES = {
+    bnbchain_mcp: 'BNB Chain MCP',
+    coinbase: 'Coinbase AgentKit',
+    crossmint: 'Crossmint',
+    privy: 'Privy',
+    moonpay: 'MoonPay',
+    minara: 'Minara',
+};
+
+let marketDataLoaded = false;
+
+async function loadAndRenderMarketTab() {
+    if (marketDataLoaded) return;
+    const container = document.getElementById('market-container');
+    if (!container) return;
+    container.innerHTML = '<p class="loading">加载中...</p>';
+
+    const files = [
+        'data/market_npm.json',
+        'data/market_pypi.json',
+        'data/market_github.json',
+        'data/market_status.json',
+        'data/market_docs.json',
+        'data/market_onchain.json',
+    ];
+    const results = await Promise.allSettled(files.map(f => fetch(f).then(r => {
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        return r.json();
+    })));
+
+    const [npm, pypi, github, status, docs, onchain] = results.map(r => r.status === 'fulfilled' ? r.value : null);
+    renderMarketTab(npm, pypi, github, status, docs, onchain);
+    marketDataLoaded = true;
+}
+
+function renderMarketTab(npm, pypi, github, status, docs, onchain) {
+    const container = document.getElementById('market-container');
+    if (!container) return;
+
+    let html = '';
+
+    // Global disclaimer
+    html += `<div class="market-disclaimer">⚠️ 本 Tab 展示的是活跃度代理指标，不等于供应商真实 DAU/MAU。所有数据仅用于趋势观察与横向相对比较。</div>`;
+
+    // Card 1 — 开发者兴趣
+    html += renderMarketCard1(npm, pypi);
+
+    // Card 2 — 研发健康
+    html += renderMarketCard2(github);
+
+    // Card 3 — 服务可靠性
+    html += renderMarketCard3(status);
+
+    // Card 4 — 产品成熟度
+    html += renderMarketCard4(docs);
+
+    // Card 5 — 终端活跃（链上数据）
+    html += renderMarketCard5(onchain);
+
+    // Data freshness
+    html += renderMarketFreshness(npm, pypi, github, status, docs, onchain);
+
+    container.innerHTML = html;
+}
+
+function formatNum(n) {
+    if (n == null) return '—';
+    return n.toLocaleString('en-US');
+}
+
+function formatMttr(minutes) {
+    if (minutes == null) return '—';
+    if (minutes === 0) return '< 1m';
+    if (minutes < 60) return `${Math.round(minutes)}m`;
+    return `${(minutes / 60).toFixed(1)}h`;
+}
+
+function renderMarketCard1(npm, pypi) {
+    const downloads = {};
+    MARKET_PROVIDER_ORDER.forEach(id => { downloads[id] = 0; });
+
+    if (npm && npm.providers) {
+        for (const [id, d] of Object.entries(npm.providers)) {
+            if (downloads[id] !== undefined) downloads[id] += (d.total_weekly_downloads || 0);
+        }
+    }
+    if (pypi && pypi.providers) {
+        for (const [id, d] of Object.entries(pypi.providers)) {
+            if (downloads[id] !== undefined) downloads[id] += (d.total_weekly_downloads || 0);
+        }
+    }
+
+    // 对数刻度（log10），避免数据悬殊时低值 bar 不可见
+    const logMax = Math.log10(Math.max(...Object.values(downloads), 10));
+    const rawMax = Math.max(...Object.values(downloads));
+
+    let rows = '';
+    MARKET_PROVIDER_ORDER.forEach(id => {
+        const val = downloads[id];
+        const logVal = val > 0 ? Math.log10(val) : 0;
+        const pct = (logVal / logMax * 100).toFixed(1);
+        const isMax = val === rawMax;
+        rows += `
+        <div class="market-bar-row">
+            <span class="market-bar-label">${MARKET_PROVIDER_NAMES[id]}</span>
+            <div class="market-bar-track">
+                <div class="market-bar-fill${isMax ? ' market-bar-max' : ''}" style="width:${pct}%"></div>
+            </div>
+            <span class="market-bar-value${isMax ? ' market-bar-max-text' : ''}">${formatNum(val)}</span>
+        </div>`;
+    });
+
+    return `
+    <div class="market-card">
+        <h3 class="market-card-title">开发者兴趣（npm + PyPI 周下载量）</h3>
+        <div class="market-bar-chart">${rows}</div>
+        <p class="market-log-note">图表使用对数坐标，右侧数字为实际值</p>
+        <div class="market-confidence status-skip">置信度：中 — 含 CI 重复下载，仅看趋势</div>
+    </div>`;
+}
+
+function renderMarketCard2(github) {
+    let rows = '';
+    MARKET_PROVIDER_ORDER.forEach(id => {
+        const d = github && github.providers && github.providers[id];
+        if (!d || (d.total_stars == null && d.repos && d.repos.length === 0)) {
+            rows += `<tr>
+                <td>${MARKET_PROVIDER_NAMES[id]}</td>
+                <td colspan="3" class="market-na">暂无公开仓库</td>
+            </tr>`;
+        } else {
+            rows += `<tr>
+                <td>${MARKET_PROVIDER_NAMES[id]}</td>
+                <td>${formatNum(d.total_stars)}</td>
+                <td>${formatNum(d.total_commits_30d)}</td>
+                <td>${formatNum(d.total_open_issues_created_30d)}</td>
+            </tr>`;
+        }
+    });
+
+    return `
+    <div class="market-card">
+        <h3 class="market-card-title">研发健康（GitHub）</h3>
+        <table class="market-table">
+            <thead><tr><th>供应商</th><th>Stars</th><th>近 30d Commits</th><th>近 30d Open Issues</th></tr></thead>
+            <tbody>${rows}</tbody>
+        </table>
+    </div>`;
+}
+
+function renderMarketCard3(status) {
+    const noStatusPage = ['bnbchain_mcp', 'moonpay', 'minara'];
+    let rows = '';
+    MARKET_PROVIDER_ORDER.forEach(id => {
+        const d = status && status.providers && status.providers[id];
+        if (!d || (d.status_page_url == null && noStatusPage.includes(id))) {
+            rows += `<tr>
+                <td>${MARKET_PROVIDER_NAMES[id]}</td>
+                <td colspan="2" class="market-na">无公开 Status Page</td>
+            </tr>`;
+        } else if (d.error) {
+            rows += `<tr>
+                <td>${MARKET_PROVIDER_NAMES[id]}</td>
+                <td colspan="2" class="market-na market-fail-text">数据获取失败</td>
+            </tr>`;
+        } else {
+            const incidents = d.incidents_30d;
+            const mttrDisplay = formatMttr(d.mttr_minutes);
+            let incidentClass = '';
+            if (incidents === 0) incidentClass = ' market-green';
+            else if (incidents > 10) incidentClass = ' market-red';
+            rows += `<tr>
+                <td>${MARKET_PROVIDER_NAMES[id]}</td>
+                <td class="${incidentClass}">${incidents != null ? incidents : '—'}</td>
+                <td>${mttrDisplay}</td>
+            </tr>`;
+        }
+    });
+
+    return `
+    <div class="market-card">
+        <h3 class="market-card-title">服务可靠性（Status Page）</h3>
+        <table class="market-table">
+            <thead><tr><th>供应商</th><th>30d Incidents</th><th>MTTR</th></tr></thead>
+            <tbody>${rows}</tbody>
+        </table>
+        <div class="market-confidence status-pass">置信度：高（仅覆盖有公开 Status Page 的供应商）</div>
+    </div>`;
+}
+
+function renderMarketCard4(docs) {
+    let rows = '';
+    MARKET_PROVIDER_ORDER.forEach(id => {
+        const d = docs && docs.providers && docs.providers[id];
+        if (!d || d.total_doc_commits_30d == null) {
+            rows += `<tr>
+                <td>${MARKET_PROVIDER_NAMES[id]}</td>
+                <td class="market-na">—</td>
+                <td class="market-na">—</td>
+            </tr>`;
+        } else {
+            const ratio = d.breaking_change_ratio || 0;
+            const ratioText = (ratio * 100).toFixed(1) + '%';
+            const breakingIcon = ratio > 0 ? ' <span class="market-warn-icon">⚠️</span>' : '';
+            rows += `<tr>
+                <td>${MARKET_PROVIDER_NAMES[id]}</td>
+                <td>${d.total_doc_commits_30d}</td>
+                <td>${ratioText}${breakingIcon}</td>
+            </tr>`;
+        }
+    });
+
+    return `
+    <div class="market-card">
+        <h3 class="market-card-title">产品成熟度（文档变更密度）</h3>
+        <table class="market-table">
+            <thead><tr><th>供应商</th><th>近 30d 文档 Commits</th><th>Breaking Change 比例</th></tr></thead>
+            <tbody>${rows}</tbody>
+        </table>
+        <div class="market-confidence status-skip">置信度：中 — 仅追踪 changelog/docs 目录</div>
+    </div>`;
+}
+
+function renderMarketCard5(onchain) {
+    const PROVIDER_ORDER = ['privy', 'coinbase', 'crossmint', 'bnbchain_mcp', 'moonpay', 'minara'];
+
+    if (!onchain || !onchain.providers) {
+        return `
+        <div class="market-card market-card-placeholder">
+            <h3 class="market-card-title">终端活跃（链上数据）</h3>
+            <p class="market-placeholder-text">链上数据采集中，请稍候...</p>
+        </div>`;
+    }
+
+    let rows = '';
+    PROVIDER_ORDER.forEach(id => {
+        const d = onchain.providers[id];
+        const name = MARKET_PROVIDER_NAMES[id];
+        if (!d) {
+            rows += `<tr><td>${name}</td><td class="market-na" colspan="2">暂无数据</td></tr>`;
+        } else if (!d.trackable) {
+            rows += `<tr><td>${name}</td><td class="market-na" colspan="2" title="${d.reason}">架构不可追踪</td></tr>`;
+        } else if (d.active_wallets_30d == null) {
+            rows += `<tr><td>${name}</td><td class="market-na" colspan="2">数据获取失败</td></tr>`;
+        } else {
+            rows += `<tr>
+                <td>${name}</td>
+                <td>${formatNum(d.active_wallets_30d)}</td>
+                <td class="market-na" style="font-size:11px">月度新激活</td>
+            </tr>`;
+        }
+    });
+
+    return `
+    <div class="market-card">
+        <h3 class="market-card-title">终端活跃（链上数据）</h3>
+        <table class="market-table">
+            <thead><tr><th>供应商</th><th>30d 新激活钱包</th><th>说明</th></tr></thead>
+            <tbody>${rows}</tbody>
+        </table>
+        <div class="market-confidence status-pass">置信度：高（仅覆盖 Coinbase Smart Wallet，来源 BundleBear）</div>
+        <div class="market-confidence" style="color:var(--text-tertiary);font-size:11px;margin-top:4px">
+            ⚠️ 数据为月度新激活账户数，非存量活跃用户数。Privy/Crossmint 链上无法归因。
+        </div>
+    </div>`;
+}
+
+function renderMarketFreshness(npm, pypi, github, status, docs, onchain) {
+    const sources = [npm, pypi, github, status, docs, onchain].filter(Boolean);
+    if (sources.length === 0) return '<div class="market-freshness">数据更新时间未知</div>';
+
+    const timestamps = sources.map(s => s.collected_at).filter(Boolean).map(t => new Date(t).getTime());
+    if (timestamps.length === 0) return '<div class="market-freshness">数据更新时间未知</div>';
+
+    const oldest = Math.min(...timestamps);
+    const oldestDate = new Date(oldest);
+    const yyyy = oldestDate.getUTCFullYear();
+    const mm = String(oldestDate.getUTCMonth() + 1).padStart(2, '0');
+    const dd = String(oldestDate.getUTCDate()).padStart(2, '0');
+    const hh = String(oldestDate.getUTCHours()).padStart(2, '0');
+    const mi = String(oldestDate.getUTCMinutes()).padStart(2, '0');
+    const dateStr = `${yyyy}-${mm}-${dd} ${hh}:${mi} UTC`;
+
+    const ageMs = Date.now() - oldest;
+    const isStale = ageMs > 48 * 60 * 60 * 1000;
+    const staleWarning = isStale ? ' <span class="market-stale-warn">⚠️ 数据可能已过期</span>' : '';
+
+    return `<div class="market-freshness">数据更新于 ${dateStr}${staleWarning}</div>`;
 }
 
 document.addEventListener("DOMContentLoaded", () => {

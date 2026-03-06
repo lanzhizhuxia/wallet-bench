@@ -1,0 +1,110 @@
+{
+  "schema_version": "1.0",
+  "source": "github",
+  "collected_at": "2026-03-06T10:40:09+00:00",
+  "providers": {
+    "privy": {
+      "repos": [
+        {
+          "repo": "privy-io/privy-mcp-server",
+          "stars": 0,
+          "commits_30d": 1,
+          "open_issues_created_30d": 0,
+          "last_push": "2026-02-09T22:08:28Z"
+        }
+      ],
+      "total_stars": 0,
+      "total_commits_30d": 1,
+      "total_open_issues_created_30d": 0,
+      "latest_push": "2026-02-09T22:08:28Z",
+      "partial": false
+    },
+    "coinbase": {
+      "repos": [
+        {
+          "repo": "coinbase/agentkit",
+          "stars": 1133,
+          "commits_30d": 6,
+          "open_issues_created_30d": 15,
+          "last_push": "2026-03-03T01:11:16Z"
+        },
+        {
+          "repo": "coinbase/cdp-sdk-python",
+          "stars": 93,
+          "commits_30d": 0,
+          "open_issues_created_30d": 0,
+          "last_push": "2025-10-27T21:30:53Z"
+        }
+      ],
+      "total_stars": 1226,
+      "total_commits_30d": 6,
+      "total_open_issues_created_30d": 15,
+      "latest_push": "2026-03-03T01:11:16Z",
+      "partial": false
+    },
+    "crossmint": {
+      "repos": [
+        {
+          "repo": "Crossmint/crossmint-sdk",
+          "stars": 44,
+          "commits_30d": 24,
+          "open_issues_created_30d": 0,
+          "last_push": "2026-03-06T10:32:57Z"
+        },
+        {
+          "repo": "Crossmint/mcp-crossmint-checkout",
+          "stars": 1,
+          "commits_30d": 2,
+          "open_issues_created_30d": 0,
+          "last_push": "2026-02-09T21:35:15Z"
+        }
+      ],
+      "total_stars": 45,
+      "total_commits_30d": 26,
+      "total_open_issues_created_30d": 0,
+      "latest_push": "2026-03-06T10:32:57Z",
+      "partial": false
+    },
+    "bnbchain_mcp": {
+      "repos": [
+        {
+          "repo": "bnb-chain/bnbchain-mcp",
+          "stars": 51,
+          "commits_30d": 2,
+          "open_issues_created_30d": 0,
+          "last_push": "2026-03-04T15:19:36Z"
+        }
+      ],
+      "total_stars": 51,
+      "total_commits_30d": 2,
+      "total_open_issues_created_30d": 0,
+      "latest_push": "2026-03-04T15:19:36Z",
+      "partial": false
+    },
+    "moonpay": {
+      "repos": [],
+      "total_stars": null,
+      "total_commits_30d": null,
+      "total_open_issues_created_30d": null,
+      "latest_push": null,
+      "partial": false,
+      "note": "no public repos to track"
+    },
+    "minara": {
+      "repos": [
+        {
+          "repo": "Minara-AI/skills",
+          "stars": 26,
+          "commits_30d": 27,
+          "open_issues_created_30d": 1,
+          "last_push": "2026-03-02T05:53:16Z"
+        }
+      ],
+      "total_stars": 26,
+      "total_commits_30d": 27,
+      "total_open_issues_created_30d": 1,
+      "latest_push": "2026-03-02T05:53:16Z",
+      "partial": false
+    }
+  }
+}

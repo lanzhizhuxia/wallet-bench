@@ -1,0 +1,400 @@
+schema_version: "1.0"
+updated_at: "2026-03-06"
+
+# ============================================================
+# 链上归因规则 — WaaS 供应商工厂合约地址清单
+# 用途：Phase 2 链上数据采集，按 factory 地址归因 UserOps 到供应商
+# ============================================================
+
+attribution_rules:
+  entry_point: "0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789"  # ERC-4337 EntryPoint v0.6（各链固定）
+
+  providers:
+    # ----------------------------------------------------------
+    # Privy
+    # ----------------------------------------------------------
+    privy:
+      trackable: false
+      architecture: smart_wallet
+      reason: >
+        Privy 本身不部署工厂合约，而是作为中间层让开发者在 Dashboard 中选择底层 Smart Wallet 实现。
+        支持的底层实现包括：Coinbase Smart Wallet、ZeroDev Kernel、Alchemy Light Account、
+        Safe、Biconomy、Thirdweb。不同 Privy 客户可能使用不同的底层工厂，因此链上 UserOps
+        会归因到底层工厂（如 coinbase_smart_wallet），而非 Privy 本身。
+        无法从链上数据单独区分"经 Privy 创建"的钱包与"直接使用底层 SDK 创建"的钱包。
+        此外，Privy 的 Gas Sponsorship 也无法用于链上归因：Smart Wallet 路径的 bundlerUrl/paymasterUrl
+        由开发者在 Privy Dashboard 自行配置（Pimlico/ZeroDev/Alchemy/Biconomy/Coinbase），无统一专属地址；
+        Native Gas Sponsorship（EIP-7702）虽由 Privy 后端处理，但 paymaster 地址未公开。
+      investigation_log:
+        - date: "2026-03-06"
+          scope: "ISSUE-013 Privy Paymaster / Bundler 足迹调研"
+          methods_tried:
+            - "Privy 官方文档（gas sponsorship、smart wallets、native sponsorship）"
+            - "@privy-io/react-auth@3.16.0 SDK 源码反编译（bundler/paymaster provider 检测逻辑）"
+            - "Privy Go SDK e2e 测试代码（paymaster 地址验证）"
+            - "wallet-bench Privy adapter 实现分析"
+          findings:
+            - >
+              Smart Wallet 路径：bundlerUrl/paymasterUrl 从 Privy API 下发
+              （smart_wallet_config.configured_networks[].bundler_url/paymaster_url），
+              由开发者在 Dashboard 自行选择 provider（Pimlico/ZeroDev/Alchemy/Biconomy/Coinbase），
+              无 Privy 专属统一地址。默认 Bundler 为公共 Pimlico（https://public.pimlico.io/v2/{chainId}/rpc）。
+            - >
+              Native Gas Sponsorship（EIP-7702 + Kernel 智能合约，2025-Q4 新功能）：
+              Privy 后端处理 paymaster，但文档仅提及 "Paymasters partnered with Privy"，
+              未公开任何合约地址。
+            - >
+              Go SDK 测试中发现地址 0x2cc0c7981D846b9F2a16276556f6e8cb52BfB633，
+              经验证为 Alchemy Verifying Paymaster（Sepolia 测试网），非生产环境、非 Privy 专属。
+            - >
+              SDK 源码内嵌 5 家 provider 域名检测逻辑（Pimlico/ZeroDev/Alchemy/Biconomy/Coinbase），
+              用于 bundler/paymaster URL 识别，但不含任何硬编码 paymaster 合约地址。
+            - >
+              wallet-bench 的 Privy adapter（adapters/privy.py）使用 REST API /wallets + /wallets/{id}/rpc，
+              调用 eth_sendTransaction，不走 ERC-4337 UserOp 路径，因此无 paymaster 足迹。
+          conclusion: >
+            两条路径均无法归因：Smart Wallet paymaster 由开发者自配，Native Sponsorship 地址未公开。
+            确认链上无可识别足迹，不再投入时间。
+      notes: >
+        如果 Privy 客户选择 Coinbase Smart Wallet，其钱包会通过 CoinbaseSmartWalletFactory
+        部署，在链上表现为 coinbase_smart_wallet 而非 privy。
+        Privy 文档 (docs.privy.io) 不公开任何 Privy 专属的工厂合约地址。
+        底层实现类型可通过 SDK 的 smartWallet.type 属性获取：
+        'safe', 'kernel', 'light_account', 'biconomy', 'thirdweb', 'coinbase_smart_wallet'。
+      sources:
+        - url: "https://docs.privy.io/wallets/using-wallets/evm-smart-wallets/overview"
+          description: "Privy Smart Wallets 概览，列出 6 种底层实现"
+        - url: "https://docs.privy.io/wallets/using-wallets/evm-smart-wallets/setup/configuring-dashboard"
+          description: "Dashboard 配置页，确认无默认实现，需手动选择"
+        - url: "https://docs.privy.io/wallets/using-wallets/evm-smart-wallets/gas"
+          description: "Gas Sponsorship 文档，确认 paymaster 由开发者配置"
+        - url: "https://docs.privy.io/wallets/using-wallets/evm-smart-wallets/native-gas-sponsorship"
+          description: "Native Gas Sponsorship（EIP-7702），paymaster 地址未公开"
+        - url: "https://www.npmjs.com/package/@privy-io/react-auth"
+          description: "SDK 源码分析：内嵌 5 家 bundler/paymaster provider 域名检测"
+    # ----------------------------------------------------------
+    # Coinbase AgentKit / Coinbase Smart Wallet
+    # ----------------------------------------------------------
+    coinbase:
+      trackable: true
+      architecture: smart_wallet
+      chains:
+        - chain: base
+          factory_addresses:
+            - address: "0x0BA5ED0c6AA8c49038F819E587E2633c4A9F428a"
+              version: "v1.0"
+              source: "https://github.com/coinbase/smart-wallet/blob/v1.0.0/script/DeployFactory.s.sol"
+              verified: true
+              verification_details: >
+                1. 地址出自 coinbase/smart-wallet 官方 GitHub 仓库 v1.0.0 部署脚本
+                2. Etherscan 上已验证为 CoinbaseSmartWalletFactory（Exact Match）
+                3. Base 链部署记录（broadcast/DeployFactory.s.sol/8453/run-latest.json）确认
+                4. BundleBear 社区标签库确认归属 coinbase_smart_wallet
+            - address: "0xBA5ED110eFDBa3D005bfC882d75358ACBbB85842"
+              version: "v1.1"
+              source: "https://github.com/coinbase/smart-wallet/releases/tag/v1.1.0"
+              verified: true
+              verification_details: >
+                1. 地址出自 coinbase/smart-wallet 官方 GitHub v1.1.0 Release Notes
+                2. Etherscan 上已验证为 CoinbaseSmartWalletFactory（Exact Match）
+                3. v1.1 部署脚本（script/DeployFactory.s.sol at tag v1.1.0）确认
+                4. BundleBear 社区标签库确认归属 coinbase_smart_wallet
+
+        - chain: ethereum
+          factory_addresses:
+            - address: "0x0BA5ED0c6AA8c49038F819E587E2633c4A9F428a"
+              version: "v1.0"
+              source: "https://github.com/coinbase/smart-wallet/blob/main/broadcast/DeployFactory.s.sol/1/run-latest.json"
+              verified: true
+              verification_details: >
+                1. Ethereum mainnet 部署记录（chain ID 1）确认
+                2. Etherscan 已验证为 CoinbaseSmartWalletFactory
+            - address: "0xBA5ED110eFDBa3D005bfC882d75358ACBbB85842"
+              version: "v1.1"
+              source: "https://github.com/coinbase/smart-wallet/releases/tag/v1.1.0"
+              verified: true
+              verification_details: >
+                1. v1.1.0 Release Notes 列出的工厂地址
+                2. Etherscan 已验证为 CoinbaseSmartWalletFactory
+
+        - chain: optimism
+          factory_addresses:
+            - address: "0x0BA5ED0c6AA8c49038F819E587E2633c4A9F428a"
+              version: "v1.0"
+              source: "https://github.com/coinbase/smart-wallet/tree/main/broadcast/DeployFactory.s.sol"
+              verified: false
+              verification_details: "broadcast 目录中存在 chain ID 10 的部署记录，但未直接验证链上状态"
+
+        - chain: arbitrum
+          factory_addresses:
+            - address: "0x0BA5ED0c6AA8c49038F819E587E2633c4A9F428a"
+              version: "v1.0"
+              source: "https://github.com/coinbase/agentkit/blob/main/typescript/agentkit/src/wallet-providers/cdpSmartWalletProvider.ts"
+              verified: false
+              verification_details: "AgentKit 支持 arbitrum-mainnet，推断使用同一工厂（Safe Singleton Factory 跨链确定性部署）"
+
+        - chain: polygon
+          factory_addresses:
+            - address: "0x0BA5ED0c6AA8c49038F819E587E2633c4A9F428a"
+              version: "v1.0"
+              source: "https://github.com/coinbase/agentkit/blob/main/typescript/agentkit/src/wallet-providers/cdpSmartWalletProvider.ts"
+              verified: false
+              verification_details: "AgentKit 支持 polygon-mainnet，推断使用同一工厂（Safe Singleton Factory 跨链确定性部署）"
+
+      implementation_addresses:
+        v1.0: "0x000100abaad02f1cfC8Bbe32bD5a564817339E72"
+        v1.1: "0x00000110dCdEdC9581cb5eCB8467282f2926534d"
+
+      notes: >
+        Coinbase Smart Wallet 使用 Safe Singleton Factory 进行确定性部署（CREATE2），
+        理论上在 248 条链上使用相同地址。v1.0 和 v1.1 均使用 EntryPoint v0.6。
+        AgentKit 的 cdpSmartWalletProvider 通过 CDP API 创建 Smart Account，
+        底层使用相同的 CoinbaseSmartWalletFactory，不含独立工厂地址。
+        AgentKit 支持的网络：base, ethereum, polygon, arbitrum, optimism（+ 对应测试网）。
+        在 BundleBear 数据中，coinbase_smart_wallet 周活跃账户在 2025 年底持续增长，
+        2026-02 周激活量约 15 万。
+
+    # ----------------------------------------------------------
+    # Crossmint
+    # ----------------------------------------------------------
+    crossmint:
+      trackable: partial
+      architecture: smart_wallet
+      underlying_factory: zerodev_kernel
+      reason: >
+        ISSUE-012 反查结论：Crossmint 使用 ZeroDev Kernel 工厂部署 ERC-7579 模块化智能账户。
+        工厂地址 0xd703aae79538628d27099b8c4f621be4ccd142d5 在 BundleBear 社区标签库中已标注为
+        zerodev_kernel。链上无法区分 Crossmint 来源与直接使用 ZeroDev Kernel 的其他应用
+        （如 ZeroDev SDK 用户、其他基于 Kernel 的 WaaS）。
+      chains:
+        - chain: base-sepolia
+          factory_addresses:
+            - address: "0xd703aae79538628d27099b8c4f621be4ccd142d5"
+              label: zerodev_kernel
+              source: "ISSUE-012：通过 wallet-bench 测试钱包反查 EntryPoint v0.7 AccountDeployed 事件"
+              verified: true
+              verification_details: >
+                1. wallet-bench 运行 Crossmint adapter 创建测试钱包 0x490E6A6c74bfd538083938A108098c1c47eAa6E9
+                2. 查询 EntryPoint v0.7 (0x0000000071727de22e5e9d8baf0edac6f37da032) 的 AccountDeployed 事件
+                3. Block 38482363，TX 0x430bcd0add8d5b6ef10d2b46c68992c1fd77dc9f005a4dd82bdc5b9b5a2de379
+                4. AccountDeployed 事件 data 字段解码得到 factory = 0xd703aae79538628d27099b8c4f621be4ccd142d5
+                5. BundleBear 标签库确认该地址归属 zerodev_kernel
+                6. 部署交易日志包含 ModuleInstalled 事件，确认 ERC-7579 模块化架构
+      entrypoint: "0x0000000071727de22e5e9d8baf0edac6f37da032"  # EntryPoint v0.7（非 v0.6）
+      validator_module: "0x845adb2c711129d4f3966735ed98a9f09fc4ce57"
+      investigation_log:
+        - date: "2026-03-06"
+          scope: "ISSUE-012 Crossmint 链上工厂合约反查"
+          methods_tried:
+            - "wallet-bench Crossmint adapter 创建 Base Sepolia 测试钱包"
+            - "Base Sepolia RPC eth_getLogs 查询 EntryPoint v0.7 AccountDeployed 事件"
+            - "BundleBear 工厂标签库交叉验证"
+            - "部署交易日志事件分析（ModuleInstalled / AccountDeployed）"
+          findings:
+            - >
+              测试钱包 0x490E6A6c74bfd538083938A108098c1c47eAa6E9 于 Block 38482363 部署，
+              factory = 0xd703aae79538628d27099b8c4f621be4ccd142d5（BundleBear 标签：zerodev_kernel）。
+            - >
+              Crossmint 使用 EntryPoint v0.7（0x0000000071727de22e5e9d8baf0edac6f37da032），
+              而非 v0.6（0x5FF137D4...）。钱包是 ERC-1967 升级代理合约（61 bytes，含 implementation slot）。
+            - >
+              Validator 模块地址 0x845adb2c711129d4f3966735ed98a9f09fc4ce57，
+              出现在 UserOp nonce key 和 ModuleInstalled 事件中，推测为 ECDSA Validator。
+            - >
+              Paymaster 为零地址（无 gas 赞助），bundler 地址为 0xb052d58410a2c54e27d3d62f99bf8b2bb27a8d23。
+            - >
+              由于 ZeroDev Kernel 是通用工厂，在 BundleBear 中有 7 个已知地址，
+              无法仅凭 factory 区分 Crossmint 来源。但可结合 validator module 或 bundler 地址辅助归因。
+          conclusion: >
+            Crossmint 使用 ZeroDev Kernel 工厂，链上归因为 partial：
+            能追踪到 Kernel 工厂级别，但无法精确区分 Crossmint 与其他 Kernel 用户。
+            如需精确归因，需进一步研究 Crossmint 专用的 validator module 或 bundler 地址是否具有唯一性。
+      notes: >
+        Crossmint 底层使用 ZeroDev Kernel（ERC-7579 模块化智能账户框架）。
+        工厂地址在测试网（Base Sepolia）已验证，mainnet 是否使用相同地址需进一步确认
+        （CREATE2 确定性部署通常保持跨链/跨网一致）。
+        潜在的精确归因路径：
+        1) Crossmint bundler 地址（0xb052d584...）如果在 mainnet 上也使用同一地址，可作为辅助过滤条件
+        2) Crossmint validator module（0x845adb2c...）如果是 Crossmint 定制的，可作为更精确的归因依据
+        3) Crossmint 使用 EntryPoint v0.7，而非更常见的 v0.6，这本身可缩小候选范围
+      sources:
+        - url: "https://docs.crossmint.com/wallets/architecture"
+          description: "确认 ERC-4337 + ERC-7579 架构"
+        - url: "https://sepolia.basescan.org/tx/0x430bcd0add8d5b6ef10d2b46c68992c1fd77dc9f005a4dd82bdc5b9b5a2de379"
+          description: "钱包部署交易（Base Sepolia Block 38482363）"
+        - url: "https://github.com/Jam516/BundleBear/blob/main/models/erc4337/labels/erc4337_labels_factories.sql"
+          description: "BundleBear 工厂标签库，确认 0xd703aae... = zerodev_kernel"
+
+    # ----------------------------------------------------------
+    # BNB Chain MCP
+    # ----------------------------------------------------------
+    bnbchain_mcp:
+      trackable: false
+      architecture: eoa
+      reason: "本地 EOA 钱包，无工厂合约。@bnb-chain/mcp 生成本地密钥对，不涉及链上合约部署。"
+
+    # ----------------------------------------------------------
+    # MoonPay
+    # ----------------------------------------------------------
+    moonpay:
+      trackable: false
+      architecture: hd_wallet
+      reason: "HD 钱包架构，链上无工厂合约。MoonPay 使用传统 HD 派生路径生成 EOA 地址。"
+
+    # ----------------------------------------------------------
+    # Minara
+    # ----------------------------------------------------------
+    minara:
+      trackable: false
+      architecture: custodial
+      reason: "托管钱包，链上不可追踪。Minara 通过托管后端管理密钥，无公开链上工厂合约。"
+
+# ============================================================
+# BundleBear 社区工厂标签（参考数据）
+# 来源：https://github.com/Jam516/BundleBear/blob/main/models/erc4337/labels/erc4337_labels_factories.sql
+# ============================================================
+bundlebear_factory_labels:
+  description: >
+    BundleBear（by 0xKofi）维护的 ERC-4337 工厂地址标签库，用于链上归因。
+    以下仅摘录与 wallet-bench 供应商相关的条目，完整列表含 22 个供应商共 59 个地址。
+  source: "https://raw.githubusercontent.com/Jam516/BundleBear/main/models/erc4337/labels/erc4337_labels_factories.sql"
+
+  coinbase_smart_wallet:
+    - "0x0ba5ed0c6aa8c49038f819e587e2633c4a9f428a"  # v1.0
+    - "0xba5ed110efdba3d005bfc882d75358acbbb85842"  # v1.1
+
+  # Privy 可能使用的底层工厂（取决于客户配置）
+  zerodev_kernel:
+    - "0xaee9762ce625e0a8f7b184670fb57c37bfe1d0f1"
+    - "0x4e4946298614fc299b50c947289f4ad0572cb9ce"
+    - "0x19b03a419124b77a7659a0fdab7903c6f40183e5"
+    - "0x5de4839a76cf55d0c90e2061ef4386d962e15ae3"
+    - "0x33ddf684dcc6937ffe59d8405aa80c41fb518c5c"
+    - "0xaac5d4240af87249b3f71bc8e4a2cae074a3e419"
+    - "0xd703aae79538628d27099b8c4f621be4ccd142d5"
+
+  alchemy_light_account:
+    - "0x000000893a26168158fbeadd9335be5bc96592e2"
+    - "0x00004ec70002a32400f8ae005a26081065620d20"
+    - "0x0000000000400cdfef5e2714e63d8040b700bc24"
+    - "0x000000000019d2ee9f2729a65afe20bb0020aefc"
+
+  biconomy:
+    - "0x000000f9ee1842bb72f6bbdd75e6d3d4e3e9594c"
+    - "0x000000a56aaca3e9a4c479ea6b6cd0dbcb6634f5"
+    - "0x000000001d1d5004a02bafab9de2d6ce5b7b13de"
+    - "0x000000c3a93d2c5e02cb053ac675665b1c4217f9"
+    - "0x000000226cada0d8b36034f5d5c06855f59f6f3a"
+    - "0x2828a0e0f36d8d8beae95f00e2bbf235e4230fac"
+    - "0x00000024115aa990f0bae0b6b0d5b8f68b684cd6"
+    - "0x00e58df70fab983a324c4c068c82d20407579fac"
+
+  thirdweb_default:
+    - "0x85e23b94e7f5e9cc1ff78bce78cfb15b81f0df00"
+    - "0x4be0ddfebca9a5a4a617dee4dece99e7c862dceb"
+
+  safe:
+    # Safe4337Module 在 BundleBear 中单独追踪，不在 factories 标签中
+    # 但在 Account Activation 数据中占最大份额
+    note: "Safe4337Module 在 BundleBear apps 标签中追踪，非 factories 标签"
+
+# ============================================================
+# Dune 社区 Query 候选
+# ============================================================
+dune_query_candidates:
+  - description: "BundleBear — ERC-4337 Account Activation by Factory（最权威的工厂归因数据源）"
+    query_url: "https://www.bundlebear.com/erc4337-account-activation/all"
+    notes: >
+      BundleBear 由 0xKofi 维护，数据源为 Allium，赞助商 Pimlico + Biconomy。
+      GitHub 开源：https://github.com/Jam516/BundleBear
+      包含每周新账户激活数按工厂分组，已标注 coinbase_smart_wallet 等名称。
+      可直接用于 Phase 2 的 Coinbase Smart Wallet 活跃度追踪。
+
+  - description: "BundleBear 工厂标签 SQL（可直接复用的地址-名称映射）"
+    query_url: "https://github.com/Jam516/BundleBear/blob/main/models/erc4337/labels/erc4337_labels_factories.sql"
+    notes: >
+      包含 22 个供应商共 59 个工厂地址的完整映射。
+      可作为 Phase 2 Dune query 的 factory 白名单基础。
+
+  - description: "Dune 社区 ERC-4337 Dashboard（需登录访问）"
+    query_url: "https://dune.com/niftytable/account-abstraction-overview"
+    notes: "403 受限，需 Dune 账户登录。niftytable 是知名 AA 数据分析师。"
+
+  - description: "Dune 社区 Account Abstraction Dashboard（sixdegree）"
+    query_url: "https://dune.com/sixdegree/account-abstraction-overview"
+    notes: "403 受限，需 Dune 账户登录。"
+
+  - description: "JiffyScan — ERC-4337 Factory 浏览器"
+    query_url: "https://jiffyscan.xyz/factories"
+    notes: >
+      JiffyScan 提供 Factory 页面，但 WebFetch 时数据未加载（JS 渲染）。
+      API 文档：https://jiffyscan.mintlify.app/welcome
+      可通过 JiffyScan API 编程获取 factory 数据。
+
+# ============================================================
+# 机器人过滤建议
+# ============================================================
+robot_filter_notes: |
+  以下规则用于在 Phase 2 链上数据采集中过滤机器人/测试流量：
+
+  1. 高频 UserOp 过滤：
+     - 同一 sender 地址在 1 分钟内发起 > 10 笔 UserOp → 标记为疑似机器人
+     - 同一 sender 在 24 小时内发起 > 1000 笔 UserOp → 自动排除
+
+  2. 已知测试/水龙头地址过滤：
+     - 来自已知 faucet 合约的 UserOp → 排除
+     - sender 地址 ETH 余额来源 100% 为 faucet → 标记
+
+  3. 新合约冷启动过滤：
+     - Smart Account 创建后 24 小时内的 UserOp → 标记为可能的测试/部署
+     - 但不自动排除（部分正常用户也会立即使用）
+
+  4. 批量空操作过滤：
+     - callData 为空或仅包含 0x 的 UserOp → 排除（心跳/探针）
+     - 连续相同 callData 的 UserOp（hash 相同）→ 标记
+
+  5. 合约交互模式过滤：
+     - 仅与同一目标合约交互且无资金流动的 sender → 标记为可能的自动化脚本
+
+  6. BundleBear 参考：
+     - BundleBear Account Activation 数据中的 "wifi_map" 工厂产生大量账户
+       （周峰值 36 万），需确认是否与目标供应商相关，否则应排除。
+
+# ============================================================
+# 调研总结
+# ============================================================
+research_summary:
+  total_providers: 6
+  trackable_providers: 1  # 仅 Coinbase 有可验证的专属工厂地址
+  partially_trackable: 1  # Crossmint（使用 ZeroDev Kernel 通用工厂，可追踪但归因不精确）
+  not_trackable: 4        # Privy（paymaster 由开发者自配）、BNB Chain MCP、MoonPay、Minara
+
+  key_findings:
+    - finding: "Coinbase Smart Wallet 是唯一有完全可验证工厂地址的供应商"
+      confidence: high
+      details: >
+        两个工厂地址（v1.0 和 v1.1）均来自官方 GitHub 仓库，
+        在 Etherscan 上已验证源码，BundleBear 社区标签确认归属。
+
+    - finding: "Privy 不部署自有工厂，复用第三方工厂，且 paymaster/bundler 均无法归因"
+      confidence: high
+      details: >
+        Privy 文档明确列出 6 种底层实现供开发者选择，
+        链上无法区分 Privy 创建的钱包与直接使用底层 SDK 创建的钱包。
+        ISSUE-013 进一步调研确认：paymaster/bundler 由开发者自配（无统一地址），
+        Native Gas Sponsorship 地址未公开，两条路径均确认不可行。
+
+    - finding: "Crossmint 使用 ZeroDev Kernel 工厂，链上可部分归因"
+      confidence: high
+      details: >
+        ISSUE-012 通过 wallet-bench 测试钱包反查确认：Crossmint 在 Base Sepolia 使用
+        ZeroDev Kernel 工厂 (0xd703aae...) + EntryPoint v0.7 部署 ERC-7579 模块化智能账户。
+        BundleBear 标签库已标注该地址为 zerodev_kernel。链上可追踪到 Kernel 工厂级别，
+        但无法精确区分 Crossmint 与其他 Kernel 用户。潜在精确归因路径：
+        bundler 地址 (0xb052d584...) 或 validator module (0x845adb2c...) 的唯一性验证。
+
+    - finding: "BundleBear 是最权威的 ERC-4337 工厂归因数据源"
+      confidence: high
+      details: >
+        开源项目，维护 59 个已标注工厂地址（22 个供应商），
+        提供每周账户激活数据按工厂分组。可直接用于 Phase 2。
