@@ -817,6 +817,7 @@ def collect_onchain() -> dict:
       - ERC-4337: Smart Wallet factory activations ("factory - xxx")
       - EIP-7702: EOA delegation authorizations ("eip7702 - xxx")
 
+    Fetches daily granularity and builds a 30-day time series per provider.
     Coinbase has both dimensions (factory + 7702 impl).
     Crossmint tracked as upper-bound via ZeroDev Kernel factory.
     Other providers marked not_trackable with reasons.
@@ -824,30 +825,34 @@ def collect_onchain() -> dict:
     On failure, falls back to the last successful snapshot marked as stale.
     """
     now = datetime.now(timezone.utc).isoformat(timespec="seconds")
+    today_str = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     providers: dict = {}
-    latest_month: str | None = None
+    target_dates: list[str] = []
     fetch_ok = False
 
-    # 1. 采集 BundleBear erc4337-activation 数据（包含 ERC-4337 + EIP-7702 双维度，无需认证）
-    url = "https://bundlebear-api.onrender.com/erc4337-activation?chain=all&timeframe=month"
-    erc4337_data: dict[str, int] = {}   # BundleBear label -> count
-    eip7702_data: dict[str, int] = {}   # BundleBear label -> count
+    # 1. 采集 BundleBear erc4337-activation 日维度数据（包含 ERC-4337 + EIP-7702 双维度，无需认证）
+    url = "https://bundlebear-api.onrender.com/erc4337-activation?chain=all&timeframe=day"
+    # Nested structure: date -> BundleBear label -> count
+    erc4337_data: dict[str, dict[str, int]] = {}
+    eip7702_data: dict[str, dict[str, int]] = {}
     try:
         resp = _get(url)
         data = resp.json()
         rows = data.get("new_users_provider_chart", [])
-        # 取最近一个完整月的数据
-        # BundleBear 的当月数据可能不完整，优先使用上一个完整月
-        all_months: set[str] = set()
+        # 收集所有日期，排除今天（可能不完整）
+        all_dates: set[str] = set()
         for row in rows:
             date = row.get("DATE", "")
-            if date:
-                all_months.add(date)
-        sorted_months = sorted(all_months, reverse=True)
-        # 当前月（可能不完整）用第二新的月份；若只有一个月则用它
-        latest_month = sorted_months[1] if len(sorted_months) > 1 else (sorted_months[0] if sorted_months else None)
+            if date and date != today_str:
+                all_dates.add(date)
+        sorted_dates = sorted(all_dates, reverse=True)
+        # 取最近 30 天
+        target_dates = sorted(sorted_dates[:30])
+        target_set = set(target_dates)
+
         for row in rows:
-            if row.get("DATE") != latest_month:
+            date = row.get("DATE", "")
+            if date not in target_set:
                 continue
             provider_raw = row.get("PROVIDER", "")
             count = row.get("NUM_ACCOUNTS")
@@ -857,13 +862,27 @@ def collect_onchain() -> dict:
             # 分离两个维度的数据
             if provider_raw.startswith("factory - "):
                 label = provider_raw[len("factory - "):]
-                erc4337_data[label] = erc4337_data.get(label, 0) + count
+                erc4337_data.setdefault(date, {})
+                erc4337_data[date][label] = erc4337_data[date].get(label, 0) + count
             elif provider_raw.startswith("eip7702 - "):
                 label = provider_raw[len("eip7702 - "):]
-                eip7702_data[label] = eip7702_data.get(label, 0) + count
+                eip7702_data.setdefault(date, {})
+                eip7702_data[date][label] = eip7702_data[date].get(label, 0) + count
             # Safe4337Module / Other / unknown 等忽略（不归属特定供应商）
-        log_info("bundlebear fetch ok", rows=len(rows), latest_month=latest_month,
-                 erc4337_labels=len(erc4337_data), eip7702_labels=len(eip7702_data))
+        erc4337_labels = {
+            label
+            for date in target_dates
+            for label in erc4337_data.get(date, {})
+        }
+        eip7702_labels = {
+            label
+            for date in target_dates
+            for label in eip7702_data.get(date, {})
+        }
+        log_info("bundlebear fetch ok", rows=len(rows), num_days=len(target_dates),
+                 series_start=target_dates[0] if target_dates else None,
+                 series_end=target_dates[-1] if target_dates else None,
+                 erc4337_labels=len(erc4337_labels), eip7702_labels=len(eip7702_labels))
         fetch_ok = True
     except Exception as exc:
         log_error("bundlebear fetch failed", error=str(exc))
@@ -882,6 +901,16 @@ def collect_onchain() -> dict:
             return existing
         log_error("no historical snapshot available, returning empty onchain data")
 
+    # --- Helper: build daily series for a given provider ---
+    def _build_series(label_4337: str | None, label_7702: str | None) -> list[dict]:
+        series = []
+        for d in target_dates:
+            c4337 = erc4337_data.get(d, {}).get(label_4337, 0) if label_4337 else 0
+            c7702 = eip7702_data.get(d, {}).get(label_7702, 0) if label_7702 else None
+            total = c4337 + (c7702 or 0)
+            series.append({"date": d, "erc4337": c4337, "eip7702": c7702, "total": total})
+        return series
+
     # 3. 可追踪供应商：Coinbase（ERC-4337 + EIP-7702 双维度）
     for label_4337, provider_id in BUNDLEBEAR_4337_LABELS.items():
         label_7702 = None
@@ -897,41 +926,49 @@ def collect_onchain() -> dict:
                 "total_onchain_footprint": None,
                 "error": "BundleBear API fetch failed",
                 "source": "bundlebear",
+                "daily_series": None,
             }
         else:
-            c4337 = erc4337_data.get(label_4337)
-            c7702 = eip7702_data.get(label_7702) if label_7702 else None
-            total = (c4337 or 0) + (c7702 or 0) if (c4337 is not None or c7702 is not None) else None
+            series = _build_series(label_4337, label_7702)
+            sum_4337 = sum(pt["erc4337"] for pt in series)
+            sum_7702 = sum(pt["eip7702"] for pt in series if pt["eip7702"] is not None)
+            sum_7702 = sum_7702 if label_7702 else None
+            total = sum_4337 + (sum_7702 or 0)
             providers[provider_id] = {
                 "trackable": True,
-                "erc4337_active_wallets_30d": c4337,
-                "eip7702_live_accounts": c7702,
+                "erc4337_active_wallets_30d": sum_4337,
+                "eip7702_live_accounts": sum_7702,
                 "total_onchain_footprint": total,
                 "source": "bundlebear",
                 "bundlebear_labels": {
                     "erc4337": label_4337,
                     **({"eip7702": label_7702} if label_7702 else {}),
                 },
-                "note": "ERC-4337 + EIP-7702 双维度。4337=月度新激活智能钱包，7702=月度新授权 EOA。两者不重叠。",
+                "note": "ERC-4337 + EIP-7702 双维度。4337=日度新激活智能钱包，7702=日度新授权 EOA。两者不重叠。30d 为时间序列求和。",
+                "daily_series": series,
             }
             log_info("onchain data", provider=provider_id,
-                     erc4337=c4337, eip7702=c7702, total=total)
+                     erc4337=sum_4337, eip7702=sum_7702, total=total,
+                     series_days=len(series))
 
     # 4. Crossmint（partial tracking，上界估计）
     if fetch_ok:
-        crossmint_count = erc4337_data.get(BUNDLEBEAR_CROSSMINT_FACTORY_LABEL)
+        series_cm = _build_series(BUNDLEBEAR_CROSSMINT_FACTORY_LABEL, None)
+        sum_cm = sum(pt["erc4337"] for pt in series_cm)
         providers[CROSSMINT_PROVIDER_ID] = {
             "trackable": "partial",
-            "erc4337_active_wallets_30d": crossmint_count,
+            "erc4337_active_wallets_30d": sum_cm,
             "eip7702_live_accounts": None,
-            "total_onchain_footprint": crossmint_count,
+            "total_onchain_footprint": sum_cm,
             "source": "bundlebear",
             "confidence": "medium",
             "bundlebear_labels": {"erc4337": BUNDLEBEAR_CROSSMINT_FACTORY_LABEL},
             "note": "上界估计：factory 0xd703aae...（ZeroDev Kernel）含 Crossmint + 其他 Kernel 客户。测试网 Crossmint 占 67%。",
+            "daily_series": series_cm,
         }
         log_info("onchain data", provider=CROSSMINT_PROVIDER_ID,
-                 erc4337=crossmint_count, confidence="medium-upper-bound")
+                 erc4337=sum_cm, confidence="medium-upper-bound",
+                 series_days=len(series_cm))
     else:
         providers[CROSSMINT_PROVIDER_ID] = {
             "trackable": "partial",
@@ -940,6 +977,7 @@ def collect_onchain() -> dict:
             "total_onchain_footprint": None,
             "error": "BundleBear API fetch failed",
             "source": "bundlebear",
+            "daily_series": None,
         }
 
     # 5. 不可追踪供应商
@@ -952,27 +990,32 @@ def collect_onchain() -> dict:
                 "eip7702_live_accounts": None,
                 "total_onchain_footprint": None,
                 "reason": ONCHAIN_NOT_TRACKABLE.get(pid, "unknown"),
+                "daily_series": None,
             }
 
     for provider in providers.values():
         if provider.get("trackable") is True or provider.get("trackable") == "partial":
             provider["active_wallets_30d"] = provider.get("total_onchain_footprint")
 
+    latest_date = target_dates[-1] if target_dates else None
     return {
-        "schema_version": "3.0",
+        "schema_version": "4.0",
         "source": "bundlebear",
         "collected_at": now,
         "period": "last-30d",
+        "granularity": "daily",
         "data_freshness": {
             "sla": "T+1",
-            "latest_data_month": latest_month,
+            "latest_data_date": latest_date,
+            "series_start": target_dates[0] if target_dates else None,
+            "series_end": latest_date,
+            "num_days": len(target_dates),
             "collection_status": "success",
         },
         "stale": False,
         "stale_since": None,
         "providers": providers,
     }
-
 
 # ---------------------------------------------------------------------------
 # Output helpers

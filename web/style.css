@@ -1619,6 +1619,7 @@ button {
   white-space: nowrap;
 }
 
+
 /* Responsive */
 @media (max-width: 1080px) {
   .radar-layout {
@@ -2561,10 +2562,18 @@ td.defi-difficulty { font-size: 0.82rem; white-space: nowrap; text-align: center
     font-style: italic;
 }
 
+.market-chart-container {
+    margin-top: var(--space-m);
+    height: 220px;
+    position: relative;
+}
+
+
 /* Mobile responsive */
 @media (max-width: 700px) {
   .market-bar-label { width: 100px; font-size: 12px; }
   .market-bar-value { width: 70px; font-size: 12px; }
   .market-card { padding: var(--space-m); }
   .market-table { font-size: 12px; }
+  .market-chart-container { height: 160px; }
 }

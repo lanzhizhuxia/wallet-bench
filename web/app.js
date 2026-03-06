@@ -2573,6 +2573,8 @@ function renderMarketTab(npm, pypi, github, status, docs, onchain) {
     html += renderMarketFreshness(npm, pypi, github, status, docs, onchain);
 
     container.innerHTML = html;
+    // Initialize onchain daily chart after DOM insertion
+    initOnchainDailyChart(onchain);
 }
 
 function formatNum(n) {
@@ -2798,7 +2800,6 @@ function renderMarketCard5(onchain) {
 
     // 数据新鲜度
     const freshness = onchain.data_freshness || {};
-    const dataMonth = freshness.latest_data_month || '—';
     const sla = freshness.sla || 'T+1';
 
     return `
@@ -2810,14 +2811,134 @@ function renderMarketCard5(onchain) {
             <thead><tr><th>供应商</th><th>ERC-4337</th><th>EIP-7702</th><th>合计 (30d)</th></tr></thead>
             <tbody>${rows}</tbody>
         </table>
-        <div class="market-data-month">数据月份：${dataMonth} ｜ 时效：${sla}</div>
+        <div class="market-chart-container">
+            <canvas id="onchain-daily-chart"></canvas>
+        </div>
+        <div class="market-data-month">数据范围：${freshness.series_start || '—'} ~ ${freshness.series_end || '—'} (${freshness.num_days || '—'}d) ｜ 时效：${sla}</div>
         <div class="market-confidence status-pass">置信度：高（Coinbase 双维度覆盖，Crossmint 上界估计，来源 BundleBear）</div>
         <div class="market-confidence" style="color:var(--text-tertiary);font-size:11px;margin-top:4px">
-            ⚠️ ERC-4337 = 月度新激活智能钱包，EIP-7702 = 月度新授权 EOA，两者不重叠。Crossmint 为 ZeroDev Kernel 工厂上界。
+            ⚠️ ERC-4337 = 日度新激活智能钱包，EIP-7702 = 日度新授权 EOA，两者不重叠。30d 合计为时间序列求和。Crossmint 为 ZeroDev Kernel 工厂上界。
         </div>
-        <div class="market-upgrade-date">口径升级：2026-03 — 新增 EIP-7702 维度，schema v3.0</div>
+        <div class="market-upgrade-date">口径升级：2026-03 — 新增 EIP-7702 维度 + 日维度时间序列，schema v4.0</div>
     </div>`;
 }
+
+function initOnchainDailyChart(onchain) {
+    if (!onchain || !onchain.providers) return;
+    const canvas = document.getElementById('onchain-daily-chart');
+    if (!canvas) return;
+    
+    const coinbase = onchain.providers.coinbase;
+    const crossmint = onchain.providers.crossmint;
+    
+    if (!coinbase?.daily_series?.length) return;
+    
+    const labels = coinbase.daily_series.map(p => p.date.slice(5)); // "MM-DD"
+    
+    const datasets = [];
+    
+    // Coinbase total (solid line)
+    datasets.push({
+        label: 'Coinbase (Total)',
+        data: coinbase.daily_series.map(p => p.total),
+        borderColor: getCssVar('--brand-yellow'),
+        backgroundColor: 'transparent',
+        borderWidth: 2,
+        tension: 0.3,
+        pointRadius: 0,
+        pointHitRadius: 8,
+    });
+    
+    // Coinbase ERC-4337 (thin dashed)
+    datasets.push({
+        label: 'Coinbase ERC-4337',
+        data: coinbase.daily_series.map(p => p.erc4337),
+        borderColor: getCssVar('--color-pass'),
+        backgroundColor: 'transparent',
+        borderWidth: 1.5,
+        borderDash: [4, 2],
+        tension: 0.3,
+        pointRadius: 0,
+        pointHitRadius: 8,
+    });
+    
+    // Coinbase EIP-7702 (thin dotted)
+    datasets.push({
+        label: 'Coinbase EIP-7702',
+        data: coinbase.daily_series.map(p => p.eip7702 || 0),
+        borderColor: getCssVar('--color-inconclusive'),
+        backgroundColor: 'transparent',
+        borderWidth: 1.5,
+        borderDash: [2, 3],
+        tension: 0.3,
+        pointRadius: 0,
+        pointHitRadius: 8,
+    });
+    
+    // Crossmint (if available)
+    if (crossmint?.daily_series?.length) {
+        datasets.push({
+            label: 'Crossmint ≈上界',
+            data: crossmint.daily_series.map(p => p.total),
+            borderColor: getCssVar('--color-skip'),
+            backgroundColor: 'transparent',
+            borderWidth: 1.5,
+            borderDash: [6, 3],
+            tension: 0.3,
+            pointRadius: 0,
+            pointHitRadius: 8,
+        });
+    }
+
+    new Chart(canvas, {
+        type: 'line',
+        data: { labels, datasets },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: { mode: 'index', intersect: false },
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'bottom',
+                    labels: {
+                        color: getCssVar('--text-secondary'),
+                        font: { size: 11, family: getCssVar('--font-body') },
+                        boxWidth: 20,
+                        padding: 12,
+                    }
+                },
+                tooltip: {
+                    backgroundColor: getCssVar('--bg-elevated'),
+                    titleColor: getCssVar('--text-primary'),
+                    bodyColor: getCssVar('--text-secondary'),
+                    borderColor: getCssVar('--bg-border'),
+                    borderWidth: 1,
+                    callbacks: {
+                        label: function(ctx) {
+                            return ctx.dataset.label + ': ' + ctx.parsed.y.toLocaleString('en-US');
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    ticks: { color: getCssVar('--text-tertiary'), font: { size: 10 }, maxRotation: 0, autoSkip: true, maxTicksLimit: 10 },
+                    grid: { color: 'rgba(255,255,255,0.04)' },
+                },
+                y: {
+                    ticks: {
+                        color: getCssVar('--text-tertiary'),
+                        font: { size: 10 },
+                        callback: function(v) { return v >= 1000 ? (v/1000).toFixed(0) + 'k' : v; }
+                    },
+                    grid: { color: 'rgba(255,255,255,0.04)' },
+                }
+            }
+        }
+    });
+}
+
 
 function renderMarketFreshness(npm, pypi, github, status, docs, onchain) {
     const sources = [npm, pypi, github, status, docs, onchain].filter(Boolean);
