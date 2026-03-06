@@ -2568,6 +2568,28 @@ td.defi-difficulty { font-size: 0.82rem; white-space: nowrap; text-align: center
     position: relative;
 }
 
+.market-card-subtitle {
+    color: var(--text-secondary);
+    font-size: 12px;
+    margin: -4px 0 var(--space-s) 0;
+}
+
+.market-card-insight {
+    color: var(--text-secondary);
+    font-size: 12px;
+    padding: var(--space-xs) var(--space-s);
+    background: var(--bg-subtle);
+    border-radius: var(--radius-xs);
+    margin-top: var(--space-m);
+    line-height: 1.5;
+}
+
+.market-coverage-footnote {
+    color: var(--text-tertiary);
+    font-size: 11px;
+    margin-top: var(--space-xs);
+}
+
 
 /* Mobile responsive */
 @media (max-width: 700px) {

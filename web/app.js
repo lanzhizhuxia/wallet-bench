@@ -2741,7 +2741,7 @@ function renderMarketCard5(onchain) {
     if (!onchain || !onchain.providers) {
         return `
         <div class="market-card market-card-placeholder">
-            <h3 class="market-card-title">终端活跃度代理指标（链上数据）</h3>
+            <h3 class="market-card-title">可观测用户激活（链上代理）</h3>
             <p class="market-placeholder-text">链上数据采集中，请稍候...</p>
         </div>`;
     }
@@ -2753,20 +2753,15 @@ function renderMarketCard5(onchain) {
         staleWarning = `<div class="market-stale-banner">⚠️ 链上数据采集失败，当前显示 ${staleSince} 的缓存数据</div>`;
     }
 
-    // 表格行
+    // 表格行：只展示可追踪的供应商
     let rows = '';
     let trackableCount = 0;
+    let notTrackableNames = [];
     PROVIDER_ORDER.forEach(id => {
         const d = onchain.providers[id];
         const name = MARKET_PROVIDER_NAMES[id];
-
-        if (!d) {
-            rows += `<tr><td>${name}</td><td class="market-na" colspan="3">暂无数据</td></tr>`;
-            return;
-        }
-
-        if (d.trackable === false) {
-            rows += `<tr><td>${name}</td><td class="market-na" colspan="3" title="${d.reason || ''}">架构不可追踪</td></tr>`;
+        if (!d || d.trackable === false) {
+            if (d) notTrackableNames.push(name);
             return;
         }
 
@@ -2793,8 +2788,6 @@ function renderMarketCard5(onchain) {
                     <td class="market-green">${formatNum(total)}</td>
                 </tr>`;
             }
-        } else {
-             rows += `<tr><td>${name}</td><td class="market-na" colspan="3">数据格式未知</td></tr>`;
         }
     });
 
@@ -2802,23 +2795,28 @@ function renderMarketCard5(onchain) {
     const freshness = onchain.data_freshness || {};
     const sla = freshness.sla || 'T+1';
 
+    // 不可观测供应商覆盖条
+    const notTrackableNote = notTrackableNames.length
+        ? `<div class="market-coverage-footnote">不可观测（${notTrackableNames.length}）：${notTrackableNames.join('、')} — 架构原因无法链上归因</div>`
+        : '';
+
     return `
     <div class="market-card${onchain.stale ? ' market-card-stale' : ''}">
-        <h3 class="market-card-title">终端活跃度代理指标（链上数据）</h3>
-        <div class="market-coverage-badge">覆盖率：${trackableCount}/${PROVIDER_ORDER.length} 供应商可追踪</div>
+        <h3 class="market-card-title">可观测用户激活（链上代理）</h3>
+        <div class="market-card-subtitle">衡量最近30日新增可用钱包账户，非 DAU/MAU</div>
+        <div class="market-coverage-badge">可观测 ${trackableCount}/${PROVIDER_ORDER.length} 供应商</div>
         ${staleWarning}
         <table class="market-table">
-            <thead><tr><th>供应商</th><th>ERC-4337</th><th>EIP-7702</th><th>合计 (30d)</th></tr></thead>
+            <thead><tr><th>供应商</th><th>智能账户新增</th><th>EOA 授权新增</th><th>30日新增激活（可观测）</th></tr></thead>
             <tbody>${rows}</tbody>
         </table>
         <div class="market-chart-container">
             <canvas id="onchain-daily-chart"></canvas>
         </div>
+        <div class="market-card-insight">该指标回答：谁在最近30天持续新增可用钱包账户。不能回答：真实活跃用户数 / 留存率。</div>
+        ${notTrackableNote}
         <div class="market-data-month">数据范围：${freshness.series_start || '—'} ~ ${freshness.series_end || '—'} (${freshness.num_days || '—'}d) ｜ 时效：${sla}</div>
-        <div class="market-confidence status-pass">置信度：高（Coinbase 双维度覆盖，Crossmint 上界估计，来源 BundleBear）</div>
-        <div class="market-confidence" style="color:var(--text-tertiary);font-size:11px;margin-top:4px">
-            ⚠️ ERC-4337 = 日度新激活智能钱包，EIP-7702 = 日度新授权 EOA，两者不重叠。30d 合计为时间序列求和。Crossmint 为 ZeroDev Kernel 工厂上界。
-        </div>
+        <div class="market-confidence status-pass">覆盖说明：${trackableCount}/${PROVIDER_ORDER.length} 可观测；Coinbase 高置信，Crossmint 为上界估计</div>
         <div class="market-upgrade-date">口径升级：2026-03 — 新增 EIP-7702 维度 + 日维度时间序列，schema v4.0</div>
     </div>`;
 }
@@ -2839,7 +2837,7 @@ function initOnchainDailyChart(onchain) {
     
     // Coinbase total (solid line)
     datasets.push({
-        label: 'Coinbase (Total)',
+        label: 'Coinbase 日新增激活（合计）',
         data: coinbase.daily_series.map(p => p.total),
         borderColor: getCssVar('--brand-yellow'),
         backgroundColor: 'transparent',
@@ -2851,7 +2849,7 @@ function initOnchainDailyChart(onchain) {
     
     // Coinbase ERC-4337 (thin dashed)
     datasets.push({
-        label: 'Coinbase ERC-4337',
+        label: 'Coinbase 智能账户',
         data: coinbase.daily_series.map(p => p.erc4337),
         borderColor: getCssVar('--color-pass'),
         backgroundColor: 'transparent',
@@ -2864,7 +2862,7 @@ function initOnchainDailyChart(onchain) {
     
     // Coinbase EIP-7702 (thin dotted)
     datasets.push({
-        label: 'Coinbase EIP-7702',
+        label: 'Coinbase EOA 授权',
         data: coinbase.daily_series.map(p => p.eip7702 || 0),
         borderColor: getCssVar('--color-inconclusive'),
         backgroundColor: 'transparent',
