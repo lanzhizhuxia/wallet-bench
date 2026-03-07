@@ -1,6 +1,6 @@
 # wallet-bench Issue Index
 
-**Last Updated**: 2026-03-07 (ISSUE-016~020 新增 Provider 集成计划)
+**Last Updated**: 2026-03-07 (ISSUE-022 适配器修复)
 
 ## Current Execution Focus
 
@@ -26,3 +26,5 @@
 | ISSUE-018 | Done | 新增 Universal Trading Provider — Particle Network 跨链交易 | DONE | P2 | 跨链交易覆盖最广 + Solana MEV Tip + WebSocket 实时监控，验证 Universal Account 场景。 | docs/issues/active/ISSUE-018-universal-trading-provider/ |
 | ISSUE-019 | Done | 新增 Polymarket Agent Provider — 预测市场垂直场景验证 | DONE | P3 | 验证 t17 (prediction_market) 测试项真实可行性，目前 7 provider 均未通过。 | docs/issues/active/ISSUE-019-polymarket-agent-provider/ |
 | ISSUE-020 | Done | 新增 Coinpilot Hyperliquid Provider — 永续合约垂直场景验证 | DONE | P3 | 验证 t18 (perps_trading) 测试项真实可行性，目前 7 provider 均未通过。 | docs/issues/active/ISSUE-020-coinpilot-hyperliquid-provider/ |
+| ISSUE-021 | Done | 测试维度扩展 33→45 项 | DONE | P0 | Security/Compliance/Agent 三个新维度 + 12 个 P0 测试项 + 评分体系改造，测试覆盖从 33 项扩展至 45 项 | docs/issues/ISSUE-021-test-dimension-expansion.md |
+| ISSUE-022 | Done | Para Wallet + Universal Trading 适配器修复 | DONE | P1 | 修复 hex 编码/地址解析 bug，Universal Trading 分数 33.3%→50.0% | docs/issues/ISSUE-022-adapter-bugfix.md |

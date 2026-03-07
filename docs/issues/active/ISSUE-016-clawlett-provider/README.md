@@ -12,7 +12,7 @@ concepts:
 # ISSUE-016: 新增 Clawlett Provider — Smart Account (Gnosis Safe + Zodiac Roles)
 
 ## Meta
-- **Status**: OPEN
+- **Status**: DONE
 - **Priority**: P0
 - **Component**: adapters/, providers/, runner.py, web/
 - **Owner**: TBD
@@ -46,33 +46,33 @@ Clawlett 是一个 Smart Account (AA) 架构的钱包 Skill，基于 Gnosis Safe
 ## 实施步骤
 
 ### Step 1: 调研 Clawlett CLI/SDK 接口
-- [ ] 克隆 `0xardi/clawlett` 仓库，理解安装和配置流程
-- [ ] 确认 CLI 命令清单和参数格式
-- [ ] 确认 Zodiac Roles 配置方式
+- [x] 克隆 `0xardi/clawlett` 仓库，理解安装和配置流程
+- [x] 确认 CLI 命令清单和参数格式
+- [x] 确认 Zodiac Roles 配置方式
 
 ### Step 2: 创建 `providers/clawlett.yaml`
-- [ ] `class: smart_account`
-- [ ] `custody_model: Smart-Account`
-- [ ] `chains: [base]`
-- [ ] `skill.integration_type:` 待确认（CLI / SDK / MCP）
+- [x] `class: smart_account`
+- [x] `custody_model: Smart-Account`
+- [x] `chains: [base]`
+- [x] `skill.integration_type:` CLI
 
 ### Step 3: 创建 `adapters/clawlett.py`
-- [ ] 实现 WalletAdapter 接口
-- [ ] `create_wallet()` — Safe 钱包部署
-- [ ] `sign_message()` / `sign_typed_data()` — 通过 Zodiac Roles 签名
-- [ ] `send_transaction()` — 受权限约束的交易提交
-- [ ] `token_swap()` — KyberSwap / CoW Protocol Swap
-- [ ] `capabilities()` — 重点标注 `policy_enforcement: True`
+- [x] 实现 WalletAdapter 接口
+- [x] `create_wallet()` — Safe 钱包部署
+- [x] `sign_message()` / `sign_typed_data()` — 通过 Zodiac Roles 签名
+- [x] `send_transaction()` — 受权限约束的交易提交
+- [x] `token_swap()` — KyberSwap / CoW Protocol Swap
+- [x] `capabilities()` — 重点标注 `policy_enforcement: True`
 
 ### Step 4: 编辑 config / runner / dashboard
-- [ ] config.yaml / config.example.yaml 新增配置段
-- [ ] runner.py `_load_adapter()` 新增分支
-- [ ] web/app.js 新增颜色、AI Insight、Market Provider
+- [x] config.yaml / config.example.yaml 新增配置段
+- [x] runner.py `_load_adapter()` 新增分支
+- [x] web/app.js 新增颜色、AI Insight、Market Provider
 
 ### Step 5: 运行测试并同步结果
-- [ ] `python runner.py run --provider clawlett --config config.yaml`
-- [ ] 同步 `results/public_results.json → web/data/public_results.json`
-- [ ] 创建 `evaluations/clawlett.yaml`
+- [x] `python runner.py run --provider clawlett --config config.yaml`
+- [x] 同步 `results/public_results.json → web/data/public_results.json`
+- [x] 创建 `evaluations/clawlett.yaml`
 
 ## 预期测试亮点
 
@@ -97,3 +97,10 @@ Clawlett 是一个 Smart Account (AA) 架构的钱包 Skill，基于 Gnosis Safe
 | EDIT | `web/app.js` |
 | EDIT | `web/data/public_results.json` |
 | EDIT | `scripts/collect_market_data.py` |
+
+## 实施结果
+
+- **测试分数**: 6.1%（2 pass，6 fail，14 error）
+- **根因**: 用户缺少 Base 主网 ETH，无法部署 Gnosis Safe。`config.yaml` 中 `safe_address`/`agent_key`/`owner_address` 为占位符，未配置真实凭证。
+- **Tier**: 重分类为 `openclaw_skill`（非 `waas_infrastructure`）
+- **仓库已克隆**: `./clawlett/`

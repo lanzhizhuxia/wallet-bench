@@ -1,8 +1,22 @@
 # 下一步计划 — 候选评测对象与未来方向
 
-**日期**: 2026-03-06
+**日期**: 2026-03-07
 **来源**: OpenClaw ClawHub 生态调研（7,300+ Skills 扫描）
 **筛选标准**: 具备钱包创建 / 签名 / 链上交易执行能力（排除纯数据查询、纯支付通道）
+
+---
+
+---
+
+## 〇、当前评测状态
+
+| Skill | Tier | 分数 | 状态 |
+|-------|------|------|------|
+| Clawlett | openclaw_skill | 6.1% | ❌ 需 Base ETH |
+| Para Wallet | openclaw_skill | 27.6% | ⚠️ API 不稳定 |
+| Polymarket Agent | openclaw_skill | 39.3% | ✅ 配置正确 |
+| Universal Trading | openclaw_skill | 50.0% | ✅ 适配器已修复 |
+| Coinpilot Hyperliquid | openclaw_skill | 12.0% | ❌ 无 API |
 
 ---
 

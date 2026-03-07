@@ -10,7 +10,7 @@ concepts:
 # ISSUE-017: 新增 Para Wallet Provider — 纯 MPC 钱包基础设施
 
 ## Meta
-- **Status**: OPEN
+- **Status**: DONE
 - **Priority**: P1
 - **Component**: adapters/, providers/, runner.py, web/
 - **Owner**: TBD
@@ -50,27 +50,27 @@ Para Wallet 是一个纯 MPC 钱包基础设施 Skill，私钥分片永不聚合
 ## 实施步骤
 
 ### Step 1: 调研 Para Wallet API
-- [ ] 确认 API 端点和认证方式
-- [ ] 测试钱包创建→轮询→签名流程
-- [ ] 确认支持的链和签名格式
+- [x] 确认 API 端点和认证方式
+- [x] 测试钱包创建→轮询→签名流程
+- [x] 确认支持的链和签名格式
 
 ### Step 2: 创建 `providers/para_wallet.yaml`
-- [ ] `class: mpc`
-- [ ] `custody_model: MPC-Shard`
-- [ ] `chains: [ethereum, solana, cosmos]`
-- [ ] `signing_modes: [raw_tx, personal_sign]` (待确认)
+- [x] `class: mpc`
+- [x] `custody_model: MPC-Shard`
+- [x] `chains: [ethereum, solana, cosmos]`
+- [x] `signing_modes: [raw_tx, personal_sign]`
 
 ### Step 3: 创建 `adapters/para_wallet.py`
-- [ ] `create_wallet()` — 异步创建 + 轮询等待
-- [ ] `sign_message()` — `POST /v1/wallets/{id}/sign-raw`
-- [ ] `sign_typed_data()` — 待确认是否支持
-- [ ] `send_transaction()` — 签名后通过公共 RPC 广播
-- [ ] `capabilities()` — 标注 `token_swap: False`
+- [x] `create_wallet()` — 异步创建 + 轮询等待
+- [x] `sign_message()` — `POST /v1/wallets/{id}/sign-raw`
+- [x] `sign_typed_data()` — 不支持（标记 UNSUPPORTED）
+- [x] `send_transaction()` — 签名后通过公共 RPC 广播
+- [x] `capabilities()` — 标注 `token_swap: False`
 
 ### Step 4: 编辑 config / runner / dashboard
-- [ ] 加入 `NO_BUILTIN_APP_PROVIDERS`（无内置 app 能力）
-- [ ] config.yaml / config.example.yaml 新增配置段
-- [ ] runner.py / web/app.js 更新
+- [x] 加入 `NO_BUILTIN_APP_PROVIDERS`（无内置 app 能力）
+- [x] config.yaml / config.example.yaml 新增配置段
+- [x] runner.py / web/app.js 更新
 
 ### Step 5: 运行测试并同步结果
 
@@ -95,3 +95,15 @@ Para Wallet 是一个纯 MPC 钱包基础设施 Skill，私钥分片永不聚合
 | EDIT | `config.yaml`, `config.example.yaml` |
 | EDIT | `runner.py` |
 | EDIT | `web/app.js`, `scripts/collect_market_data.py` |
+
+## 实施结果
+
+- **测试分数**: 27.6%（8 pass，11 fail，9 error）
+- **凭证**: Secret Key `sk_beta_*`（非 Client Key `beta_*`）
+- **开发者门户**: https://developer.getpara.com（非 dashboard.getpara.com）
+- **适配器修复 (ISSUE-022)**:
+  1. 修复 hex 编码（`send_transaction` 的 `"0x"` 导致 400）
+  2. 添加 500 重试逻辑
+  3. 签名作为 tx_hash 返回
+- **已知限制**: API 极慢（~20s/请求）、`sign_message` 频繁 500 Internal Server Error，为 Para API 服务端问题
+- **Tier**: `openclaw_skill`

@@ -40,20 +40,20 @@ python runner.py run --provider para_wallet --config config.yaml
 
 ## 2. Polymarket Agent（~10 分钟）
 
-**需要**: 安装 `polymarket-agents` Python 包 + 运行 `poly setup`
+**需要**: 通过 Homebrew 安装 `polymarket` CLI + 导入私鑰
 
 ### 步骤
 
 1. 安装 CLI：
 
 ```bash
-pip install polymarket-agents
+brew tap polymarket/tap && brew install polymarket
 ```
 
-2. 初始化钱包（会在本地创建密钥）：
+2. 导入钱包（会在本地创建密鑰文件）：
 
 ```bash
-poly setup
+polymarket wallet import <YOUR_PRIVATE_KEY> --signature-type eoa
 ```
 
 按提示完成设置。会生成一个 Polygon 地址。
@@ -61,11 +61,11 @@ poly setup
 3. 验证安装：
 
 ```bash
-poly doctor    # 检查环境
-poly balance   # 查看余额（初始为 0）
+polymarket wallet show   # 查看钱包信息
+polymarket status        # 检查状态
 ```
 
-4. `config.yaml` 不需要额外凭证，只需确保 `poly` 命令可用：
+4. `config.yaml` 不需要额外凭证，只需确保 `polymarket` 命令可用：
 
 ```yaml
 providers:
@@ -79,12 +79,12 @@ providers:
 python runner.py run --provider polymarket_agent --config config.yaml
 ```
 
-成功标志：`t01_create_wallet` 状态为 `pass`（从 `poly balance` 或 `poly doctor` 解析到地址）。
+成功标志：`t01_create_wallet` 状态为 `pass`（从 `polymarket wallet show` 解析到地址）。
 
 ### 注意事项
 - Polymarket 仅运行在 Polygon **主网**，交易需要 USDC
 - 本项目不会执行真实买卖（adapter 的 `send_transaction` 返回 UNSUPPORTED）
-- `poly` CLI 源码：https://github.com/Polymarket/poly-agent
+- `polymarket` CLI 源码：https://github.com/Polymarket/polymarket-cli
 
 ---
 
@@ -111,7 +111,7 @@ npm install
 3. 获取 Particle 项目凭证：
    - 访问 [Particle Dashboard](https://dashboard.particle.network/)
    - 注册/登录 → 创建项目
-   - 获取 `PROJECT_ID`、`CLIENT_KEY`、`APP_ID`
+   - 获取 `PROJECT_ID`（**仅需要此项**）
 
 4. 创建 `.env` 文件：
 
@@ -122,10 +122,8 @@ cd /Users/user/Documents/workspace/wallet-bench/universal-account-example
 写入以下内容：
 
 ```env
-PRIVATE_KEY=你的EVM私钥（无0x前缀也可以）
-PARTICLE_PROJECT_ID=你的项目ID
-PARTICLE_CLIENT_KEY=你的客户端Key
-PARTICLE_APP_ID=你的应用ID
+PRIVATE_KEY=0x你的EVM私鑰
+PROJECT_ID=你的Particle项目ID
 ```
 
 > ⚠️ 建议用测试网私钥（BSC Testnet），不要用主网私钥。
@@ -145,7 +143,7 @@ providers:
 python runner.py run --provider universal_trading --config config.yaml
 ```
 
-成功标志：`t01_create_wallet` 从 `.env` 解析到地址。
+成功标志：`t01_create_wallet` 运行 `warmup.ts` 获取 UA 智能合约地址。
 
 ### 注意事项
 - Particle Dashboard：https://dashboard.particle.network/
@@ -228,9 +226,11 @@ python runner.py run --provider clawlett --config config.yaml
 
 **需要**: Coinpilot 平台账户 + coinpilot.json 配置文件
 
+> **⚠️ 发现**: Coinpilot 是纯移动端 App（iOS/Android），**无公开 API、无 CLI、无 Web 注册入口**。以下步骤无法完成。
+
 ### 步骤
 
-1. 访问 [Coinpilot](https://coinpilot.ai/) 注册账户
+1. 访问 [Coinpilot](https://trycoinpilot.com/) 注册账户
    - 可能需要邀请码或白名单（检查官网说明）
    - 文档：https://docs.coinpilot.ai/
 
@@ -320,7 +320,7 @@ open web/index.html
 | 供应商 | 需要什么 | 去哪里申请 | 预计时间 |
 |--------|---------|-----------|---------|
 | Para Wallet | API Key | https://developer.getpara.com | 5 分钟 |
-| Polymarket Agent | `pip install` + `poly setup` | 本地安装即可 | 10 分钟 |
+|| Polymarket Agent | `brew install polymarket` + `polymarket wallet import` | Homebrew 本地安装即可 | 10 分钟 |
 | Universal Trading | 克隆仓库 + Particle 凭证 | https://dashboard.particle.network/ | 15 分钟 |
-| Coinpilot | 平台账户 + API Key | https://coinpilot.ai/ | 20 分钟 |
+|| Coinpilot | 纯移动端 App，无公开 API | https://trycoinpilot.com/ | 无法完成 |
 | Clawlett | 仓库 + Gnosis Safe + Zodiac | https://app.safe.global/ (Base) | 30 分钟 |

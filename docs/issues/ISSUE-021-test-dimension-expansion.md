@@ -10,7 +10,7 @@ concepts:
 
 ## Meta
 
-- **Status**: PLANNING
+- **Status**: DONE
 - **Priority**: P0
 - **Component**: wallet-bench / test cases + scoring + adapter base
 - **Owner**: —
