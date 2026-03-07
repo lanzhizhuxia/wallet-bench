@@ -2617,22 +2617,6 @@ td.defi-difficulty { font-size: 0.82rem; white-space: nowrap; text-align: center
     color: #f6465d;
 }
 
-.market-chain-section {
-    margin-top: var(--space-m);
-    padding: var(--space-s) var(--space-m);
-    background: var(--bg-subtle);
-    border-radius: var(--radius-s);
-    border: 1px solid var(--bg-border);
-}
-
-.market-chain-title {
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--text-primary);
-    margin-bottom: var(--space-s);
-    letter-spacing: 0.02em;
-}
-
 .market-chain-pie-row {
     display: flex;
     gap: var(--space-m);
@@ -2654,7 +2638,7 @@ td.defi-difficulty { font-size: 0.82rem; white-space: nowrap; text-align: center
 
 .market-chain-pie-wrap {
     position: relative;
-    height: 160px;
+    height: 180px;
 }
 
 .market-upgrade-date {

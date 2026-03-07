@@ -2808,7 +2808,8 @@ function renderMarketCard5(onchain) {
         ? `<div class="market-coverage-footnote">不可观测（${notTrackableNames.length}）：${notTrackableNames.join('、')} — 架构原因无法链上归因</div>`
         : '';
 
-    return `
+    // --- Card 5a: 用户激活汇总 ---
+    const card5a = `
     <div class="market-card${onchain.stale ? ' market-card-stale' : ''}">
         <h3 class="market-card-title">可观测用户激活（链上代理）</h3>
         <div class="market-card-subtitle">衡量最近30日新增可用钱包账户，非 DAU/MAU</div>
@@ -2818,7 +2819,24 @@ function renderMarketCard5(onchain) {
             <thead><tr><th>供应商</th><th>智能账户新增</th><th>EOA 授权新增</th><th>30日新增激活（可观测）</th></tr></thead>
             <tbody>${rows}</tbody>
         </table>
-        ${renderChainDistribution(onchain)}
+        ${notTrackableNote}
+        <div class="market-data-month">数据范围：${freshness.series_start || '—'} ~ ${freshness.series_end || '—'} (${freshness.num_days || '—'}d) ｜ 时效：${sla}</div>
+        <div class="market-confidence status-pass">覆盖说明：${trackableCount}/${PROVIDER_ORDER.length} 可观测；Coinbase 高置信${onchain.providers?.crossmint?.trackable === true ? '，Crossmint 精准归因（factory+bundler）' : onchain.providers?.crossmint?.trackable === 'partial' ? '，Crossmint 为上界估计' : ''}</div>
+    </div>`;
+
+    // --- Card 5b: 链偏好分布 ---
+    const chainHtml = renderChainDistribution(onchain);
+    const card5b = chainHtml ? `
+    <div class="market-card">
+        <h3 class="market-card-title">链偏好分布</h3>
+        <div class="market-card-subtitle">各供应商 30 日新增激活的链维度拆分</div>
+        ${chainHtml}
+    </div>` : '';
+
+    // --- Card 5c: 日趋势 + 深度分析 ---
+    const card5c = `
+    <div class="market-card">
+        <h3 class="market-card-title">日新增趋势</h3>
         <div class="market-chart-container">
             <canvas id="onchain-daily-chart"></canvas>
         </div>
@@ -2839,11 +2857,10 @@ function renderMarketCard5(onchain) {
                 <div class="market-deepdive-howto">找 <strong>「Monthly Active ERC-4337 Smart Accounts」</strong> = 跨链月度活跃总量；另含 <strong>Bundler/Paymaster 市场份额</strong>，观察基础设施竞争格局。</div>
             </div>
         </div>
-        ${notTrackableNote}
-        <div class="market-data-month">数据范围：${freshness.series_start || '—'} ~ ${freshness.series_end || '—'} (${freshness.num_days || '—'}d) ｜ 时效：${sla}</div>
-        <div class="market-confidence status-pass">覆盖说明：${trackableCount}/${PROVIDER_ORDER.length} 可观测；Coinbase 高置信${onchain.providers?.crossmint?.trackable === true ? '，Crossmint 精准归因（factory+bundler）' : onchain.providers?.crossmint?.trackable === 'partial' ? '，Crossmint 为上界估计' : ''}</div>
         <div class="market-upgrade-date">口径升级：2026-03 — 新增 EIP-7702 维度 + 日维度时间序列，schema v4.0</div>
     </div>`;
+
+    return card5a + card5b + card5c;
 }
 
 function computeGrowthMetrics(dailySeries) {
@@ -3051,10 +3068,7 @@ function renderChainDistribution(onchain) {
     if (!hasData) return '';
 
     return `
-    <div class="market-chain-section">
-        <div class="market-chain-title">链偏好分布</div>
-        <div class="market-chain-pie-row">${chartsHtml}</div>
-    </div>`;
+    <div class="market-chain-pie-row">${chartsHtml}</div>`;
 }
 
 function initChainPieCharts(onchain) {
@@ -3108,19 +3122,23 @@ function initChainPieCharts(onchain) {
                         display: true,
                         position: 'right',
                         labels: {
-                            color: getCssVar('--text-secondary'),
-                            font: { size: 11, family: getCssVar('--font-body') },
-                            boxWidth: 10,
-                            padding: 8,
+                            color: getCssVar('--text-primary'),
+                            font: { size: 12, family: getCssVar('--font-body'), weight: '500' },
+                            boxWidth: 12,
+                            boxHeight: 12,
+                            padding: 10,
+                            usePointStyle: true,
+                            pointStyle: 'circle',
                             generateLabels: function(chart) {
                                 const data = chart.data;
                                 return data.labels.map((label, i) => {
                                     const val = data.datasets[0].data[i];
                                     const pct = (val / total * 100).toFixed(1);
                                     return {
-                                        text: `${label} ${pct}%`,
+                                        text: `${label}  ${pct}%`,
                                         fillStyle: data.datasets[0].backgroundColor[i],
                                         strokeStyle: 'transparent',
+                                        pointStyle: 'circle',
                                         index: i,
                                         hidden: false,
                                     };
