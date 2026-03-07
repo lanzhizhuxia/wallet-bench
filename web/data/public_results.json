@@ -7040,6 +7040,7 @@
       "provider": "para_wallet",
       "provider_meta": {
         "name": "Para Wallet",
+        "tier": "openclaw_skill",
         "class": "mpc",
         "custody_model": "MPC-Cloud",
         "signing_modes": [
@@ -7091,14 +7092,14 @@
         "session_delegation": false,
         "estimate_gas": true
       },
-      "timestamp": "2026-03-07T11:43:04.380024+00:00",
+      "timestamp": "2026-03-07T12:34:50.336637+00:00",
       "results": [
         {
           "test_id": "a01",
           "test_name": "schema_quality",
           "status": "fail",
-          "elapsed_ms": 24992.601457983255,
-          "message": "schema checks: 4/5 (80.00%); sign_message \u5f02\u5e38: Para API 500: {\"message\":\"Internal Server Error\"}; send_transaction(\u6b63\u5e38\u8def\u5f84) \u5f02\u5e38: Para API 400: {\"message\":\"data must be hex-encoded and have an even number of characters\"}; send_transaction(\u975e\u6cd5\u5730\u5740\u8def\u5f84) \u5f02\u5e38: Para API 400: {\"message\":\"data must be hex-encoded and have an even number of characters\"}",
+          "elapsed_ms": 64196.50387496222,
+          "message": "schema checks: 4/5 (80.00%); sign_message \u5f02\u5e38: The read operation timed out; send_transaction(\u6b63\u5e38\u8def\u5f84) \u5f02\u5e38: The read operation timed out; send_transaction(\u975e\u6cd5\u5730\u5740\u8def\u5f84) \u5f02\u5e38: The read operation timed out",
           "detail": {
             "checks": [
               {
@@ -7127,14 +7128,14 @@
                 "address": "[REDACTED]",
                 "chain": "ethereum",
                 "meta": {
-                  "elapsed_ms": 2007.6395000796765,
+                  "elapsed_ms": 2003.5904999822378,
                   "wallet_id": "89e6ca99-7a24-42f1-a111-cd108f95fbf7",
                   "status": "ready"
                 }
               },
-              "sign_message_error": "Para API 500: {\"message\":\"Internal Server Error\"}",
-              "send_transaction_nominal_error": "Para API 400: {\"message\":\"data must be hex-encoded and have an even number of characters\"}",
-              "send_transaction_invalid_error": "Para API 400: {\"message\":\"data must be hex-encoded and have an even number of characters\"}"
+              "sign_message_error": "The read operation timed out",
+              "send_transaction_nominal_error": "The read operation timed out",
+              "send_transaction_invalid_error": "The read operation timed out"
             },
             "checks_passed": 4,
             "total_checks": 5,
@@ -7147,7 +7148,7 @@
           "test_id": "a02",
           "test_name": "machine_errors",
           "status": "pass",
-          "elapsed_ms": 2926.7455000663176,
+          "elapsed_ms": 62288.62645896152,
           "message": "\u9519\u8bef\u53ef\u6355\u83b7\u3001\u975e\u7a7a\u4e14\u7a33\u5b9a",
           "detail": {
             "trigger_for_a_and_c": "sign_message_empty",
@@ -7161,26 +7162,26 @@
               "same_class_stable": true
             },
             "messages": {
-              "a": "Para API 400: {\"message\":\"data must be hex-encoded and have an even number of characters\"}",
-              "b": "Para API 400: {\"message\":\"data must be hex-encoded and have an even number of characters\"}",
-              "c": "Para API 400: {\"message\":\"data must be hex-encoded and have an even number of characters\"}"
+              "a": "The read operation timed out",
+              "b": "The read operation timed out",
+              "c": "The read operation timed out"
             },
             "subjects": {
-              "a": "para api <n>",
-              "c": "para api <n>"
+              "a": "the read operation timed out",
+              "c": "the read operation timed out"
             },
             "raw": {
               "a": {
                 "kind": "exception",
-                "error": "Para API 400: {\"message\":\"data must be hex-encoded and have an even number of characters\"}"
+                "error": "The read operation timed out"
               },
               "b": {
                 "kind": "exception",
-                "error": "Para API 400: {\"message\":\"data must be hex-encoded and have an even number of characters\"}"
+                "error": "The read operation timed out"
               },
               "c": {
                 "kind": "exception",
-                "error": "Para API 400: {\"message\":\"data must be hex-encoded and have an even number of characters\"}"
+                "error": "The read operation timed out"
               }
             }
           },
@@ -7191,10 +7192,10 @@
           "test_id": "a03",
           "test_name": "deterministic_response",
           "status": "fail",
-          "elapsed_ms": 22877.169125014916,
-          "message": "sign_message \u91cd\u590d\u8c03\u7528\u51fa\u73b0\u4e0d\u53ef\u7a33\u5b9a\u5f02\u5e38: Para API 500: {\"message\":\"Internal Server Error\"}",
+          "elapsed_ms": 22847.089916933328,
+          "message": "sign_message \u91cd\u590d\u8c03\u7528\u51fa\u73b0\u4e0d\u53ef\u7a33\u5b9a\u5f02\u5e38: The read operation timed out",
           "detail": {
-            "error": "Para API 500: {\"message\":\"Internal Server Error\"}"
+            "error": "The read operation timed out"
           },
           "owner": "provider",
           "source": "auto"
@@ -7203,30 +7204,30 @@
           "test_id": "a04",
           "test_name": "token_cost",
           "status": "pass",
-          "elapsed_ms": 23984.91279105656,
-          "message": "\u6807\u51c6\u4efb\u52a1\u5b8c\u6210: 1/3 \u8c03\u7528\u6210\u529f, \u603b\u8017\u65f6 23985ms, \u5e73\u5747 7995ms/\u8c03\u7528",
+          "elapsed_ms": 43478.66083297413,
+          "message": "\u6807\u51c6\u4efb\u52a1\u5b8c\u6210: 1/3 \u8c03\u7528\u6210\u529f, \u603b\u8017\u65f6 43479ms, \u5e73\u5747 14493ms/\u8c03\u7528",
           "detail": {
             "total_calls": 3,
             "successful_calls": 1,
-            "total_api_ms": 23984.9,
-            "avg_ms_per_call": 7995.0,
+            "total_api_ms": 43478.6,
+            "avg_ms_per_call": 14492.9,
             "calls": [
               {
                 "op": "create_wallet",
-                "ms": 1962.4,
+                "ms": 1985.3,
                 "ok": true
               },
               {
                 "op": "sign_message",
-                "ms": 20990.8,
+                "ms": 20720.5,
                 "ok": false,
-                "error": "Para API 500: {\"message\":\"Internal Server Error\"}"
+                "error": "The read operation timed out"
               },
               {
                 "op": "send_transaction",
-                "ms": 1031.7,
+                "ms": 20772.8,
                 "ok": false,
-                "error": "Para API 400: {\"message\":\"data must be hex-encoded and have an even number of characters\"}"
+                "error": "The read operation timed out"
               }
             ]
           },
@@ -7237,31 +7238,31 @@
           "test_id": "a05",
           "test_name": "multi_step_recovery",
           "status": "fail",
-          "elapsed_ms": 3889.1659589717165,
-          "message": "\u591a\u6b65\u6062\u590d\u5931\u8d25: \u9519\u8bef\u6ce8\u5165\u540e\u65e0\u6cd5\u6062\u590d\u6b63\u5e38\u64cd\u4f5c (Para API 400: {\"message\":\"data must be hex-encoded and have an even number of ch)",
+          "elapsed_ms": 43462.1958329808,
+          "message": "\u591a\u6b65\u6062\u590d\u5931\u8d25: \u9519\u8bef\u6ce8\u5165\u540e\u65e0\u6cd5\u6062\u590d\u6b63\u5e38\u64cd\u4f5c (The read operation timed out)",
           "detail": {
             "steps": [
               {
                 "step": "create_wallet",
                 "ok": true,
-                "ms": 1939.3
+                "ms": 1963.0
               },
               {
                 "step": "error_inject",
                 "ok": false,
-                "ms": 964.3,
-                "error": "Para API 400: {\"message\":\"data must be hex-encoded and have an even number of characters\"}"
+                "ms": 20735.4,
+                "error": "The read operation timed out"
               },
               {
                 "step": "recovery_tx",
                 "ok": false,
-                "ms": 985.5,
-                "error": "Para API 400: {\"message\":\"data must be hex-encoded and have an even number of characters\"}"
+                "ms": 20763.7,
+                "error": "The read operation timed out"
               }
             ],
-            "step2_error": "Para API 400: {\"message\":\"data must be hex-encoded and have an even number of characters\"}",
+            "step2_error": "The read operation timed out",
             "step3_ok": false,
-            "step3_error": "Para API 400: {\"message\":\"data must be hex-encoded and have an even number of characters\"}"
+            "step3_error": "The read operation timed out"
           },
           "owner": "provider",
           "source": "auto"
@@ -7270,7 +7271,7 @@
           "test_id": "t01",
           "test_name": "key_generate",
           "status": "pass",
-          "elapsed_ms": 1943.5582499718294,
+          "elapsed_ms": 2047.8261659154668,
           "message": "\u94b1\u5305\u5df2\u521b\u5efa [REDACTED]",
           "detail": {
             "address": "[REDACTED]",
@@ -7283,8 +7284,8 @@
           "test_id": "t02",
           "test_name": "sign_message",
           "status": "error",
-          "elapsed_ms": 21014.4375419477,
-          "message": "Para API 500: {\"message\":\"Internal Server Error\"}",
+          "elapsed_ms": 20770.38070897106,
+          "message": "The read operation timed out",
           "detail": {},
           "owner": "",
           "source": "auto"
@@ -7303,8 +7304,8 @@
           "test_id": "t04",
           "test_name": "send_tx",
           "status": "error",
-          "elapsed_ms": 1027.0902080228552,
-          "message": "Para API 400: {\"message\":\"data must be hex-encoded and have an even number of characters\"}",
+          "elapsed_ms": 20730.72237498127,
+          "message": "The read operation timed out",
           "detail": {},
           "owner": "",
           "source": "auto"
@@ -7313,7 +7314,7 @@
           "test_id": "t05",
           "test_name": "multi_chain",
           "status": "pass",
-          "elapsed_ms": 1963.2211659336463,
+          "elapsed_ms": 1964.6080420352519,
           "message": "Adapter \u58f0\u660e 3 \u6761\u94fe: ethereum, solana, cosmos",
           "detail": {
             "chains": [
@@ -7340,13 +7341,13 @@
           "test_id": "t08",
           "test_name": "concurrent_ops",
           "status": "fail",
-          "elapsed_ms": 21001.624459051527,
+          "elapsed_ms": 20742.547749890946,
           "message": "\u5e76\u53d1\u6df7\u5408\u8d1f\u8f7d\u5931\u8d25: 4 \u4e2a\u95ee\u9898",
           "detail": {
             "errors": [
-              "sign_message: Para API 500: {\"message\":\"Internal Server Error\"}",
-              "sign_message: Para API 500: {\"message\":\"Internal Server Error\"}",
-              "send_transaction: Para API 400: {\"message\":\"data must be hex-encoded and have an even number of characters\"}",
+              "sign_message: The read operation timed out",
+              "sign_message: The read operation timed out",
+              "send_transaction: The read operation timed out",
               "create_wallet: duplicate addresses in concurrent results"
             ],
             "addresses": [
@@ -7363,19 +7364,19 @@
           "test_id": "t09",
           "test_name": "failure_recovery",
           "status": "pass",
-          "elapsed_ms": 1973.2117500388995,
+          "elapsed_ms": 41493.08004206978,
           "message": "\u6240\u6709\u6545\u969c\u573a\u666f\u5747\u6b63\u5e38\u5904\u7406",
           "detail": {
             "checks": [
               {
                 "test": "bad_address",
                 "ok": true,
-                "msg": "Clean error: Para API 400: {\"message\":\"data must be hex-encoded and have an even number of characters\"}"
+                "msg": "Clean error: The read operation timed out"
               },
               {
                 "test": "huge_value",
                 "ok": true,
-                "msg": "Clean error: Para API 400: {\"message\":\"data must be hex-encoded and have an even number of characters\"}"
+                "msg": "Clean error: The read operation timed out"
               }
             ]
           },
@@ -7386,7 +7387,7 @@
           "test_id": "t10",
           "test_name": "preflight_fee",
           "status": "pass",
-          "elapsed_ms": 277.5527499616146,
+          "elapsed_ms": 270.0853330316022,
           "message": "Gas \u9884\u4f30\u8fd4\u56de\u6210\u529f",
           "detail": {
             "estimation": {
@@ -7401,14 +7402,14 @@
           "test_id": "t11",
           "test_name": "rate_limit_resilience",
           "status": "fail",
-          "elapsed_ms": 23002.55008402746,
+          "elapsed_ms": 22790.034917066805,
           "message": "\u9650\u6d41\u6062\u590d: \u90e8\u5206\u68c0\u67e5\u5931\u8d25",
           "detail": {
             "checks": [
               {
                 "test": "burst",
                 "ok": true,
-                "msg": "5 ok, 0 rate-limited, 0 errors (burst=5)"
+                "msg": "4 ok, 0 rate-limited, 1 errors (burst=5)"
               },
               {
                 "test": "retry_after_limit",
@@ -7430,7 +7431,7 @@
           "test_id": "t12",
           "test_name": "portability_recovery",
           "status": "fail",
-          "elapsed_ms": 24976.746042026207,
+          "elapsed_ms": 24767.37337501254,
           "message": "Portability: \u786e\u5b9a\u6027 identity, \u5b58\u5728\u5931\u8d25",
           "detail": {
             "checks": [
@@ -7452,7 +7453,7 @@
               {
                 "test": "sign_after_recovery",
                 "ok": false,
-                "msg": "Sign after recovery failed: Para API 500: {\"message\":\"Internal Server Error\"}"
+                "msg": "Sign after recovery failed: The read operation timed out"
               },
               {
                 "test": "export_capability",
@@ -7469,7 +7470,7 @@
           "test_id": "t13",
           "test_name": "authorization_audit_trace",
           "status": "fail",
-          "elapsed_ms": 23973.480207961984,
+          "elapsed_ms": 43441.48199993651,
           "message": "\u5ba1\u8ba1\u94fe: 3/5 \u9879\u68c0\u67e5\u901a\u8fc7",
           "detail": {
             "checks": [
@@ -7481,12 +7482,12 @@
               {
                 "test": "sign_audit_fields",
                 "ok": false,
-                "msg": "sign_message failed: Para API 500: {\"message\":\"Internal Server Error\"}"
+                "msg": "sign_message failed: The read operation timed out"
               },
               {
                 "test": "tx_audit_fields",
                 "ok": false,
-                "msg": "Unstructured error: Para API 400: {\"message\":\"data must be hex-encoded and have an even number of characters\"}"
+                "msg": "Unstructured error: The read operation timed out"
               },
               {
                 "test": "capabilities_completeness",
@@ -7562,11 +7563,9 @@
           "test_id": "t19",
           "test_name": "nonce_management",
           "status": "error",
-          "elapsed_ms": 1012.0842079631984,
-          "message": "\u9996\u7b14\u4ea4\u6613\u5f02\u5e38: Para API 400: {\"message\":\"data must be hex-encoded and have an even number of characters\"}",
-          "detail": {
-            "error": "Para API 400: {\"message\":\"data must be hex-encoded and have an even number of characters\"}"
-          },
+          "elapsed_ms": 20721.804125001654,
+          "message": "\u9996\u7b14\u4ea4\u6613\u8d85\u65f6 (>30s)",
+          "detail": {},
           "owner": "provider",
           "source": "auto"
         },
@@ -7574,12 +7573,11 @@
           "test_id": "t20",
           "test_name": "tx_confirmation",
           "status": "error",
-          "elapsed_ms": 1029.6438339864835,
-          "message": "send_transaction \u5f02\u5e38: Para API 400: {\"message\":\"data must be hex-encoded and have an even number of characters\"}",
+          "elapsed_ms": 20709.970416035503,
+          "message": "send_transaction \u8d85\u65f6 (>30s)",
           "detail": {
             "to": "[REDACTED]",
-            "value": 0,
-            "error": "Para API 400: {\"message\":\"data must be hex-encoded and have an even number of characters\"}"
+            "value": 0
           },
           "owner": "provider",
           "source": "auto"
@@ -7588,10 +7586,10 @@
           "test_id": "t22",
           "test_name": "denial_reason_quality",
           "status": "fail",
-          "elapsed_ms": 957.3406670242548,
+          "elapsed_ms": 20733.592165983282,
           "message": "\u62d2\u7edd\u5f02\u5e38\u4ec5\u539f\u59cb\u5b57\u7b26\u4e32\uff0c\u7f3a\u5c11\u7ed3\u6784\u5316\u539f\u56e0",
           "detail": {
-            "raw_error": "Para API 400: {\"message\":\"data must be hex-encoded and have an even number of characters\"}"
+            "raw_error": "The read operation timed out"
           },
           "owner": "",
           "source": "auto"
@@ -7600,8 +7598,8 @@
           "test_id": "t23",
           "test_name": "idempotent_submit",
           "status": "error",
-          "elapsed_ms": 964.7854999639094,
-          "message": "\u9996\u6b21\u63d0\u4ea4\u5f02\u5e38: Para API 400: {\"message\":\"data must be hex-encoded and have an even number of characters\"}",
+          "elapsed_ms": 20785.657625063322,
+          "message": "\u9996\u6b21\u63d0\u4ea4\u5f02\u5e38: The read operation timed out",
           "detail": {},
           "owner": "",
           "source": "auto"
@@ -7610,7 +7608,7 @@
           "test_id": "t24",
           "test_name": "retry_backoff",
           "status": "pass",
-          "elapsed_ms": 210044.50570896734,
+          "elapsed_ms": 207417.84362506587,
           "message": "\u672a\u68c0\u6d4b\u5230\u9650\u6d41\uff0c\u8fde\u7eed\u8c03\u7528\u7a33\u5b9a",
           "detail": {
             "burst": 10,
@@ -7620,52 +7618,52 @@
               {
                 "call": 0,
                 "status": "error",
-                "error": "Para API 500: {\"message\":\"Internal Server Error\"}"
+                "error": "The read operation timed out"
               },
               {
                 "call": 1,
                 "status": "error",
-                "error": "Para API 500: {\"message\":\"Internal Server Error\"}"
+                "error": "The read operation timed out"
               },
               {
                 "call": 2,
                 "status": "error",
-                "error": "Para API 500: {\"message\":\"Internal Server Error\"}"
+                "error": "The read operation timed out"
               },
               {
                 "call": 3,
                 "status": "error",
-                "error": "Para API 500: {\"message\":\"Internal Server Error\"}"
+                "error": "The read operation timed out"
               },
               {
                 "call": 4,
                 "status": "error",
-                "error": "Para API 500: {\"message\":\"Internal Server Error\"}"
+                "error": "The read operation timed out"
               },
               {
                 "call": 5,
                 "status": "error",
-                "error": "Para API 500: {\"message\":\"Internal Server Error\"}"
+                "error": "The read operation timed out"
               },
               {
                 "call": 6,
                 "status": "error",
-                "error": "Para API 500: {\"message\":\"Internal Server Error\"}"
+                "error": "The read operation timed out"
               },
               {
                 "call": 7,
                 "status": "error",
-                "error": "Para API 500: {\"message\":\"Internal Server Error\"}"
+                "error": "The read operation timed out"
               },
               {
                 "call": 8,
                 "status": "error",
-                "error": "Para API 500: {\"message\":\"Internal Server Error\"}"
+                "error": "The read operation timed out"
               },
               {
                 "call": 9,
                 "status": "error",
-                "error": "Para API 500: {\"message\":\"Internal Server Error\"}"
+                "error": "The read operation timed out"
               }
             ]
           },
@@ -7696,8 +7694,8 @@
           "test_id": "t27",
           "test_name": "erc20_transfer",
           "status": "error",
-          "elapsed_ms": 22955.968542024493,
-          "message": "Para API 500: {\"message\":\"Internal Server Error\"}",
+          "elapsed_ms": 22643.60166701954,
+          "message": "The read operation timed out",
           "detail": {},
           "owner": "provider",
           "source": "auto"
@@ -7706,8 +7704,8 @@
           "test_id": "t28",
           "test_name": "contract_write",
           "status": "fail",
-          "elapsed_ms": 21019.77758400608,
-          "message": "\u53d1\u9001\u542b data \u4ea4\u6613\u5931\u8d25: Para API 500: {\"message\":\"Internal Server Error\"}",
+          "elapsed_ms": 20762.77958403807,
+          "message": "\u53d1\u9001\u542b data \u4ea4\u6613\u5931\u8d25: The read operation timed out",
           "detail": {
             "data": "0xd09de08a",
             "to": "[REDACTED]"
@@ -7719,8 +7717,8 @@
           "test_id": "t29",
           "test_name": "sig_verify",
           "status": "error",
-          "elapsed_ms": 22996.377457980998,
-          "message": "Para API 500: {\"message\":\"Internal Server Error\"}",
+          "elapsed_ms": 22716.53191698715,
+          "message": "The read operation timed out",
           "detail": {},
           "owner": "provider",
           "source": "auto"
@@ -7729,8 +7727,8 @@
           "test_id": "t30",
           "test_name": "tx_finality",
           "status": "error",
-          "elapsed_ms": 1079.1924999793991,
-          "message": "Para API 400: {\"message\":\"data must be hex-encoded and have an even number of characters\"}",
+          "elapsed_ms": 20717.674707993865,
+          "message": "The read operation timed out",
           "detail": {},
           "owner": "provider",
           "source": "auto"
@@ -7769,21 +7767,21 @@
           "test_id": "t34",
           "test_name": "soak_24h",
           "status": "fail",
-          "elapsed_ms": 124628.89775005169,
-          "message": "\u6301\u7eed\u8fd0\u884c\u6210\u529f\u7387 35% \u4f4e\u4e8e\u9608\u503c 90% (7/20\u8f6e, P50=1942ms)",
+          "elapsed_ms": 208930.84100005217,
+          "message": "\u6301\u7eed\u8fd0\u884c\u6210\u529f\u7387 35% \u4f4e\u4e8e\u9608\u503c 90% (7/20\u8f6e, P50=1970ms)",
           "detail": {
             "rounds": 20,
             "successes": 7,
             "success_rate": 0.35,
-            "p50_ms": 1941.5,
-            "p95_ms": 2008.3,
+            "p50_ms": 1969.9,
+            "p95_ms": 2136.1,
             "error_count": 13,
             "threshold": 0.9,
             "sample_errors": [
               "round 1: timeout",
-              "round 2: Para API 400: {\"message\":\"data must be hex-encoded and have an even number of ch",
+              "round 2: timeout",
               "round 4: timeout",
-              "round 5: Para API 400: {\"message\":\"data must be hex-encoded and have an even number of ch",
+              "round 5: timeout",
               "round 7: timeout"
             ]
           },
@@ -7794,7 +7792,7 @@
           "test_id": "t35",
           "test_name": "timeout_sla",
           "status": "fail",
-          "elapsed_ms": 75005.55950007401,
+          "elapsed_ms": 75008.46129108686,
           "message": "\u6240\u6709 5 \u8f6e\u5747\u5931\u8d25: round 0: timeout >15s; round 1: timeout >15s; round 2: timeout >15s",
           "detail": {
             "errors": [
@@ -7813,10 +7811,10 @@
           "test_id": "t36",
           "test_name": "idempotency_key",
           "status": "error",
-          "elapsed_ms": 986.6792079992592,
-          "message": "\u9996\u6b21\u4ea4\u6613\u5f02\u5e38: Para API 400: {\"message\":\"data must be hex-encoded and have an even number of characters\"}",
+          "elapsed_ms": 20760.46000001952,
+          "message": "\u9996\u6b21\u4ea4\u6613\u5f02\u5e38: The read operation timed out",
           "detail": {
-            "error": "Para API 400: {\"message\":\"data must be hex-encoded and have an even number of characters\"}"
+            "error": "The read operation timed out"
           },
           "owner": "provider",
           "source": "auto"
@@ -7835,7 +7833,7 @@
           "test_id": "t38",
           "test_name": "version_compat",
           "status": "pass",
-          "elapsed_ms": 1918.1481250561774,
+          "elapsed_ms": 1960.3595420485362,
           "message": "\u6240\u6709 5 \u9879\u517c\u5bb9\u6027\u68c0\u67e5\u901a\u8fc7 (name=Para Wallet, arch=mpc)",
           "detail": {
             "checks_passed": 5,
@@ -9633,6 +9631,7 @@
       "provider": "universal_trading",
       "provider_meta": {
         "name": "Universal Trading (Particle Network)",
+        "tier": "openclaw_skill",
         "class": "local",
         "custody_model": "Local",
         "signing_modes": [
@@ -9688,23 +9687,23 @@
         "session_delegation": false,
         "estimate_gas": true
       },
-      "timestamp": "2026-03-07T11:01:42.065130+00:00",
+      "timestamp": "2026-03-07T11:55:13.444806+00:00",
       "results": [
         {
           "test_id": "a01",
           "test_name": "schema_quality",
-          "status": "fail",
-          "elapsed_ms": 2360.2020419202745,
-          "message": "schema checks: 2/4 (50.00%); sign_message \u4e0d\u652f\u6301\uff0c\u6309\u89c4\u683c\u8df3\u8fc7\u7b7e\u540d\u5b57\u6bb5\u68c0\u67e5",
+          "status": "pass",
+          "elapsed_ms": 1399.6550830779597,
+          "message": "schema checks: 4/4 (100.00%); sign_message \u4e0d\u652f\u6301\uff0c\u6309\u89c4\u683c\u8df3\u8fc7\u7b7e\u540d\u5b57\u6bb5\u68c0\u67e5",
           "detail": {
             "checks": [
               {
                 "name": "wallet.address_non_empty",
-                "ok": false
+                "ok": true
               },
               {
                 "name": "wallet.address_0x_prefix",
-                "ok": false
+                "ok": true
               },
               {
                 "name": "tx.nominal_hash_or_error_meta",
@@ -9717,11 +9716,12 @@
             ],
             "operations": {
               "create_wallet": {
-                "address": "",
+                "address": "[REDACTED]",
                 "chain": "bsc",
                 "meta": {
-                  "elapsed_ms": 0.02191704697906971,
-                  "repo_path": "universal-account-example"
+                  "elapsed_ms": 0.0007919734343886375,
+                  "repo_path": "universal-account-example",
+                  "source": "cache"
                 }
               },
               "send_transaction_nominal": {
@@ -9729,7 +9729,7 @@
                 "status": 0,
                 "meta": {
                   "script": "transfer-evm.ts",
-                  "error": "Command exited 1: (node:7728) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n/Users/user/Documents/workspace/wallet-bench/universal-account-example/node_modules/e",
+                  "error": "Command exited 1: (node:76402) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n/Users/user/Documents/workspace/wallet-bench/universal-account-example/node_modules/",
                   "revert": true
                 }
               },
@@ -9738,23 +9738,23 @@
                 "status": 0,
                 "meta": {
                   "script": "transfer-evm.ts",
-                  "error": "Command exited 1: (node:7793) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n/Users/user/Documents/workspace/wallet-bench/universal-account-example/node_modules/e",
+                  "error": "Command exited 1: (node:76478) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n/Users/user/Documents/workspace/wallet-bench/universal-account-example/node_modules/",
                   "revert": true
                 }
               }
             },
-            "checks_passed": 2,
+            "checks_passed": 4,
             "total_checks": 4,
-            "score": 0.5
+            "score": 1.0
           },
-          "owner": "provider",
+          "owner": "industry",
           "source": "auto"
         },
         {
           "test_id": "a02",
           "test_name": "machine_errors",
           "status": "pass",
-          "elapsed_ms": 2125.459000002593,
+          "elapsed_ms": 2139.9565410101786,
           "message": "\u9519\u8bef\u53ef\u6355\u83b7\u3001\u975e\u7a7a\u4e14\u7a33\u5b9a",
           "detail": {
             "trigger_for_a_and_c": "send_invalid_param",
@@ -9768,9 +9768,9 @@
               "same_class_stable": true
             },
             "messages": {
-              "a": "Command exited 1: (node:7864) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n/Users/user/Documents/workspace/wallet-bench/universal-account-example/node_modules/e",
-              "b": "Command exited 1: (node:7983) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n/Users/user/Documents/workspace/wallet-bench/universal-account-example/node_modules/e",
-              "c": "Command exited 1: (node:7927) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n/Users/user/Documents/workspace/wallet-bench/universal-account-example/node_modules/e"
+              "a": "Command exited 1: (node:76554) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n/Users/user/Documents/workspace/wallet-bench/universal-account-example/node_modules/",
+              "b": "Command exited 1: (node:76717) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n/Users/user/Documents/workspace/wallet-bench/universal-account-example/node_modules/",
+              "c": "Command exited 1: (node:76641) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n/Users/user/Documents/workspace/wallet-bench/universal-account-example/node_modules/"
             },
             "subjects": {
               "a": "command exited <n>",
@@ -9782,7 +9782,7 @@
                 "tx_hash": "",
                 "meta": {
                   "script": "transfer-evm.ts",
-                  "error": "Command exited 1: (node:7864) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n/Users/user/Documents/workspace/wallet-bench/universal-account-example/node_modules/e",
+                  "error": "Command exited 1: (node:76554) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n/Users/user/Documents/workspace/wallet-bench/universal-account-example/node_modules/",
                   "revert": true
                 }
               },
@@ -9791,7 +9791,7 @@
                 "tx_hash": "",
                 "meta": {
                   "script": "transfer-evm.ts",
-                  "error": "Command exited 1: (node:7983) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n/Users/user/Documents/workspace/wallet-bench/universal-account-example/node_modules/e",
+                  "error": "Command exited 1: (node:76717) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n/Users/user/Documents/workspace/wallet-bench/universal-account-example/node_modules/",
                   "revert": true
                 }
               },
@@ -9800,7 +9800,7 @@
                 "tx_hash": "",
                 "meta": {
                   "script": "transfer-evm.ts",
-                  "error": "Command exited 1: (node:7927) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n/Users/user/Documents/workspace/wallet-bench/universal-account-example/node_modules/e",
+                  "error": "Command exited 1: (node:76641) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n/Users/user/Documents/workspace/wallet-bench/universal-account-example/node_modules/",
                   "revert": true
                 }
               }
@@ -9812,21 +9812,21 @@
         {
           "test_id": "a03",
           "test_name": "deterministic_response",
-          "status": "fail",
-          "elapsed_ms": 0.11437502689659595,
-          "message": "create_wallet \u4e09\u6b21\u8fd4\u56de\u7ed3\u6784\u4e0d\u4e00\u81f4",
+          "status": "pass",
+          "elapsed_ms": 0.04425004590302706,
+          "message": "sign_message \u4e0d\u53ef\u7528\uff0ccreate_wallet \u4e09\u6b21\u7ed3\u6784\u4e00\u81f4",
           "detail": {
             "mode": "create_wallet_fallback",
             "checks": {
-              "address_non_empty_all": false,
-              "address_prefix_consistent": false,
+              "address_non_empty_all": true,
+              "address_prefix_consistent": true,
               "chain_presence_consistent": true,
               "meta_type_consistent": true
             },
             "addresses": [
-              "",
-              "",
-              ""
+              "[REDACTED]",
+              "[REDACTED]",
+              "[REDACTED]"
             ],
             "chains": [
               "bsc",
@@ -9834,20 +9834,20 @@
               "bsc"
             ]
           },
-          "owner": "provider",
+          "owner": "industry",
           "source": "auto"
         },
         {
           "test_id": "a04",
           "test_name": "token_cost",
           "status": "pass",
-          "elapsed_ms": 717.7330830600113,
-          "message": "\u6807\u51c6\u4efb\u52a1\u5b8c\u6210: 2/2 \u8c03\u7528\u6210\u529f, \u603b\u8017\u65f6 718ms, \u5e73\u5747 359ms/\u8c03\u7528",
+          "elapsed_ms": 697.315042023547,
+          "message": "\u6807\u51c6\u4efb\u52a1\u5b8c\u6210: 2/2 \u8c03\u7528\u6210\u529f, \u603b\u8017\u65f6 697ms, \u5e73\u5747 349ms/\u8c03\u7528",
           "detail": {
             "total_calls": 2,
             "successful_calls": 2,
-            "total_api_ms": 717.7,
-            "avg_ms_per_call": 358.9,
+            "total_api_ms": 697.3,
+            "avg_ms_per_call": 348.6,
             "calls": [
               {
                 "op": "create_wallet",
@@ -9856,7 +9856,7 @@
               },
               {
                 "op": "send_transaction",
-                "ms": 717.7,
+                "ms": 697.3,
                 "ok": true
               }
             ]
@@ -9868,25 +9868,25 @@
           "test_id": "a05",
           "test_name": "multi_step_recovery",
           "status": "pass",
-          "elapsed_ms": 1410.1786249084398,
+          "elapsed_ms": 1343.331667012535,
           "message": "\u591a\u6b65\u6062\u590d\u6210\u529f: \u9519\u8bef\u6ce8\u5165\u540e\u6b63\u5e38\u4ea4\u6613\u6062\u590d",
           "detail": {
             "steps": [
               {
                 "step": "create_wallet",
                 "ok": true,
-                "ms": 0.1
+                "ms": 0.0
               },
               {
                 "step": "error_inject",
                 "ok": true,
-                "ms": 713.5,
+                "ms": 664.7,
                 "note": "unexpectedly succeeded"
               },
               {
                 "step": "recovery_tx",
                 "ok": true,
-                "ms": 696.5,
+                "ms": 678.6,
                 "tx_hash": ""
               }
             ],
@@ -9900,11 +9900,12 @@
         {
           "test_id": "t01",
           "test_name": "key_generate",
-          "status": "fail",
-          "elapsed_ms": 0.08312507998198271,
-          "message": "\u5730\u5740\u683c\u5f0f\u65e0\u6548: ",
+          "status": "pass",
+          "elapsed_ms": 0.021124957129359245,
+          "message": "\u94b1\u5305\u5df2\u521b\u5efa [REDACTED]",
           "detail": {
-            "address": ""
+            "address": "[REDACTED]",
+            "chain": "bsc"
           },
           "owner": "",
           "source": "auto"
@@ -9933,11 +9934,11 @@
           "test_id": "t04",
           "test_name": "send_tx",
           "status": "pass",
-          "elapsed_ms": 683.4080830449238,
+          "elapsed_ms": 676.1449170298874,
           "message": "\u4ea4\u6613\u5df2\u63d0\u4ea4\u4f46\u88ab revert\uff08\u9884\u671f: \u6d4b\u8bd5\u94b1\u5305\u65e0\u4f59\u989d\uff09",
           "detail": {
             "revert": true,
-            "elapsed_ms": 683.4080830449238
+            "elapsed_ms": 676.1449170298874
           },
           "owner": "",
           "source": "auto"
@@ -9946,7 +9947,7 @@
           "test_id": "t05",
           "test_name": "multi_chain",
           "status": "pass",
-          "elapsed_ms": 0.08166604675352573,
+          "elapsed_ms": 0.02229190431535244,
           "message": "Adapter \u58f0\u660e 6 \u6761\u94fe: ethereum, bsc, polygon, arbitrum, optimism, solana",
           "detail": {
             "chains": [
@@ -9957,7 +9958,7 @@
               "optimism",
               "solana"
             ],
-            "address": ""
+            "address": "[REDACTED]"
           },
           "owner": "",
           "source": "auto"
@@ -9986,7 +9987,7 @@
           "test_id": "t09",
           "test_name": "failure_recovery",
           "status": "pass",
-          "elapsed_ms": 1388.1811660248786,
+          "elapsed_ms": 1498.2229169690982,
           "message": "\u6240\u6709\u6545\u969c\u573a\u666f\u5747\u6b63\u5e38\u5904\u7406",
           "detail": {
             "checks": [
@@ -10019,7 +10020,7 @@
           "test_id": "t11",
           "test_name": "rate_limit_resilience",
           "status": "pass",
-          "elapsed_ms": 0.213916995562613,
+          "elapsed_ms": 0.11233298573642969,
           "message": "\u9650\u6d41\u6062\u590d: \u6240\u6709\u68c0\u67e5\u901a\u8fc7",
           "detail": {
             "checks": [
@@ -10042,15 +10043,15 @@
         {
           "test_id": "t12",
           "test_name": "portability_recovery",
-          "status": "fail",
-          "elapsed_ms": 0.32879202626645565,
-          "message": "Portability: \u786e\u5b9a\u6027 identity, \u5b58\u5728\u5931\u8d25",
+          "status": "pass",
+          "elapsed_ms": 0.036708079278469086,
+          "message": "Portability: \u786e\u5b9a\u6027 identity, \u6240\u6709\u68c0\u67e5\u901a\u8fc7",
           "detail": {
             "checks": [
               {
                 "test": "initial_create",
-                "ok": false,
-                "msg": "Created wallet: ..."
+                "ok": true,
+                "msg": "Created wallet: 0x210f7148..."
               },
               {
                 "test": "session_restart",
@@ -10060,7 +10061,7 @@
               {
                 "test": "identity_persistence",
                 "ok": true,
-                "msg": "Same address (deterministic): ..."
+                "msg": "Same address (deterministic): 0x210f7148..."
               },
               {
                 "test": "export_capability",
@@ -10076,15 +10077,15 @@
         {
           "test_id": "t13",
           "test_name": "authorization_audit_trace",
-          "status": "fail",
-          "elapsed_ms": 698.2849590713158,
-          "message": "\u5ba1\u8ba1\u94fe: 4/5 \u9879\u68c0\u67e5\u901a\u8fc7",
+          "status": "pass",
+          "elapsed_ms": 691.3608340546489,
+          "message": "\u5ba1\u8ba1\u94fe: 5/5 \u9879\u68c0\u67e5\u901a\u8fc7",
           "detail": {
             "checks": [
               {
                 "test": "wallet_audit_fields",
-                "ok": false,
-                "msg": "address=no, chain=yes, timestamp=yes"
+                "ok": true,
+                "msg": "address=yes, chain=yes, timestamp=yes"
               },
               {
                 "test": "sign_audit_fields",
@@ -10165,7 +10166,7 @@
           "test_id": "t19",
           "test_name": "nonce_management",
           "status": "fail",
-          "elapsed_ms": 1425.256249960512,
+          "elapsed_ms": 1390.7945420360193,
           "message": "nonce \u7ba1\u7406\u5931\u8d25: \u81f3\u5c11\u4e00\u4e2a\u4ea4\u6613\u672a\u8fd4\u56de tx_hash",
           "detail": {
             "tx1_hash": "",
@@ -10174,12 +10175,12 @@
             "tx2_status": 0,
             "tx1_meta": {
               "script": "transfer-evm.ts",
-              "error": "Command exited 1: (node:8543) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n/Users/user/Documents/workspace/wallet-bench/universal-account-example/node_modules/e",
+              "error": "Command exited 1: (node:77278) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n/Users/user/Documents/workspace/wallet-bench/universal-account-example/node_modules/",
               "revert": true
             },
             "tx2_meta": {
               "script": "transfer-evm.ts",
-              "error": "Command exited 1: (node:8601) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n/Users/user/Documents/workspace/wallet-bench/universal-account-example/node_modules/e",
+              "error": "Command exited 1: (node:77332) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n/Users/user/Documents/workspace/wallet-bench/universal-account-example/node_modules/",
               "revert": true
             }
           },
@@ -10190,7 +10191,7 @@
           "test_id": "t20",
           "test_name": "tx_confirmation",
           "status": "fail",
-          "elapsed_ms": 700.897500035353,
+          "elapsed_ms": 681.6490000346676,
           "message": "tx_confirmation \u5931\u8d25: tx_hash \u7f3a\u5931",
           "detail": {
             "tx_hash": "",
@@ -10203,12 +10204,12 @@
           "test_id": "t22",
           "test_name": "denial_reason_quality",
           "status": "fail",
-          "elapsed_ms": 705.3530829725787,
+          "elapsed_ms": 845.0244169216603,
           "message": "\u62d2\u7edd\u4fe1\u606f\u8d28\u91cf\u4e0d\u8db3: \u7f3a\u5c11 error_code \u6216 message",
           "detail": {
             "meta": {
               "script": "transfer-evm.ts",
-              "error": "Command exited 1: (node:8701) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n/Users/user/Documents/workspace/wallet-bench/universal-account-example/node_modules/e",
+              "error": "Command exited 1: (node:77424) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n/Users/user/Documents/workspace/wallet-bench/universal-account-example/node_modules/",
               "revert": true
             }
           },
@@ -10219,19 +10220,19 @@
           "test_id": "t23",
           "test_name": "idempotent_submit",
           "status": "fail",
-          "elapsed_ms": 1572.8215830167755,
+          "elapsed_ms": 1394.4289999781176,
           "message": "\u91cd\u590d\u63d0\u4ea4\u7ed3\u679c\u4e0d\u660e\u786e",
           "detail": {
             "first_tx_hash": "",
             "second_tx_hash": "",
             "first_meta": {
               "script": "transfer-evm.ts",
-              "error": "Command exited 1: (node:8789) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n/Users/user/Documents/workspace/wallet-bench/universal-account-example/node_modules/e",
+              "error": "Command exited 1: (node:77475) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n/Users/user/Documents/workspace/wallet-bench/universal-account-example/node_modules/",
               "revert": true
             },
             "second_meta": {
               "script": "transfer-evm.ts",
-              "error": "Command exited 1: (node:8843) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n/Users/user/Documents/workspace/wallet-bench/universal-account-example/node_modules/e",
+              "error": "Command exited 1: (node:77536) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n/Users/user/Documents/workspace/wallet-bench/universal-account-example/node_modules/",
               "revert": true
             }
           },
@@ -10272,13 +10273,13 @@
           "test_id": "t27",
           "test_name": "erc20_transfer",
           "status": "pass",
-          "elapsed_ms": 692.8142909891903,
+          "elapsed_ms": 673.1179159833118,
           "message": "\u4ea4\u6613\u63d0\u4ea4\u6210\u529f\u4f46\u6267\u884c revert\uff08\u9884\u671f\u53ef\u63a5\u53d7\uff09\u3002",
           "detail": {
             "revert": true,
             "tx_hash": "",
             "calldata": "[REDACTED]0000dead0000000000000000000000000000000000000000000000000000000000000001",
-            "wallet": ""
+            "wallet": "[REDACTED]"
           },
           "owner": "provider",
           "source": "auto"
@@ -10287,7 +10288,7 @@
           "test_id": "t28",
           "test_name": "contract_write",
           "status": "pass",
-          "elapsed_ms": 718.5507499380037,
+          "elapsed_ms": 712.2637080028653,
           "message": "\u542b calldata \u7684\u4ea4\u6613\u53ef\u88ab\u9002\u914d\u5668\u5904\u7406\u5e76\u63d0\u4ea4\u3002",
           "detail": {
             "tx_hash": "",
@@ -10312,12 +10313,12 @@
           "test_id": "t30",
           "test_name": "tx_finality",
           "status": "fail",
-          "elapsed_ms": 783.0092909280211,
+          "elapsed_ms": 686.4212501095608,
           "message": "\u4ea4\u6613\u672a\u8fd4\u56de tx_hash\uff0c\u65e0\u6cd5\u9a8c\u8bc1\u6700\u7ec8\u6027\u3002",
           "detail": {
             "raw": {
               "script": "transfer-evm.ts",
-              "error": "Command exited 1: (node:9095) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n/Users/user/Documents/workspace/wallet-bench/universal-account-example/node_modules/e",
+              "error": "Command exited 1: (node:77668) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n/Users/user/Documents/workspace/wallet-bench/universal-account-example/node_modules/",
               "revert": true
             }
           },
@@ -10358,14 +10359,14 @@
           "test_id": "t34",
           "test_name": "soak_24h",
           "status": "pass",
-          "elapsed_ms": 4209.042042028159,
-          "message": "\u6301\u7eed\u8fd0\u884c 20 \u8f6e, \u6210\u529f\u7387 100%, P50=0ms, P95=721ms",
+          "elapsed_ms": 4203.192499931902,
+          "message": "\u6301\u7eed\u8fd0\u884c 20 \u8f6e, \u6210\u529f\u7387 100%, P50=0ms, P95=751ms",
           "detail": {
             "rounds": 20,
             "successes": 20,
             "success_rate": 1.0,
-            "p50_ms": 0.1,
-            "p95_ms": 720.8,
+            "p50_ms": 0.0,
+            "p95_ms": 751.1,
             "error_count": 0,
             "threshold": 0.9
           },
@@ -10386,12 +10387,12 @@
           "test_id": "t36",
           "test_name": "idempotency_key",
           "status": "fail",
-          "elapsed_ms": 675.9497920284048,
+          "elapsed_ms": 676.0986670851707,
           "message": "\u9996\u6b21\u4ea4\u6613\u672a\u8fd4\u56de tx_hash\uff0c\u65e0\u6cd5\u8fdb\u884c\u5e42\u7b49\u6027\u6d4b\u8bd5",
           "detail": {
             "r1_meta": {
               "script": "transfer-evm.ts",
-              "error": "Command exited 1: (node:9516) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n/Users/user/Documents/workspace/wallet-bench/universal-account-example/node_modules/e",
+              "error": "Command exited 1: (node:78108) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n/Users/user/Documents/workspace/wallet-bench/universal-account-example/node_modules/",
               "revert": true
             }
           },
@@ -10411,19 +10412,16 @@
         {
           "test_id": "t38",
           "test_name": "version_compat",
-          "status": "fail",
-          "elapsed_ms": 0.08450006134808064,
-          "message": "\u517c\u5bb9\u6027\u68c0\u67e5 4/5 \u901a\u8fc7: create_wallet() returned empty address",
+          "status": "pass",
+          "elapsed_ms": 0.03062502946704626,
+          "message": "\u6240\u6709 5 \u9879\u517c\u5bb9\u6027\u68c0\u67e5\u901a\u8fc7 (name=Universal Trading (Particle Network), arch=local)",
           "detail": {
-            "checks_passed": 4,
+            "checks_passed": 5,
             "checks_total": 5,
             "adapter_name": "Universal Trading (Particle Network)",
             "arch_class": "local",
             "chains_count": 6,
-            "capabilities_count": 8,
-            "issues": [
-              "create_wallet() returned empty address"
-            ]
+            "capabilities_count": 8
           },
           "owner": "provider",
           "source": "auto"
@@ -10442,10 +10440,10 @@
           "test_id": "tc01",
           "test_name": "derivation_path",
           "status": "pass",
-          "elapsed_ms": 0.02045789733529091,
-          "message": "\u786e\u5b9a\u6027\u6d3e\u751f\u5df2\u786e\u8ba4: ",
+          "elapsed_ms": 0.004332978278398514,
+          "message": "\u786e\u5b9a\u6027\u6d3e\u751f\u5df2\u786e\u8ba4: [REDACTED]",
           "detail": {
-            "address": ""
+            "address": "[REDACTED]"
           },
           "owner": "",
           "source": "auto"
@@ -10454,7 +10452,7 @@
           "test_id": "tc02",
           "test_name": "keychain_lock",
           "status": "fail",
-          "elapsed_ms": 0.6026249611750245,
+          "elapsed_ms": 1695.4622080083936,
           "message": "\u7a7a\u5bc6\u94a5\u4ea7\u751f\u4e86\u4e0e\u771f\u5b9e\u5bc6\u94a5\u76f8\u540c\u7684\u5730\u5740",
           "detail": {},
           "owner": "",
@@ -10464,10 +10462,10 @@
           "test_id": "tc03",
           "test_name": "backup_recovery",
           "status": "pass",
-          "elapsed_ms": 0.11866702698171139,
-          "message": "\u6062\u590d\u5df2\u9a8c\u8bc1: ",
+          "elapsed_ms": 1428.5227080108598,
+          "message": "\u6062\u590d\u5df2\u9a8c\u8bc1: [REDACTED]",
           "detail": {
-            "address": ""
+            "address": "[REDACTED]"
           },
           "owner": "",
           "source": "auto"
@@ -10503,7 +10501,7 @@
     }
   ],
   "summary": {
-    "generated_at": "2026-03-07T11:43:07.477213+00:00",
+    "generated_at": "2026-03-07T12:34:50.341268+00:00",
     "provider_count": 12
   }
 }

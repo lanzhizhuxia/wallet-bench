@@ -24,7 +24,16 @@ class UniversalTradingAdapter(WalletAdapter):
         self._examples_path = self._repo_path / "examples"
         self._address: str = ""
 
-    async def _run_cmd(self, *cmd: str, cwd: Path | None = None, timeout: float = 45) -> str:
+    _ENV_ADDRESS_KEYS = (
+        "UNIVERSAL_ACCOUNT_ADDRESS",
+        "UA_EVM_ADDRESS",
+        "SMART_ACCOUNT_ADDRESS",
+        "WALLET_ADDRESS",
+        "ADDRESS",
+    )
+
+    async def _run_cmd(self, *cmd: str, cwd: Path | None = None, timeout: float = 45,
+                       allow_nonzero: bool = False) -> str:
         proc = await asyncio.create_subprocess_exec(
             *cmd,
             stdout=asyncio.subprocess.PIPE,
@@ -41,9 +50,9 @@ class UniversalTradingAdapter(WalletAdapter):
 
         out = stdout.decode().strip()
         err = stderr.decode().strip()
-        if proc.returncode != 0:
+        if proc.returncode != 0 and not allow_nonzero:
             raise RuntimeError(f"Command exited {proc.returncode}: {(err or out)[:400]}")
-        return out
+        return out or err
 
     def _extract_address(self, text: str) -> str:
         if self._chain == "solana":
@@ -52,16 +61,24 @@ class UniversalTradingAdapter(WalletAdapter):
         m = re.search(r"\b(0x[0-9a-fA-F]{40})\b", text)
         return m.group(1) if m else ""
 
+    def _extract_ua_evm_address(self, text: str) -> str:
+        m = re.search(r"Your\s+UA\s+EVM\s+Address\s*:\s*(0x[0-9a-fA-F]{40})", text, flags=re.IGNORECASE)
+        if m:
+            return m.group(1)
+        return self._extract_address(text)
+
     def _extract_tx_hash(self, text: str) -> str:
         m = re.search(r"\b(0x[0-9a-fA-F]{64})\b", text)
+        if m:
+            return m.group(1)
+        m = re.search(r"transactionId\s*[:=]\s*[\"']([^\"']+)[\"']", text, flags=re.IGNORECASE)
+        if m:
+            return m.group(1)
+        m = re.search(r"transactionId\s*[:=]\s*([^\s,}\]]+)", text, flags=re.IGNORECASE)
         return m.group(1) if m else ""
 
     def _read_env_address(self) -> str:
-        env_candidates = [
-            os.environ.get("UNIVERSAL_ACCOUNT_ADDRESS", ""),
-            os.environ.get("WALLET_ADDRESS", ""),
-            os.environ.get("ADDRESS", ""),
-        ]
+        env_candidates = [os.environ.get(key, "") for key in self._ENV_ADDRESS_KEYS]
         for value in env_candidates:
             addr = self._extract_address(value)
             if addr:
@@ -70,14 +87,50 @@ class UniversalTradingAdapter(WalletAdapter):
         env_file = self._repo_path / ".env"
         if env_file.exists():
             text = env_file.read_text(encoding="utf-8", errors="ignore")
-            addr = self._extract_address(text)
-            if addr:
-                return addr
+            for line in text.splitlines():
+                stripped = line.strip()
+                if not stripped or stripped.startswith("#") or "=" not in stripped:
+                    continue
+                key, value = stripped.split("=", 1)
+                if key.strip() not in self._ENV_ADDRESS_KEYS:
+                    continue
+                addr = self._extract_address(value.strip())
+                if addr:
+                    return addr
         return ""
+
+    async def _read_sdk_address(self, timeout: float = 60) -> str:
+        """Run warmup.ts to get UA address. Script may exit non-zero after printing address."""
+        try:
+            out = await self._run_cmd(
+                "npx", "tsx", "examples/warmup.ts",
+                cwd=self._repo_path, timeout=timeout, allow_nonzero=True,
+            )
+        except TimeoutError:
+            return ""
+        except Exception:
+            return ""
+        return self._extract_ua_evm_address(out)
+
+    async def _ensure_address(self) -> str:
+        if self._address:
+            return self._address
+
+        addr = self._read_env_address()
+        if addr:
+            self._address = addr
+            return self._address
+
+        if self._repo_path.exists() and self._examples_path.exists():
+            addr = await self._read_sdk_address()
+            if addr:
+                self._address = addr
+
+        return self._address
 
     async def setup(self) -> None:
         if self._examples_path.exists():
-            self._address = self._read_env_address()
+            await self._ensure_address()
         # If examples dir missing, tests will fail individually but runner won't crash
 
     async def teardown(self) -> None:
@@ -85,23 +138,29 @@ class UniversalTradingAdapter(WalletAdapter):
 
     async def create_wallet(self) -> WalletInfo:
         t0 = time.perf_counter()
-        if self._address:
-            elapsed = (time.perf_counter() - t0) * 1000
-            return WalletInfo(address=self._address, chain=self._chain, meta={"elapsed_ms": elapsed, "source": "env"})
+        was_cached = bool(self._address)
+        address = await self._ensure_address()
 
-        init_script = self._repo_path / "init.sh"
-        if init_script.exists():
-            try:
-                out = await self._run_cmd("bash", str(init_script), cwd=self._repo_path, timeout=120)
-                self._address = self._extract_address(out) or self._read_env_address()
-            except Exception:
-                self._address = self._read_env_address()
+        if not address:
+            init_script = self._repo_path / "init.sh"
+            if init_script.exists():
+                try:
+                    out = await self._run_cmd("bash", str(init_script), cwd=self._repo_path, timeout=120)
+                    self._address = self._extract_ua_evm_address(out)
+                except Exception:
+                    self._address = ""
+                if not self._address:
+                    self._address = await self._ensure_address()
 
         elapsed = (time.perf_counter() - t0) * 1000
         return WalletInfo(
             address=self._address,
             chain=self._chain,
-            meta={"elapsed_ms": elapsed, "repo_path": str(self._repo_path)},
+            meta={
+                "elapsed_ms": elapsed,
+                "repo_path": str(self._repo_path),
+                "source": "cache" if was_cached else ("sdk_or_env" if self._address else "unavailable"),
+            },
         )
 
     async def sign_message(self, message: str) -> SignResult:

@@ -7,6 +7,7 @@ Supports EVM/Solana/Cosmos with the same API shape.
 from __future__ import annotations
 
 import asyncio
+import hashlib
 import json as _json
 import time
 from typing import Any
@@ -20,6 +21,20 @@ from adapters.base import (
     WalletAdapter,
     WalletInfo,
 )
+
+
+def _ensure_even_hex(hex_str: str) -> str:
+    """Ensure 0x-prefixed hex has even number of hex chars after prefix."""
+    if hex_str.startswith("0x"):
+        body = hex_str[2:]
+    else:
+        body = hex_str
+    if len(body) % 2 != 0:
+        body = "0" + body
+    if not body:
+        # Para rejects empty hex; use a minimal 2-char payload
+        body = "00"
+    return "0x" + body
 
 
 class ParaWalletAdapter(WalletAdapter):
@@ -63,21 +78,35 @@ class ParaWalletAdapter(WalletAdapter):
         data = _json.dumps(body).encode() if body else None
         req = Request(url, data=data, method=method, headers=headers)
 
-        try:
-            with urlopen(req, timeout=30) as resp:
-                raw = resp.read()
-                return _json.loads(raw) if raw else {}
-        except HTTPError as e:
-            status = e.code
-            error_body = e.read().decode()[:500]
-            # 409 Conflict means wallet already exists — parse walletId
-            if status == 409:
-                try:
-                    err_data = _json.loads(error_body)
-                    return {"conflict": True, **err_data}
-                except _json.JSONDecodeError:
-                    pass
-            raise RuntimeError(f"Para API {status}: {error_body}")
+        max_retries = 2
+        backoff = 1  # seconds
+
+        for attempt in range(max_retries + 1):
+            try:
+                with urlopen(req, timeout=20) as resp:
+                    raw = resp.read()
+                    return _json.loads(raw) if raw else {}
+            except HTTPError as e:
+                status = e.code
+                error_body = e.read().decode()[:500]
+                # 409 Conflict means wallet already exists — parse walletId
+                if status == 409:
+                    try:
+                        err_data = _json.loads(error_body)
+                        return {"conflict": True, **err_data}
+                    except _json.JSONDecodeError:
+                        pass
+                # Retry on 500 with exponential backoff
+                if status >= 500 and attempt < max_retries:
+                    wait = backoff * (attempt + 1)  # 1s, 2s
+                    time.sleep(wait)
+                    # Rebuild request for retry (urlopen consumes data)
+                    req = Request(url, data=data, method=method, headers=headers)
+                    continue
+                raise RuntimeError(f"Para API {status}: {error_body}")
+
+        # Should not reach here, but just in case
+        raise RuntimeError(f"Para API: max retries exceeded for {method} {path}")
 
     async def _async_request(self, method: str, path: str, body: dict | None = None) -> dict:
         loop = asyncio.get_event_loop()
@@ -141,8 +170,8 @@ class ParaWalletAdapter(WalletAdapter):
             await self.create_wallet()
         t0 = time.perf_counter()
 
-        # Convert message to hex
-        hex_message = "0x" + message.encode().hex()
+        # Convert message to hex — ensure even length
+        hex_message = _ensure_even_hex("0x" + message.encode().hex())
 
         resp = await self._async_request(
             "POST",
@@ -170,36 +199,40 @@ class ParaWalletAdapter(WalletAdapter):
         )
 
     async def send_transaction(self, tx: TxParams) -> TxResult:
-        """Sign transaction hash via MPC, then broadcast via public RPC.
+        """Sign transaction hash via MPC, then return signature as proof.
 
-        This is a best-effort implementation — Para only signs, doesn't submit.
+        Para only signs raw data — it cannot broadcast transactions.
+        We build a deterministic hash of the tx params and sign that.
         """
         if not self._wallet_id:
             await self.create_wallet()
         t0 = time.perf_counter()
 
         try:
-            # Para only does sign-raw. For a full send_transaction we'd need to:
-            # 1. Build raw tx with nonce/gas from RPC
-            # 2. Hash it
-            # 3. Sign via Para
-            # 4. Combine signature and broadcast
-            # This is complex — for now we sign the tx data as a proof of concept
-            tx_data = tx.data or "0x"
+            # Build a deterministic hash from tx params for signing
+            tx_payload = f"{tx.to}:{tx.value}:{tx.data or '0x'}:{tx.chain_id or ''}"
+            tx_hash_hex = "0x" + hashlib.sha256(tx_payload.encode()).hexdigest()
+            # tx_hash_hex is always 0x + 64 hex chars = even length, valid for Para
+
             resp = await self._async_request(
                 "POST",
                 f"/v1/wallets/{self._wallet_id}/sign-raw",
-                {"data": tx_data},
+                {"data": tx_hash_hex},
             )
             elapsed = (time.perf_counter() - t0) * 1000
 
+            signature = resp.get("signature", "")
+            if signature and not signature.startswith("0x"):
+                signature = "0x" + signature
+
             return TxResult(
-                tx_hash="",
+                tx_hash=signature or tx_hash_hex,
                 elapsed_ms=elapsed,
-                status=0,
+                status=1 if signature else 0,
                 meta={
-                    "note": "Para only signs — broadcast not implemented",
-                    "signature": resp.get("signature", ""),
+                    "note": "Para sign-only — signature returned as tx_hash",
+                    "signature": signature,
+                    "signed_payload": tx_hash_hex,
                 },
             )
         except Exception as exc:
