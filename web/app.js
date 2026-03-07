@@ -2823,9 +2823,13 @@ function renderMarketCard5(onchain) {
                 <li><a href="https://dune.com/niftytable/account-abstraction" target="_blank" rel="noopener">ERC-4337 Account Abstraction</a> — 跨链月度活跃智能账户、Bundler/Paymaster 市场份额</li>
             </ul>
             <div class="market-deepdive-howto">
-                <strong>怎么看：</strong>打开 Coinbase KPIs 看板 → 找「Monthly Active Wallets」图表，即为每月至少发过 1 笔交易的去重钱包数。
-                「New vs Returning」图表拆分了新用户和老用户占比，可判断增长质量。
+                <strong>❶ Coinbase Smart Wallet KPIs：</strong>找「Monthly Active Wallets」图表 = 每月至少发过 1 笔交易的去重钱包数；「New vs Returning」拆分新老用户占比，判断增长质量。
             </div>
+            <div class="market-deepdive-howto">
+                <strong>❷ BundleBear 活跃账户：</strong>页面顶部「Weekly Active Smart Accounts」图表 = 每周活跃智能账户数；右上角切换链（All/Base/Ethereum），下方按应用拆分可看各家份额。
+            </div>
+            <div class="market-deepdive-howto">
+                <strong>❸ ERC-4337 Account Abstraction：</strong>找「Monthly Active ERC-4337 Smart Accounts」图表 = 跨链月度活跃总量；另含 Bundler/Paymaster 市场份额，可观察基础设施竞争格局。
         </div>
         ${notTrackableNote}
         <div class="market-data-month">数据范围：${freshness.series_start || '—'} ~ ${freshness.series_end || '—'} (${freshness.num_days || '—'}d) ｜ 时效：${sla}</div>
