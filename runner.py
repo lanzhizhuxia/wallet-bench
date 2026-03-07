@@ -474,6 +474,12 @@ def _print_summary(run_record: dict[str, Any]) -> None:
     unsupported = sum(1 for r in results if r["status"] == "unsupported")
     inconclusive = sum(1 for r in results if r["status"] == "inconclusive")
 
+    # Scorable = pass + fail + error + unsupported (provider responsibility)
+    # Excluded: skip (industry blank), inconclusive (benchmark gap), not_applicable (arch)
+    scored = passed + failed + errors + unsupported
+    coverage_pct = (scored / total * 100) if total > 0 else 0
+    score_pct = (passed / scored * 100) if scored > 0 else 0
+
     print(f"\n{'='*76}")
     parts = [f"PASS: {passed}", f"FAIL: {failed}"]
     if unsupported:
@@ -484,8 +490,8 @@ def _print_summary(run_record: dict[str, Any]) -> None:
         parts.append(f"SKIP: {skipped}")
     parts.extend([f"ERROR: {errors}", f"N/A: {na}", f"TOTAL: {total}"])
     print(f"  {'  '.join(parts)}")
+    print(f"  Score: {score_pct:.1f}% ({passed}/{scored} scored)  Coverage: {coverage_pct:.0f}% ({scored}/{total})")
     print(f"{'='*76}")
-
 
 # ---------------------------------------------------------------------------
 # CLI

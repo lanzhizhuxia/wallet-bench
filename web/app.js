@@ -1110,6 +1110,11 @@ const RADAR_DIMENSIONS = [
     { key: 'ops', label: '运维能力',
       desc: '运维类测试通过率（权重 50%）+ 环境矩阵和文档上手度 YAML 评分均值（权重 50%）。' },
     { key: 'app', label: '应用能力',
+      desc: 'DeFi 对接能力：基于 4 场景（Uniswap Swap / Aave 借贷 / Hyperliquid 永续 / Polymarket 预测市场）的对接成本评伌，等权平均。数据来源：DeFi Integration Cost Matrix v1。' },
+    { key: 'security', label: '安全性',
+      desc: '签名验证、密钥轮换等安全测试通过率。公式：pass ÷ (pass + fail + error + unsupported) × 100。' },
+    { key: 'agent', label: 'Agent 可用性',
+      desc: 'AI Agent 集成质量：返回结构完整性、错误可机读性、响应确定性的通过率。公式：pass ÷ (pass + fail + error + unsupported) × 100。' },
       desc: 'DeFi 对接能力：基于 4 场景（Uniswap Swap / Aave 借贷 / Hyperliquid 永续 / Polymarket 预测市场）的对接成本评估，等权平均。数据来源：DeFi Integration Cost Matrix v1。' },
 ];
 
@@ -1194,12 +1199,16 @@ function computeRadarScores(provider) {
     const ev = provider.evaluation || {};
     const scores = ev.scores || {};
 
-    // Helper: pass rate for a category (pass / (pass+fail+unsupported), excluding skip/inconclusive/error/na)
+    // Helper: pass rate for a category
+    // Scorable = pass + fail + error + unsupported (provider responsibility)
+    // Excluded from denominator: skip (industry blank), inconclusive (benchmark gap), not_applicable (arch mismatch)
     function catPassRate(catKey) {
         const catResults = results.filter(r => TEST_CATEGORY[r.test_name] === catKey);
         const passed = catResults.filter(r => r.status === 'pass').length;
-        const runnable = catResults.filter(r => r.status === 'pass' || r.status === 'fail' || r.status === 'unsupported').length;
-        return runnable > 0 ? (passed / runnable) * 100 : 0;
+        const scorable = catResults.filter(r =>
+            r.status === 'pass' || r.status === 'fail' || r.status === 'error' || r.status === 'unsupported'
+        ).length;
+        return scorable > 0 ? (passed / scorable) * 100 : 0;
     }
 
     // Helper: YAML score (1-5 normal scale) to percentage (5 = 100)
@@ -1220,6 +1229,8 @@ function computeRadarScores(provider) {
     const governance = blend(catPassRate('governance'), ['governance_completeness'], 0.6);
     const reliability = catPassRate('reliability');
     const ops = blend(catPassRate('ops'), ['network_environment', 'sdk_doc_quality'], 0.5);
+    const security = catPassRate('security');
+    const agent = catPassRate('agent');
     // App dimension: use DeFi matrix equal-weight score if available, fallback to old test pass rate
     let app;
     const providerId = provider.provider;
@@ -1231,7 +1242,7 @@ function computeRadarScores(provider) {
     }
 
     return {
-        wallet_core, governance, reliability, ops, app,
+        wallet_core, governance, reliability, ops, app, security, agent,
         _applicableCount: results.length,
         _totalCount: allResults.length
     };
