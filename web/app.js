@@ -2830,7 +2830,7 @@ function renderMarketCard5(onchain) {
     const card5b = chainHtml ? `
     <div class="market-card">
         <h3 class="market-card-title">链偏好分布</h3>
-        <div class="market-card-subtitle">各供应商 30 日新增激活的链维度拆分</div>
+        <div class="market-card-subtitle">30 日新增激活在各区块链上的分布对比</div>
         ${chainHtml}
     </div>` : '';
 
@@ -3039,72 +3039,87 @@ function initOnchainDailyChart(onchain) {
 }
 
 
+const CHAIN_COLORS = {
+    base: '#0052FF', ethereum: '#627EEA', arbitrum: '#28A0F0',
+    optimism: '#FF0420', polygon: '#8247E5',
+};
+const CHAIN_NAMES = {
+    base: 'Base', ethereum: 'Ethereum', arbitrum: 'Arbitrum',
+    optimism: 'Optimism', polygon: 'Polygon',
+};
+const CHAIN_PIE_PROVIDERS = ['coinbase', 'crossmint'];
+const CHAIN_PIE_NAMES = { coinbase: 'Coinbase', crossmint: 'Crossmint' };
+
 function renderChainDistribution(onchain) {
     if (!onchain || !onchain.providers) return '';
 
-    const DISPLAY_ORDER = ['coinbase', 'crossmint'];
-    let hasData = false;
     let chartsHtml = '';
+    let hasData = false;
+    let footnotes = [];
 
-    for (const pid of DISPLAY_ORDER) {
+    for (const pid of CHAIN_PIE_PROVIDERS) {
         const p = onchain.providers[pid];
         if (!p || !p.chain_distribution) continue;
-        const total = Object.values(p.chain_distribution).reduce((a, b) => a + b, 0);
+        const dist = p.chain_distribution;
+        const total = Object.values(dist).reduce((a, b) => a + b, 0);
         if (total <= 0) continue;
         hasData = true;
 
-        const name = MARKET_PROVIDER_NAMES[pid];
-        const sourceBadge = p.chain_distribution_source === 'nonce_ratio'
-            ? ' <span class="market-partial-badge">nonce比例</span>' : '';
+        const entries = Object.entries(dist).filter(([, v]) => v > 0).sort((a, b) => b[1] - a[1]);
+
+        // Build custom HTML legend (Chart.js legend color is unreliable on dark bg)
+        let legendHtml = '';
+        for (const [chain, count] of entries) {
+            const pct = (count / total * 100).toFixed(1);
+            const color = CHAIN_COLORS[chain] || '#888';
+            const name = CHAIN_NAMES[chain] || chain;
+            legendHtml += `
+            <div class="chain-legend-row">
+                <span class="chain-legend-dot" style="background:${color}"></span>
+                <span class="chain-legend-name">${name}</span>
+                <span class="chain-legend-pct">${pct}%</span>
+                <span class="chain-legend-val">${formatNum(count)}</span>
+            </div>`;
+        }
+
+        if (p.chain_distribution_source === 'nonce_ratio') {
+            footnotes.push(`${CHAIN_PIE_NAMES[pid]} 链分布基于 bundler nonce 累计比例估算`);
+        }
 
         chartsHtml += `
         <div class="market-chain-pie-item">
-            <div class="market-chain-pie-label">${name}${sourceBadge}</div>
-            <div class="market-chain-pie-wrap">
-                <canvas id="chain-pie-${pid}"></canvas>
+            <div class="market-chain-pie-header">${CHAIN_PIE_NAMES[pid]}</div>
+            <div class="market-chain-pie-total">${formatNum(total)} 总激活</div>
+            <div class="market-chain-pie-body">
+                <div class="market-chain-pie-canvas"><canvas id="chain-pie-${pid}"></canvas></div>
+                <div class="market-chain-pie-legend">${legendHtml}</div>
             </div>
         </div>`;
     }
 
     if (!hasData) return '';
 
+    const footHtml = footnotes.length
+        ? `<div class="market-chain-footnote">${footnotes.join('；')}</div>` : '';
+
     return `
-    <div class="market-chain-pie-row">${chartsHtml}</div>`;
+    <div class="market-chain-pie-row">${chartsHtml}</div>
+    ${footHtml}`;
 }
 
 function initChainPieCharts(onchain) {
     if (!onchain || !onchain.providers) return;
 
-    const CHAIN_COLORS = {
-        base: '#0052FF',
-        ethereum: '#627EEA',
-        arbitrum: '#28A0F0',
-        optimism: '#FF0420',
-        polygon: '#8247E5',
-    };
-    const CHAIN_NAMES = {
-        base: 'Base',
-        ethereum: 'Ethereum',
-        arbitrum: 'Arbitrum',
-        optimism: 'Optimism',
-        polygon: 'Polygon',
-    };
-
-    for (const pid of ['coinbase', 'crossmint']) {
+    for (const pid of CHAIN_PIE_PROVIDERS) {
         const p = onchain.providers[pid];
         if (!p || !p.chain_distribution) continue;
         const canvas = document.getElementById(`chain-pie-${pid}`);
         if (!canvas) continue;
 
-        const rawEntries = Object.entries(p.chain_distribution)
+        const entries = Object.entries(p.chain_distribution)
             .filter(([, v]) => v > 0)
             .sort((a, b) => b[1] - a[1]);
-        if (!rawEntries.length) continue;
-
-        const total = rawEntries.reduce((s, [, v]) => s + v, 0);
-
-        // Hide tiny entries (< 0.05%) to reduce visual noise
-        const entries = rawEntries.filter(([, v]) => (v / total * 100) >= 0.05);
+        if (!entries.length) continue;
 
         new Chart(canvas, {
             type: 'doughnut',
@@ -3114,54 +3129,26 @@ function initChainPieCharts(onchain) {
                     data: entries.map(([, v]) => v),
                     backgroundColor: entries.map(([chain]) => CHAIN_COLORS[chain] || '#888'),
                     borderWidth: 0,
-                    hoverOffset: 4,
+                    hoverOffset: 6,
                 }],
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: true,
-                cutout: '55%',
+                cutout: '58%',
                 plugins: {
-                    legend: {
-                        display: true,
-                        position: 'bottom',
-                        align: 'center',
-                        labels: {
-                            color: '#EAECEF',
-                            font: { size: 13, family: getCssVar('--font-body'), weight: '600' },
-                            boxWidth: 14,
-                            boxHeight: 14,
-                            padding: 14,
-                            usePointStyle: true,
-                            pointStyle: 'circle',
-                            generateLabels: function(chart) {
-                                const data = chart.data;
-                                return data.labels.map((label, i) => {
-                                    const val = data.datasets[0].data[i];
-                                    const pct = (val / total * 100).toFixed(1);
-                                    return {
-                                        text: `${label}  ${pct}%`,
-                                        fillStyle: data.datasets[0].backgroundColor[i],
-                                        strokeStyle: 'transparent',
-                                        pointStyle: 'circle',
-                                        index: i,
-                                        hidden: false,
-                                    };
-                                });
-                            },
-                        },
-                    },
+                    legend: { display: false },
                     tooltip: {
-                        backgroundColor: getCssVar('--bg-elevated'),
-                        titleColor: getCssVar('--text-primary'),
-                        bodyColor: getCssVar('--text-secondary'),
-                        borderColor: getCssVar('--bg-border'),
+                        backgroundColor: '#1E2329',
+                        titleColor: '#EAECEF',
+                        bodyColor: '#B7BDC6',
+                        borderColor: '#2B3139',
                         borderWidth: 1,
                         callbacks: {
                             label: function(ctx) {
-                                const val = ctx.parsed;
-                                const pct = (val / total * 100).toFixed(1);
-                                return `${ctx.label}: ${val.toLocaleString('en-US')} (${pct}%)`;
+                                const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
+                                const pct = (ctx.parsed / total * 100).toFixed(1);
+                                return ` ${ctx.label}: ${ctx.parsed.toLocaleString('en-US')} (${pct}%)`;
                             },
                         },
                     },

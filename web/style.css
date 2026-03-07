@@ -2619,29 +2619,90 @@ td.defi-difficulty { font-size: 0.82rem; white-space: nowrap; text-align: center
 
 .market-chain-pie-row {
     display: flex;
-    gap: var(--space-m);
+    gap: var(--space-l);
     flex-wrap: wrap;
     justify-content: center;
 }
 
 .market-chain-pie-item {
-    flex: 0 1 280px;
-    min-width: 200px;
-    max-width: 300px;
-    text-align: center;
+    flex: 0 1 320px;
+    min-width: 260px;
 }
 
-.market-chain-pie-label {
+.market-chain-pie-header {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+    text-align: center;
+    margin-bottom: 2px;
+}
+
+.market-chain-pie-total {
     font-size: 12px;
-    color: var(--text-secondary);
-    font-weight: 500;
-    margin-bottom: 6px;
+    color: var(--text-tertiary);
     text-align: center;
+    margin-bottom: var(--space-s);
 }
 
-.market-chain-pie-wrap {
-    position: relative;
-    height: 190px;
+.market-chain-pie-body {
+    display: flex;
+    align-items: center;
+    gap: var(--space-m);
+}
+
+.market-chain-pie-canvas {
+    width: 120px;
+    height: 120px;
+    flex-shrink: 0;
+}
+
+.market-chain-pie-legend {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.chain-legend-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.chain-legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.chain-legend-name {
+    font-size: 13px;
+    color: #EAECEF;
+    font-weight: 500;
+    min-width: 70px;
+}
+
+.chain-legend-pct {
+    font-size: 13px;
+    color: #EAECEF;
+    font-weight: 700;
+    min-width: 48px;
+    text-align: right;
+}
+
+.chain-legend-val {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    margin-left: auto;
+}
+
+.market-chain-footnote {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    text-align: center;
+    margin-top: var(--space-s);
+    font-style: italic;
 }
 
 .market-upgrade-date {
