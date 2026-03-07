@@ -551,6 +551,402 @@
         "coverage": "1/4"
       }
     }
+    ,
+    {
+      "id": "clawlett",
+      "name": "Clawlett",
+      "architecture": "Smart Account/Gnosis Safe",
+      "technical": {
+        "score": 6.1,
+        "confidence": 100.0,
+        "pass": 2,
+        "fail": 5,
+        "error": 12,
+        "unsupported": 11,
+        "inconclusive": 1,
+        "skip": 8,
+        "not_applicable": 3,
+        "total": 42
+      },
+      "defi": {
+        "scores": {
+          "equal": 16.2,
+          "defi_heavy": 19.5,
+          "trading_heavy": 13.0
+        },
+        "scenarios": {
+          "uniswap_swap": {
+            "rating": "low_barrier",
+            "label": "低门槛",
+            "emoji": "🟡",
+            "proxy": 0.65,
+            "integration_mode": "内置 KyberSwap + calldata 可行",
+            "tx_steps": 1,
+            "external_deps": ["KyberSwap 内置", "或自行编码 Uniswap V3 Router calldata"],
+            "human_intervention": false,
+            "rationale": "Clawlett 内置 KyberSwap/CoW Protocol Swap 脚本，可覆盖通用兑换意图。若需原始 Uniswap V3 Router 调用，可通过 Gnosis Safe execTransaction 发送 calldata（需 Zodiac Roles 授权目标合约）。",
+            "confidence": "medium",
+            "caveats": ["需确保 Zodiac Roles 授权 Uniswap Router 地址", "仅 Base 主网"]
+          },
+          "aave_morpho": {
+            "rating": "not_feasible",
+            "label": "不可行",
+            "emoji": "🔴",
+            "proxy": 0.0,
+            "integration_mode": "不可行",
+            "tx_steps": null,
+            "external_deps": [],
+            "human_intervention": null,
+            "rationale": "无借贷/存款命令，Zodiac Roles 未预配置 Aave/Morpho 合约权限。理论上可通过 execTransaction 发送 calldata，但需额外部署和配置 Roles 模块。",
+            "confidence": "high",
+            "caveats": []
+          },
+          "hyperliquid": {
+            "rating": "not_feasible",
+            "label": "不可行",
+            "emoji": "🔴",
+            "proxy": 0.0,
+            "integration_mode": "不可行",
+            "tx_steps": null,
+            "external_deps": [],
+            "human_intervention": null,
+            "rationale": "无 personal_sign 或 sign_typed_data 能力。Zodiac Roles 仅限交易级操作，无法签名 EIP-712 离链授权。",
+            "confidence": "high",
+            "caveats": []
+          },
+          "polymarket": {
+            "rating": "not_feasible",
+            "label": "不可行",
+            "emoji": "🔴",
+            "proxy": 0.0,
+            "integration_mode": "不可行",
+            "tx_steps": null,
+            "external_deps": [],
+            "human_intervention": null,
+            "rationale": "Polymarket CLOB 需要 EIP-712 签名，Clawlett 不暴露签名原语。仅 Base 链，与 Polygon 不兼容。",
+            "confidence": "high",
+            "caveats": []
+          }
+        },
+        "coverage": "1/4"
+      }
+    },
+    {
+      "id": "para_wallet",
+      "name": "Para Wallet",
+      "architecture": "MPC/REST",
+      "technical": {
+        "score": 13.8,
+        "confidence": 100.0,
+        "pass": 4,
+        "fail": 8,
+        "error": 9,
+        "unsupported": 8,
+        "inconclusive": 2,
+        "skip": 8,
+        "not_applicable": 3,
+        "total": 42
+      },
+      "defi": {
+        "scores": {
+          "equal": 26.2,
+          "defi_heavy": 25.5,
+          "trading_heavy": 22.0
+        },
+        "scenarios": {
+          "uniswap_swap": {
+            "rating": "moderate",
+            "label": "中等",
+            "emoji": "🟠",
+            "proxy": 0.4,
+            "integration_mode": "客户端组装 tx + sign-raw + 广播",
+            "tx_steps": 3,
+            "external_deps": ["ethers.js/web3.py 组装 raw tx", "Uniswap ABI 编码", "RPC 节点广播"],
+            "human_intervention": false,
+            "rationale": "Para 仅提供 sign-raw（原始字节签名），客户端需自行：1) 编码 Uniswap calldata 2) 构建 unsigned tx 3) 调 sign-raw 签名 4) 通过 RPC 广播。可行但步骤多。",
+            "confidence": "medium",
+            "caveats": ["sign-raw 返回无 0x 前缀，需客户端拼接", "需客户端维护 nonce 和 gas 估算"]
+          },
+          "aave_morpho": {
+            "rating": "moderate",
+            "label": "中等",
+            "emoji": "🟠",
+            "proxy": 0.4,
+            "integration_mode": "客户端组装多步 tx + sign-raw + 广播",
+            "tx_steps": 4,
+            "external_deps": ["ethers.js/web3.py 组装 raw tx", "Aave V3 ABI", "RPC 节点广播"],
+            "human_intervention": false,
+            "rationale": "与 Uniswap 路径类似但需两步交易（approve + supply/borrow）。每步均需：构建 tx → sign-raw → 广播。可行性同 Swap 但编码量加倍。",
+            "confidence": "medium",
+            "caveats": ["两步交易需顺序执行，nonce 管理更复杂"]
+          },
+          "hyperliquid": {
+            "rating": "not_feasible",
+            "label": "不可行",
+            "emoji": "🔴",
+            "proxy": 0.0,
+            "integration_mode": "不可行",
+            "tx_steps": null,
+            "external_deps": [],
+            "human_intervention": null,
+            "rationale": "Hyperliquid 需 EIP-712 signTypedData，Para 仅支持 sign-raw（原始字节）。理论上可自行哈希 EIP-712 结构再调 sign-raw，但 Hyperliquid SDK 不支持注入外部签名者，实际不可行。",
+            "confidence": "high",
+            "caveats": []
+          },
+          "polymarket": {
+            "rating": "not_feasible",
+            "label": "不可行",
+            "emoji": "🔴",
+            "proxy": 0.0,
+            "integration_mode": "不可行",
+            "tx_steps": null,
+            "external_deps": [],
+            "human_intervention": null,
+            "rationale": "Polymarket CLOB 需 EIP-712 签名。Para sign-raw 仅支持原始字节，无 signTypedData。py-clob-client 无法注入外部签名者。",
+            "confidence": "high",
+            "caveats": []
+          }
+        },
+        "coverage": "2/4"
+      }
+    },
+    {
+      "id": "universal_trading",
+      "name": "Universal Trading (Particle Network)",
+      "architecture": "Local/Scripts",
+      "technical": {
+        "score": 33.3,
+        "confidence": 100.0,
+        "pass": 12,
+        "fail": 6,
+        "error": 5,
+        "unsupported": 7,
+        "inconclusive": 3,
+        "skip": 7,
+        "not_applicable": 5,
+        "total": 45
+      },
+      "defi": {
+        "scores": {
+          "equal": 20.0,
+          "defi_heavy": 24.0,
+          "trading_heavy": 16.0
+        },
+        "scenarios": {
+          "uniswap_swap": {
+            "rating": "ready_to_use_conditional",
+            "label": "即用†",
+            "emoji": "🟢",
+            "proxy": 0.8,
+            "integration_mode": "声明即用（受限）",
+            "tx_steps": 0,
+            "external_deps": [],
+            "human_intervention": false,
+            "rationale": "内置 buy.ts/sell.ts 脚本通过 Particle Universal Accounts 执行 Swap，覆盖通用兑换意图。非直连 Uniswap V3 Router，而是通过 Particle 聚合器路由。",
+            "confidence": "high",
+            "caveats": ["聚合器路由，非 Uniswap V3 直连", "需 Particle 项目 ID 和密钥"]
+          },
+          "aave_morpho": {
+            "rating": "not_feasible",
+            "label": "不可行",
+            "emoji": "🔴",
+            "proxy": 0.0,
+            "integration_mode": "不可行",
+            "tx_steps": null,
+            "external_deps": [],
+            "human_intervention": null,
+            "rationale": "脚本集仅覆盖 buy/sell（Swap）流程，无借贷/存款命令。不暴露通用 send_transaction 或 calldata 接口。",
+            "confidence": "high",
+            "caveats": []
+          },
+          "hyperliquid": {
+            "rating": "not_feasible",
+            "label": "不可行",
+            "emoji": "🔴",
+            "proxy": 0.0,
+            "integration_mode": "不可行",
+            "tx_steps": null,
+            "external_deps": [],
+            "human_intervention": null,
+            "rationale": "不暴露 sign_message 或 sign_typed_data 原语。脚本仅覆盖 Swap 流程，无法签名 EIP-712 Hyperliquid 授权。",
+            "confidence": "high",
+            "caveats": []
+          },
+          "polymarket": {
+            "rating": "not_feasible",
+            "label": "不可行",
+            "emoji": "🔴",
+            "proxy": 0.0,
+            "integration_mode": "不可行",
+            "tx_steps": null,
+            "external_deps": [],
+            "human_intervention": null,
+            "rationale": "无签名原语，无 Polygon 链支持。脚本集聚焦 EVM/Solana Swap，不覆盖预测市场。",
+            "confidence": "high",
+            "caveats": []
+          }
+        },
+        "coverage": "1/4"
+      }
+    },
+    {
+      "id": "polymarket_agent",
+      "name": "Polymarket Agent",
+      "architecture": "Local/CLI",
+      "technical": {
+        "score": 17.9,
+        "confidence": 100.0,
+        "pass": 5,
+        "fail": 3,
+        "error": 8,
+        "unsupported": 12,
+        "inconclusive": 2,
+        "skip": 10,
+        "not_applicable": 5,
+        "total": 45
+      },
+      "defi": {
+        "scores": {
+          "equal": 25.0,
+          "defi_heavy": 20.0,
+          "trading_heavy": 32.5
+        },
+        "scenarios": {
+          "uniswap_swap": {
+            "rating": "not_feasible",
+            "label": "不可行",
+            "emoji": "🔴",
+            "proxy": 0.0,
+            "integration_mode": "不可行",
+            "tx_steps": null,
+            "external_deps": [],
+            "human_intervention": null,
+            "rationale": "仅支持 Polymarket 预测市场交易（buy/sell）。无通用 Swap 或 send_transaction 能力。钱包由 poly CLI 内部管理，不暴露签名原语。",
+            "confidence": "high",
+            "caveats": []
+          },
+          "aave_morpho": {
+            "rating": "not_feasible",
+            "label": "不可行",
+            "emoji": "🔴",
+            "proxy": 0.0,
+            "integration_mode": "不可行",
+            "tx_steps": null,
+            "external_deps": [],
+            "human_intervention": null,
+            "rationale": "无借贷/存款命令。CLI 仅覆盖 Polymarket CLOB 交易，不支持通用 DeFi 操作。",
+            "confidence": "high",
+            "caveats": []
+          },
+          "hyperliquid": {
+            "rating": "not_feasible",
+            "label": "不可行",
+            "emoji": "🔴",
+            "proxy": 0.0,
+            "integration_mode": "不可行",
+            "tx_steps": null,
+            "external_deps": [],
+            "human_intervention": null,
+            "rationale": "CLI 聚焦 Polygon/Polymarket，不支持 Hyperliquid L1。无签名原语可复用。",
+            "confidence": "high",
+            "caveats": []
+          },
+          "polymarket": {
+            "rating": "ready_to_use",
+            "label": "即用",
+            "emoji": "🟢",
+            "proxy": 1.0,
+            "integration_mode": "声明即用",
+            "tx_steps": 0,
+            "external_deps": [],
+            "human_intervention": false,
+            "rationale": "poly buy/sell 命令直接在 Polymarket CLOB 下单。Agent 仅需传递 market slug + 方向 + 金额即可完成交易。内置钱包管理和 USDC 结算。",
+            "confidence": "high",
+            "caveats": ["仅 Polymarket 预测市场，不可用于其他 DeFi 场景"]
+          }
+        },
+        "coverage": "1/4"
+      }
+    },
+    {
+      "id": "coinpilot_hyperliquid",
+      "name": "Coinpilot Hyperliquid",
+      "architecture": "Intent/Copy-Trade",
+      "technical": {
+        "score": 12.0,
+        "confidence": 100.0,
+        "pass": 3,
+        "fail": 4,
+        "error": 10,
+        "unsupported": 8,
+        "inconclusive": 3,
+        "skip": 12,
+        "not_applicable": 5,
+        "total": 45
+      },
+      "defi": {
+        "scores": {
+          "equal": 20.0,
+          "defi_heavy": 10.0,
+          "trading_heavy": 37.5
+        },
+        "scenarios": {
+          "uniswap_swap": {
+            "rating": "not_feasible",
+            "label": "不可行",
+            "emoji": "🔴",
+            "proxy": 0.0,
+            "integration_mode": "不可行",
+            "tx_steps": null,
+            "external_deps": [],
+            "human_intervention": null,
+            "rationale": "Coinpilot 专注 Hyperliquid 永续合约跟单。不支持 EVM Swap 或通用交易。钱包由 Privy 预创建，不暴露签名/交易原语。",
+            "confidence": "high",
+            "caveats": []
+          },
+          "aave_morpho": {
+            "rating": "not_feasible",
+            "label": "不可行",
+            "emoji": "🔴",
+            "proxy": 0.0,
+            "integration_mode": "不可行",
+            "tx_steps": null,
+            "external_deps": [],
+            "human_intervention": null,
+            "rationale": "无借贷/存款能力。平台仅提供 Hyperliquid perps copy-trade 订阅执行。",
+            "confidence": "high",
+            "caveats": []
+          },
+          "hyperliquid": {
+            "rating": "ready_to_use_conditional",
+            "label": "即用†",
+            "emoji": "🟢",
+            "proxy": 0.8,
+            "integration_mode": "声明即用（跟单模式）",
+            "tx_steps": 0,
+            "external_deps": [],
+            "human_intervention": false,
+            "rationale": "Coinpilot 内置 Hyperliquid 永续合约跟单（start/stop/history）。Agent 选择 leader 后自动复制交易。非自主下单，而是跟单执行模式。",
+            "confidence": "high",
+            "caveats": ["跟单模式，非自主交易", "5 req/s 速率限制", "需 Coinpilot 账户和配置"]
+          },
+          "polymarket": {
+            "rating": "not_feasible",
+            "label": "不可行",
+            "emoji": "🔴",
+            "proxy": 0.0,
+            "integration_mode": "不可行",
+            "tx_steps": null,
+            "external_deps": [],
+            "human_intervention": null,
+            "rationale": "Coinpilot 仅覆盖 Hyperliquid L1 perps 跟单，不支持 Polygon/Polymarket。",
+            "confidence": "high",
+            "caveats": []
+          }
+        },
+        "coverage": "1/4"
+      }
+    }
   ],
   "recommendations": [
     {
@@ -584,6 +980,27 @@
       "description": "需要策略引擎和审计能力",
       "recommended": "privy",
       "reason": "唯一内置 Policy Engine 的供应商"
+    },
+    {
+      "use_case": "预测市场专用 Agent",
+      "description": "仅需 Polymarket 买卖能力，无需通用钱包",
+      "recommended": "polymarket_agent",
+      "alternates": ["privy"],
+      "reason": "poly buy/sell 命令直接在 Polymarket CLOB 下单，Agent 声明即用。若需通用钱包能力则回退 Privy"
+    },
+    {
+      "use_case": "永续合约跟单",
+      "description": "Hyperliquid perps copy-trade 场景",
+      "recommended": "coinpilot_hyperliquid",
+      "alternates": ["privy"],
+      "reason": "Coinpilot 内置 Hyperliquid 跟单（start/stop/history），Agent 选择 leader 后自动复制交易。若需自主下单则用 Privy + EIP-712"
+    },
+    {
+      "use_case": "链上治理约束型 Agent",
+      "description": "需要链上策略引擎限制 Agent 可调用的合约和方法",
+      "recommended": "clawlett",
+      "alternates": ["privy"],
+      "reason": "Gnosis Safe + Zodiac Roles 提供链上策略执行，限制 Agent 仅可调用授权的合约方法（仅 Base 链）"
     }
   ]
 }

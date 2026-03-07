@@ -12,6 +12,12 @@
 | Privy | `privy` | delegated | Ethereum Sepolia |
 | MoonPay | `moonpay` | delegated | Ethereum |
 | Minara | `minara` | custodial | Base |
+| OKX OnchainOS | `okx_onchainos` | intent | — |
+| Clawlett | `clawlett` | smart_account | Base (主网) |
+| Para Wallet | `para_wallet` | mpc | Ethereum, Solana, Cosmos |
+| Universal Trading | `universal_trading` | local | BSC, ETH, Solana 等 |
+| Polymarket Agent | `polymarket_agent` | local | Polygon (主网) |
+| Coinpilot Hyperliquid | `coinpilot_hyperliquid` | intent | Hyperliquid L1 |
 
 ## 前置要求
 
@@ -257,7 +263,13 @@ wallet-bench/
 │   ├── coinbase_agentkit.py   #   Coinbase AgentKit (CDP SDK)
 │   ├── privy.py               #   Privy (REST API)
 │   ├── moonpay.py             #   MoonPay (CLI)
-│   └── minara.py              #   Minara (CLI)
+│   ├── minara.py              #   Minara (CLI)
+│   ├── okx_onchainos.py       #   OKX OnchainOS (REST API)
+│   ├── clawlett.py            #   Clawlett (Gnosis Safe + Zodiac)
+│   ├── para_wallet.py         #   Para Wallet (MPC REST API)
+│   ├── universal_trading.py   #   Universal Trading (Particle Network)
+│   ├── polymarket_agent.py    #   Polymarket Agent (CLI)
+│   └── coinpilot_hyperliquid.py #  Coinpilot Hyperliquid (CLI)
 ├── cases/                     # 测试用例（所有供应商共用）
 ├── evaluations/               # 各供应商 DX 评估 (YAML)
 ├── providers/                 # 供应商元数据 (YAML)
@@ -285,6 +297,12 @@ wallet-bench/
 | Privy | `adapters/privy.py` | `providers/privy.yaml` | `evaluations/privy.yaml` | `config.yaml` → `providers.privy` |
 | MoonPay | `adapters/moonpay.py` | `providers/moonpay.yaml` | `evaluations/moonpay.yaml` | `config.yaml` → `providers.moonpay` |
 | Minara | `adapters/minara.py` | `providers/minara.yaml` | `evaluations/minara.yaml` | `config.yaml` → `providers.minara` |
+| OKX OnchainOS | `adapters/okx_onchainos.py` | `providers/okx_onchainos.yaml` | `evaluations/okx_onchainos.yaml` | `config.yaml` → `providers.okx_onchainos` |
+| Clawlett | `adapters/clawlett.py` | `providers/clawlett.yaml` | `evaluations/clawlett.yaml` | `config.yaml` → `providers.clawlett` |
+| Para Wallet | `adapters/para_wallet.py` | `providers/para_wallet.yaml` | `evaluations/para_wallet.yaml` | `config.yaml` → `providers.para_wallet` |
+| Universal Trading | `adapters/universal_trading.py` | `providers/universal_trading.yaml` | `evaluations/universal_trading.yaml` | `config.yaml` → `providers.universal_trading` |
+| Polymarket Agent | `adapters/polymarket_agent.py` | `providers/polymarket_agent.yaml` | `evaluations/polymarket_agent.yaml` | `config.yaml` → `providers.polymarket_agent` |
+| Coinpilot Hyperliquid | `adapters/coinpilot_hyperliquid.py` | `providers/coinpilot_hyperliquid.yaml` | `evaluations/coinpilot_hyperliquid.yaml` | `config.yaml` → `providers.coinpilot_hyperliquid` |
 
 > 所有供应商共享 `adapters/base.py`（基类）和 `cases/shared/`（测试用例）。运行任何供应商都需要这些文件加上 `runner.py`。
 

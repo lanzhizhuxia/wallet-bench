@@ -1722,7 +1722,7 @@ button {
 /* ===== Comparison Cards (功能对比) ===== */
 .comparison-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(460px, 100%), 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(290px, 100%), 1fr));
   gap: var(--space-l);
 }
 .comp-card {

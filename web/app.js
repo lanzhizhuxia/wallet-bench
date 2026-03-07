@@ -1323,11 +1323,11 @@ function renderMainRadarChart(providers) {
             label: p.provider_meta?.name || p.provider,
             data: keys.map(key => scores[key]),
             borderColor: color,
-            backgroundColor: `${color}22`,
+            backgroundColor: `${color}18`,
             pointBackgroundColor: color,
-            borderWidth: 2.5,
-            pointRadius: 4,
-            pointHoverRadius: 6,
+            borderWidth: providers.length > 8 ? 1.8 : 2.5,
+            pointRadius: providers.length > 8 ? 2.5 : 4,
+            pointHoverRadius: providers.length > 8 ? 4 : 6,
             hidden: false,
             _provider: p.provider
         };
