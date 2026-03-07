@@ -1,4 +1,5 @@
 name: Coinpilot Hyperliquid
+tier: openclaw_skill
 class: intent
 custody_model: Privy-Managed
 signing_modes: []

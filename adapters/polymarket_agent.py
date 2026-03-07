@@ -22,7 +22,7 @@ class PolymarketAgentAdapter(WalletAdapter):
 
     async def _run_poly(self, *args: str, timeout: float = 45) -> str:
         proc = await asyncio.create_subprocess_exec(
-            "poly",
+            "polymarket",
             *args,
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.PIPE,
@@ -32,12 +32,12 @@ class PolymarketAgentAdapter(WalletAdapter):
             stdout, stderr = await asyncio.wait_for(proc.communicate(), timeout=timeout)
         except asyncio.TimeoutError:
             proc.kill()
-            raise TimeoutError(f"poly command timed out: poly {' '.join(args)}")
+            raise TimeoutError(f"polymarket command timed out: polymarket {' '.join(args)}")
 
         out = stdout.decode().strip()
         err = stderr.decode().strip()
         if proc.returncode != 0:
-            raise RuntimeError(f"poly exited {proc.returncode}: {(err or out)[:300]}")
+            raise RuntimeError(f"polymarket exited {proc.returncode}: {(err or out)[:300]}")
         return out
 
     def _extract_address(self, text: str) -> str:
@@ -45,7 +45,7 @@ class PolymarketAgentAdapter(WalletAdapter):
         return match.group(1) if match else ""
 
     async def _discover_address(self) -> str:
-        for args in (("balance",), ("doctor",)):
+        for args in (("wallet", "show", "-o", "json"), ("status", "-o", "json")):
             try:
                 out = await self._run_poly(*args, timeout=30)
                 addr = self._extract_address(out)
@@ -64,10 +64,7 @@ class PolymarketAgentAdapter(WalletAdapter):
     async def create_wallet(self) -> WalletInfo:
         t0 = time.perf_counter()
         if not self._address:
-            try:
-                await self._run_poly("setup", timeout=90)
-            except Exception:
-                pass
+            # wallet already imported externally via `polymarket wallet import`
             self._address = await self._discover_address()
 
         elapsed = (time.perf_counter() - t0) * 1000

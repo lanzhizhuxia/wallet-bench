@@ -1,4 +1,5 @@
 name: Clawlett
+tier: openclaw_skill  # OpenClaw 生态 Agent Skill
 class: smart_account
 custody_model: Gnosis-Safe+Zodiac
 signing_modes: [raw_tx]

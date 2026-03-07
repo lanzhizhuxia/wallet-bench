@@ -31,3 +31,7 @@ node_modules/
 
 # OS
 .DS_Store
+
+# Cloned provider repos (contain .env with credentials)
+clawlett/
+universal-account-example/

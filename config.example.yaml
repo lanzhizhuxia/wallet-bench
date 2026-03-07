@@ -71,7 +71,7 @@ providers:
     clawlett_repo_path: "./clawlett"
 
   # ── Para Wallet (MPC Cloud Signing) ───────────────────────────
-  # Requires: Para API key from https://dashboard.getpara.com
+  # Requires: Para API key from https://developer.getpara.com
   para_wallet:
     api_key: "YOUR_PARA_API_KEY"
     base_url: "https://api.beta.getpara.com"

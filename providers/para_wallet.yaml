@@ -1,4 +1,5 @@
 name: Para Wallet
+tier: openclaw_skill
 class: mpc
 custody_model: MPC-Cloud
 signing_modes: [raw_sign]

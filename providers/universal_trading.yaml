@@ -1,4 +1,5 @@
 name: Universal Trading (Particle Network)
+tier: openclaw_skill
 class: local
 custody_model: Local
 signing_modes: [raw_tx]

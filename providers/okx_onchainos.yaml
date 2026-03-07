@@ -1,4 +1,5 @@
 name: OKX OnchainOS
+tier: waas_infrastructure
 class: local
 custody_model: Local
 signing_modes: [raw_tx]

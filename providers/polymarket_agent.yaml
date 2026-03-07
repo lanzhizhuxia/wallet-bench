@@ -1,4 +1,5 @@
 name: Polymarket Agent
+tier: openclaw_skill
 class: local
 custody_model: Local
 signing_modes: []

@@ -973,14 +973,14 @@
         "session_delegation": false,
         "estimate_gas": true
       },
-      "timestamp": "2026-03-07T10:13:01.211093+00:00",
+      "timestamp": "2026-03-07T11:38:27.964855+00:00",
       "results": [
         {
           "test_id": "a01",
           "test_name": "schema_quality",
           "status": "fail",
-          "elapsed_ms": 0.056750024668872356,
-          "message": "schema checks: 2/4 (50.00%); create_wallet \u5f02\u5e38: Clawlett repo not found. Set providers.clawlett.clawlett_repo_path to the cloned repo path.; sign_message \u4e0d\u652f\u6301\uff0c\u6309\u89c4\u683c\u8df3\u8fc7\u7b7e\u540d\u5b57\u6bb5\u68c0\u67e5; send_transaction(\u6b63\u5e38\u8def\u5f84) \u5f02\u5e38: Clawlett repo not found. Set providers.clawlett.clawlett_repo_path to the cloned repo path.; send_transaction(\u975e\u6cd5\u5730\u5740\u8def\u5f84) \u5f02\u5e38: Clawlett repo not found. Set providers.clawlett.clawlett_repo_path to the cloned repo path.",
+          "elapsed_ms": 0.08583301678299904,
+          "message": "schema checks: 2/4 (50.00%); create_wallet \u5f02\u5e38: Missing Clawlett script: clawlett/scripts/initialize.js; sign_message \u4e0d\u652f\u6301\uff0c\u6309\u89c4\u683c\u8df3\u8fc7\u7b7e\u540d\u5b57\u6bb5\u68c0\u67e5; send_transaction(\u6b63\u5e38\u8def\u5f84) \u5f02\u5e38: Missing Clawlett script: clawlett/scripts/swap.js; send_transaction(\u975e\u6cd5\u5730\u5740\u8def\u5f84) \u5f02\u5e38: Missing Clawlett script: clawlett/scripts/swap.js",
           "detail": {
             "checks": [
               {
@@ -1001,9 +1001,9 @@
               }
             ],
             "operations": {
-              "create_wallet_error": "Clawlett repo not found. Set providers.clawlett.clawlett_repo_path to the cloned repo path.",
-              "send_transaction_nominal_error": "Clawlett repo not found. Set providers.clawlett.clawlett_repo_path to the cloned repo path.",
-              "send_transaction_invalid_error": "Clawlett repo not found. Set providers.clawlett.clawlett_repo_path to the cloned repo path."
+              "create_wallet_error": "Missing Clawlett script: clawlett/scripts/initialize.js",
+              "send_transaction_nominal_error": "Missing Clawlett script: clawlett/scripts/swap.js",
+              "send_transaction_invalid_error": "Missing Clawlett script: clawlett/scripts/swap.js"
             },
             "checks_passed": 2,
             "total_checks": 4,
@@ -1016,7 +1016,7 @@
           "test_id": "a02",
           "test_name": "machine_errors",
           "status": "pass",
-          "elapsed_ms": 0.09033409878611565,
+          "elapsed_ms": 0.11291599366813898,
           "message": "\u9519\u8bef\u53ef\u6355\u83b7\u3001\u975e\u7a7a\u4e14\u7a33\u5b9a",
           "detail": {
             "trigger_for_a_and_c": "send_invalid_param",
@@ -1030,26 +1030,26 @@
               "same_class_stable": true
             },
             "messages": {
-              "a": "Clawlett repo not found. Set providers.clawlett.clawlett_repo_path to the cloned repo path.",
-              "b": "Clawlett repo not found. Set providers.clawlett.clawlett_repo_path to the cloned repo path.",
-              "c": "Clawlett repo not found. Set providers.clawlett.clawlett_repo_path to the cloned repo path."
+              "a": "Missing Clawlett script: clawlett/scripts/swap.js",
+              "b": "Missing Clawlett script: clawlett/scripts/swap.js",
+              "c": "Missing Clawlett script: clawlett/scripts/swap.js"
             },
             "subjects": {
-              "a": "clawlett repo not found. set providers.clawlett.clawlett_repo_path to the cloned repo path.",
-              "c": "clawlett repo not found. set providers.clawlett.clawlett_repo_path to the cloned repo path."
+              "a": "missing clawlett script",
+              "c": "missing clawlett script"
             },
             "raw": {
               "a": {
                 "kind": "exception",
-                "error": "Clawlett repo not found. Set providers.clawlett.clawlett_repo_path to the cloned repo path."
+                "error": "Missing Clawlett script: clawlett/scripts/swap.js"
               },
               "b": {
                 "kind": "exception",
-                "error": "Clawlett repo not found. Set providers.clawlett.clawlett_repo_path to the cloned repo path."
+                "error": "Missing Clawlett script: clawlett/scripts/swap.js"
               },
               "c": {
                 "kind": "exception",
-                "error": "Clawlett repo not found. Set providers.clawlett.clawlett_repo_path to the cloned repo path."
+                "error": "Missing Clawlett script: clawlett/scripts/swap.js"
               }
             }
           },
@@ -1060,10 +1060,10 @@
           "test_id": "a03",
           "test_name": "deterministic_response",
           "status": "error",
-          "elapsed_ms": 0.013541080988943577,
-          "message": "create_wallet \u9884\u68c0\u67e5\u5931\u8d25: Clawlett repo not found. Set providers.clawlett.clawlett_repo_path to the cloned repo path.",
+          "elapsed_ms": 0.011708005331456661,
+          "message": "create_wallet \u9884\u68c0\u67e5\u5931\u8d25: Missing Clawlett script: clawlett/scripts/initialize.js",
           "detail": {
-            "error": "Clawlett repo not found. Set providers.clawlett.clawlett_repo_path to the cloned repo path."
+            "error": "Missing Clawlett script: clawlett/scripts/initialize.js"
           },
           "owner": "provider",
           "source": "auto"
@@ -1072,15 +1072,15 @@
           "test_id": "a04",
           "test_name": "token_cost",
           "status": "error",
-          "elapsed_ms": 0.034541008062660694,
-          "message": "create_wallet \u5931\u8d25\uff0c\u65e0\u6cd5\u5b8c\u6210\u6210\u672c\u8bc4\u4f30: Clawlett repo not found. Set providers.clawlett.clawlett_repo_path to the cloned repo path.",
+          "elapsed_ms": 0.05091703496873379,
+          "message": "create_wallet \u5931\u8d25\uff0c\u65e0\u6cd5\u5b8c\u6210\u6210\u672c\u8bc4\u4f30: Missing Clawlett script: clawlett/scripts/initialize.js",
           "detail": {
             "calls": [
               {
                 "op": "create_wallet",
                 "ms": 0.0,
                 "ok": false,
-                "error": "Clawlett repo not found. Set providers.clawlett.clawlett_repo_path to the cloned repo path."
+                "error": "Missing Clawlett script: clawlett/scripts/initialize.js"
               }
             ]
           },
@@ -1091,8 +1091,8 @@
           "test_id": "a05",
           "test_name": "multi_step_recovery",
           "status": "error",
-          "elapsed_ms": 0.012499978765845299,
-          "message": "Step 1 create_wallet \u5931\u8d25: Clawlett repo not found. Set providers.clawlett.clawlett_repo_path to the cloned repo path.",
+          "elapsed_ms": 0.02091703936457634,
+          "message": "Step 1 create_wallet \u5931\u8d25: Missing Clawlett script: clawlett/scripts/initialize.js",
           "detail": {
             "steps": []
           },
@@ -1104,7 +1104,7 @@
           "test_name": "key_generate",
           "status": "error",
           "elapsed_ms": 0.0,
-          "message": "Clawlett repo not found. Set providers.clawlett.clawlett_repo_path to the cloned repo path.",
+          "message": "Missing Clawlett script: clawlett/scripts/initialize.js",
           "detail": {},
           "owner": "",
           "source": "auto"
@@ -1133,8 +1133,8 @@
           "test_id": "t04",
           "test_name": "send_tx",
           "status": "error",
-          "elapsed_ms": 0.00900006853044033,
-          "message": "Clawlett repo not found. Set providers.clawlett.clawlett_repo_path to the cloned repo path.",
+          "elapsed_ms": 0.011875061318278313,
+          "message": "Missing Clawlett script: clawlett/scripts/swap.js",
           "detail": {},
           "owner": "",
           "source": "auto"
@@ -1173,19 +1173,19 @@
           "test_id": "t09",
           "test_name": "failure_recovery",
           "status": "pass",
-          "elapsed_ms": 0.01183303538709879,
+          "elapsed_ms": 0.020791077986359596,
           "message": "\u6240\u6709\u6545\u969c\u573a\u666f\u5747\u6b63\u5e38\u5904\u7406",
           "detail": {
             "checks": [
               {
                 "test": "bad_address",
                 "ok": true,
-                "msg": "Clean error: Clawlett repo not found. Set providers.clawlett.clawlett_repo_path to the cloned repo path."
+                "msg": "Clean error: Missing Clawlett script: clawlett/scripts/swap.js"
               },
               {
                 "test": "huge_value",
                 "ok": true,
-                "msg": "Clean error: Clawlett repo not found. Set providers.clawlett.clawlett_repo_path to the cloned repo path."
+                "msg": "Clean error: Missing Clawlett script: clawlett/scripts/swap.js"
               }
             ]
           },
@@ -1196,7 +1196,7 @@
           "test_id": "t10",
           "test_name": "preflight_fee",
           "status": "error",
-          "elapsed_ms": 322.62437499593943,
+          "elapsed_ms": 344.4548749830574,
           "message": "eth_estimateGas error: {'code': -32602, 'message': 'invalid argument 0: json: cannot unmarshal hex string of odd length into Go struct field TransactionArgs.from of type common.Address'}",
           "detail": {},
           "owner": "",
@@ -1206,7 +1206,7 @@
           "test_id": "t11",
           "test_name": "rate_limit_resilience",
           "status": "fail",
-          "elapsed_ms": 0.2072920324280858,
+          "elapsed_ms": 0.22908300161361694,
           "message": "\u9650\u6d41\u6062\u590d: \u90e8\u5206\u68c0\u67e5\u5931\u8d25",
           "detail": {
             "checks": [
@@ -1231,7 +1231,7 @@
           "test_name": "portability_recovery",
           "status": "error",
           "elapsed_ms": 0.0,
-          "message": "create_wallet \u5931\u8d25: Clawlett repo not found. Set providers.clawlett.clawlett_repo_path to the cloned repo path.",
+          "message": "create_wallet \u5931\u8d25: Missing Clawlett script: clawlett/scripts/initialize.js",
           "detail": {},
           "owner": "",
           "source": "auto"
@@ -1241,7 +1241,7 @@
           "test_name": "authorization_audit_trace",
           "status": "error",
           "elapsed_ms": 0.0,
-          "message": "create_wallet \u5931\u8d25: Clawlett repo not found. Set providers.clawlett.clawlett_repo_path to the cloned repo path.",
+          "message": "create_wallet \u5931\u8d25: Missing Clawlett script: clawlett/scripts/initialize.js",
           "detail": {},
           "owner": "",
           "source": "auto"
@@ -1260,7 +1260,7 @@
           "test_id": "t15",
           "test_name": "defi_interaction",
           "status": "unsupported",
-          "elapsed_ms": 0.002708984538912773,
+          "elapsed_ms": 0.0021670712158083916,
           "message": "\u8be5\u4f9b\u5e94\u5546\u5f53\u524d\u4e0d\u63d0\u4f9b DeFi \u4ea4\u4e92\u529f\u80fd\u3002\u5982\u9700 Agent \u53c2\u4e0e DeFi \u534f\u8bae\uff0c\u9700\u8bc4\u4f30\u5176\u4ed6\u65b9\u6848\u3002",
           "detail": {
             "provider": "clawlettadapter clawlett",
@@ -1315,10 +1315,10 @@
           "test_id": "t19",
           "test_name": "nonce_management",
           "status": "error",
-          "elapsed_ms": 0.04329206421971321,
-          "message": "\u9996\u7b14\u4ea4\u6613\u5f02\u5e38: Clawlett repo not found. Set providers.clawlett.clawlett_repo_path to the cloned repo path.",
+          "elapsed_ms": 0.04008307587355375,
+          "message": "\u9996\u7b14\u4ea4\u6613\u5f02\u5e38: Missing Clawlett script: clawlett/scripts/swap.js",
           "detail": {
-            "error": "Clawlett repo not found. Set providers.clawlett.clawlett_repo_path to the cloned repo path."
+            "error": "Missing Clawlett script: clawlett/scripts/swap.js"
           },
           "owner": "provider",
           "source": "auto"
@@ -1327,12 +1327,12 @@
           "test_id": "t20",
           "test_name": "tx_confirmation",
           "status": "error",
-          "elapsed_ms": 0.015374971553683281,
-          "message": "send_transaction \u5f02\u5e38: Clawlett repo not found. Set providers.clawlett.clawlett_repo_path to the cloned repo path.",
+          "elapsed_ms": 0.0238749198615551,
+          "message": "send_transaction \u5f02\u5e38: Missing Clawlett script: clawlett/scripts/swap.js",
           "detail": {
             "to": "[REDACTED]",
             "value": 0,
-            "error": "Clawlett repo not found. Set providers.clawlett.clawlett_repo_path to the cloned repo path."
+            "error": "Missing Clawlett script: clawlett/scripts/swap.js"
           },
           "owner": "provider",
           "source": "auto"
@@ -1341,10 +1341,10 @@
           "test_id": "t22",
           "test_name": "denial_reason_quality",
           "status": "fail",
-          "elapsed_ms": 0.006124959327280521,
+          "elapsed_ms": 0.014125020243227482,
           "message": "\u62d2\u7edd\u5f02\u5e38\u4ec5\u539f\u59cb\u5b57\u7b26\u4e32\uff0c\u7f3a\u5c11\u7ed3\u6784\u5316\u539f\u56e0",
           "detail": {
-            "raw_error": "Clawlett repo not found. Set providers.clawlett.clawlett_repo_path to the cloned repo path."
+            "raw_error": "Missing Clawlett script: clawlett/scripts/swap.js"
           },
           "owner": "",
           "source": "auto"
@@ -1353,8 +1353,8 @@
           "test_id": "t23",
           "test_name": "idempotent_submit",
           "status": "error",
-          "elapsed_ms": 0.005792011506855488,
-          "message": "\u9996\u6b21\u63d0\u4ea4\u5f02\u5e38: Clawlett repo not found. Set providers.clawlett.clawlett_repo_path to the cloned repo path.",
+          "elapsed_ms": 0.011334079317748547,
+          "message": "\u9996\u6b21\u63d0\u4ea4\u5f02\u5e38: Missing Clawlett script: clawlett/scripts/swap.js",
           "detail": {},
           "owner": "",
           "source": "auto"
@@ -1393,8 +1393,8 @@
           "test_id": "t27",
           "test_name": "erc20_transfer",
           "status": "error",
-          "elapsed_ms": 0.008792034350335598,
-          "message": "Clawlett repo not found. Set providers.clawlett.clawlett_repo_path to the cloned repo path.",
+          "elapsed_ms": 0.014708959497511387,
+          "message": "Missing Clawlett script: clawlett/scripts/initialize.js",
           "detail": {},
           "owner": "provider",
           "source": "auto"
@@ -1403,8 +1403,8 @@
           "test_id": "t28",
           "test_name": "contract_write",
           "status": "fail",
-          "elapsed_ms": 0.009582960046827793,
-          "message": "\u53d1\u9001\u542b data \u4ea4\u6613\u5931\u8d25: Clawlett repo not found. Set providers.clawlett.clawlett_repo_path to the cloned repo path.",
+          "elapsed_ms": 0.014832941815257072,
+          "message": "\u53d1\u9001\u542b data \u4ea4\u6613\u5931\u8d25: Missing Clawlett script: clawlett/scripts/swap.js",
           "detail": {
             "data": "0xd09de08a",
             "to": "[REDACTED]"
@@ -1426,8 +1426,8 @@
           "test_id": "t30",
           "test_name": "tx_finality",
           "status": "error",
-          "elapsed_ms": 0.008624978363513947,
-          "message": "Clawlett repo not found. Set providers.clawlett.clawlett_repo_path to the cloned repo path.",
+          "elapsed_ms": 0.013832934200763702,
+          "message": "Missing Clawlett script: clawlett/scripts/swap.js",
           "detail": {},
           "owner": "provider",
           "source": "auto"
@@ -1466,7 +1466,7 @@
           "test_id": "t34",
           "test_name": "soak_24h",
           "status": "fail",
-          "elapsed_ms": 0.10841700714081526,
+          "elapsed_ms": 0.28300005942583084,
           "message": "\u6301\u7eed\u8fd0\u884c\u6210\u529f\u7387 0% \u4f4e\u4e8e\u9608\u503c 90% (0/20\u8f6e, P50=0ms)",
           "detail": {
             "rounds": 20,
@@ -1477,11 +1477,11 @@
             "error_count": 20,
             "threshold": 0.9,
             "sample_errors": [
-              "round 0: Clawlett repo not found. Set providers.clawlett.clawlett_repo_path to the cloned",
-              "round 1: Clawlett repo not found. Set providers.clawlett.clawlett_repo_path to the cloned",
-              "round 2: Clawlett repo not found. Set providers.clawlett.clawlett_repo_path to the cloned",
-              "round 3: Clawlett repo not found. Set providers.clawlett.clawlett_repo_path to the cloned",
-              "round 4: Clawlett repo not found. Set providers.clawlett.clawlett_repo_path to the cloned"
+              "round 0: Missing Clawlett script: clawlett/scripts/initialize.js",
+              "round 1: Missing Clawlett script: clawlett/scripts/initialize.js",
+              "round 2: Missing Clawlett script: clawlett/scripts/swap.js",
+              "round 3: Missing Clawlett script: clawlett/scripts/initialize.js",
+              "round 4: Missing Clawlett script: clawlett/scripts/initialize.js"
             ]
           },
           "owner": "provider",
@@ -1501,10 +1501,10 @@
           "test_id": "t36",
           "test_name": "idempotency_key",
           "status": "error",
-          "elapsed_ms": 0.00808399636298418,
-          "message": "\u9996\u6b21\u4ea4\u6613\u5f02\u5e38: Clawlett repo not found. Set providers.clawlett.clawlett_repo_path to the cloned repo path.",
+          "elapsed_ms": 0.018042046576738358,
+          "message": "\u9996\u6b21\u4ea4\u6613\u5f02\u5e38: Missing Clawlett script: clawlett/scripts/swap.js",
           "detail": {
-            "error": "Clawlett repo not found. Set providers.clawlett.clawlett_repo_path to the cloned repo path."
+            "error": "Missing Clawlett script: clawlett/scripts/swap.js"
           },
           "owner": "provider",
           "source": "auto"
@@ -1523,8 +1523,8 @@
           "test_id": "t38",
           "test_name": "version_compat",
           "status": "fail",
-          "elapsed_ms": 0.007916009053587914,
-          "message": "\u517c\u5bb9\u6027\u68c0\u67e5 4/5 \u901a\u8fc7: create_wallet() failed: Clawlett repo not found. Set providers.clawlett.clawlett_repo_path to the cloned repo path.",
+          "elapsed_ms": 0.02287491224706173,
+          "message": "\u517c\u5bb9\u6027\u68c0\u67e5 4/5 \u901a\u8fc7: create_wallet() failed: Missing Clawlett script: clawlett/scripts/initialize.js",
           "detail": {
             "checks_passed": 4,
             "checks_total": 5,
@@ -1533,7 +1533,7 @@
             "chains_count": 1,
             "capabilities_count": 8,
             "issues": [
-              "create_wallet() failed: Clawlett repo not found. Set providers.clawlett.clawlett_repo_path to the cloned repo path."
+              "create_wallet() failed: Missing Clawlett script: clawlett/scripts/initialize.js"
             ]
           },
           "owner": "provider",
@@ -7091,23 +7091,23 @@
         "session_delegation": false,
         "estimate_gas": true
       },
-      "timestamp": "2026-03-07T10:14:06.177023+00:00",
+      "timestamp": "2026-03-07T11:43:04.380024+00:00",
       "results": [
         {
           "test_id": "a01",
           "test_name": "schema_quality",
           "status": "fail",
-          "elapsed_ms": 3986.739541986026,
-          "message": "schema checks: 2/5 (40.00%); create_wallet \u5f02\u5e38: Para API 403: {\"message\":\"invalid secret api key\"}; sign_message \u5f02\u5e38: Para API 403: {\"message\":\"invalid secret api key\"}; send_transaction(\u6b63\u5e38\u8def\u5f84) \u5f02\u5e38: Para API 403: {\"message\":\"invalid secret api key\"}; send_transaction(\u975e\u6cd5\u5730\u5740\u8def\u5f84) \u5f02\u5e38: Para API 403: {\"message\":\"invalid secret api key\"}",
+          "elapsed_ms": 24992.601457983255,
+          "message": "schema checks: 4/5 (80.00%); sign_message \u5f02\u5e38: Para API 500: {\"message\":\"Internal Server Error\"}; send_transaction(\u6b63\u5e38\u8def\u5f84) \u5f02\u5e38: Para API 400: {\"message\":\"data must be hex-encoded and have an even number of characters\"}; send_transaction(\u975e\u6cd5\u5730\u5740\u8def\u5f84) \u5f02\u5e38: Para API 400: {\"message\":\"data must be hex-encoded and have an even number of characters\"}",
           "detail": {
             "checks": [
               {
                 "name": "wallet.address_non_empty",
-                "ok": false
+                "ok": true
               },
               {
                 "name": "wallet.address_0x_prefix",
-                "ok": false
+                "ok": true
               },
               {
                 "name": "sign.signature_non_empty",
@@ -7123,14 +7123,22 @@
               }
             ],
             "operations": {
-              "create_wallet_error": "Para API 403: {\"message\":\"invalid secret api key\"}",
-              "sign_message_error": "Para API 403: {\"message\":\"invalid secret api key\"}",
-              "send_transaction_nominal_error": "Para API 403: {\"message\":\"invalid secret api key\"}",
-              "send_transaction_invalid_error": "Para API 403: {\"message\":\"invalid secret api key\"}"
+              "create_wallet": {
+                "address": "[REDACTED]",
+                "chain": "ethereum",
+                "meta": {
+                  "elapsed_ms": 2007.6395000796765,
+                  "wallet_id": "89e6ca99-7a24-42f1-a111-cd108f95fbf7",
+                  "status": "ready"
+                }
+              },
+              "sign_message_error": "Para API 500: {\"message\":\"Internal Server Error\"}",
+              "send_transaction_nominal_error": "Para API 400: {\"message\":\"data must be hex-encoded and have an even number of characters\"}",
+              "send_transaction_invalid_error": "Para API 400: {\"message\":\"data must be hex-encoded and have an even number of characters\"}"
             },
-            "checks_passed": 2,
+            "checks_passed": 4,
             "total_checks": 5,
-            "score": 0.4
+            "score": 0.8
           },
           "owner": "provider",
           "source": "auto"
@@ -7139,7 +7147,7 @@
           "test_id": "a02",
           "test_name": "machine_errors",
           "status": "pass",
-          "elapsed_ms": 2934.8927090177312,
+          "elapsed_ms": 2926.7455000663176,
           "message": "\u9519\u8bef\u53ef\u6355\u83b7\u3001\u975e\u7a7a\u4e14\u7a33\u5b9a",
           "detail": {
             "trigger_for_a_and_c": "sign_message_empty",
@@ -7153,9 +7161,9 @@
               "same_class_stable": true
             },
             "messages": {
-              "a": "Para API 403: {\"message\":\"invalid secret api key\"}",
-              "b": "Para API 403: {\"message\":\"invalid secret api key\"}",
-              "c": "Para API 403: {\"message\":\"invalid secret api key\"}"
+              "a": "Para API 400: {\"message\":\"data must be hex-encoded and have an even number of characters\"}",
+              "b": "Para API 400: {\"message\":\"data must be hex-encoded and have an even number of characters\"}",
+              "c": "Para API 400: {\"message\":\"data must be hex-encoded and have an even number of characters\"}"
             },
             "subjects": {
               "a": "para api <n>",
@@ -7164,15 +7172,15 @@
             "raw": {
               "a": {
                 "kind": "exception",
-                "error": "Para API 403: {\"message\":\"invalid secret api key\"}"
+                "error": "Para API 400: {\"message\":\"data must be hex-encoded and have an even number of characters\"}"
               },
               "b": {
                 "kind": "exception",
-                "error": "Para API 403: {\"message\":\"invalid secret api key\"}"
+                "error": "Para API 400: {\"message\":\"data must be hex-encoded and have an even number of characters\"}"
               },
               "c": {
                 "kind": "exception",
-                "error": "Para API 403: {\"message\":\"invalid secret api key\"}"
+                "error": "Para API 400: {\"message\":\"data must be hex-encoded and have an even number of characters\"}"
               }
             }
           },
@@ -7182,11 +7190,11 @@
         {
           "test_id": "a03",
           "test_name": "deterministic_response",
-          "status": "error",
-          "elapsed_ms": 975.6892500445247,
-          "message": "create_wallet \u9884\u68c0\u67e5\u5931\u8d25: Para API 403: {\"message\":\"invalid secret api key\"}",
+          "status": "fail",
+          "elapsed_ms": 22877.169125014916,
+          "message": "sign_message \u91cd\u590d\u8c03\u7528\u51fa\u73b0\u4e0d\u53ef\u7a33\u5b9a\u5f02\u5e38: Para API 500: {\"message\":\"Internal Server Error\"}",
           "detail": {
-            "error": "Para API 403: {\"message\":\"invalid secret api key\"}"
+            "error": "Para API 500: {\"message\":\"Internal Server Error\"}"
           },
           "owner": "provider",
           "source": "auto"
@@ -7194,30 +7202,66 @@
         {
           "test_id": "a04",
           "test_name": "token_cost",
-          "status": "error",
-          "elapsed_ms": 989.9189999559894,
-          "message": "create_wallet \u5931\u8d25\uff0c\u65e0\u6cd5\u5b8c\u6210\u6210\u672c\u8bc4\u4f30: Para API 403: {\"message\":\"invalid secret api key\"}",
+          "status": "pass",
+          "elapsed_ms": 23984.91279105656,
+          "message": "\u6807\u51c6\u4efb\u52a1\u5b8c\u6210: 1/3 \u8c03\u7528\u6210\u529f, \u603b\u8017\u65f6 23985ms, \u5e73\u5747 7995ms/\u8c03\u7528",
           "detail": {
+            "total_calls": 3,
+            "successful_calls": 1,
+            "total_api_ms": 23984.9,
+            "avg_ms_per_call": 7995.0,
             "calls": [
               {
                 "op": "create_wallet",
-                "ms": 989.9,
+                "ms": 1962.4,
+                "ok": true
+              },
+              {
+                "op": "sign_message",
+                "ms": 20990.8,
                 "ok": false,
-                "error": "Para API 403: {\"message\":\"invalid secret api key\"}"
+                "error": "Para API 500: {\"message\":\"Internal Server Error\"}"
+              },
+              {
+                "op": "send_transaction",
+                "ms": 1031.7,
+                "ok": false,
+                "error": "Para API 400: {\"message\":\"data must be hex-encoded and have an even number of characters\"}"
               }
             ]
           },
-          "owner": "provider",
+          "owner": "benchmark",
           "source": "auto"
         },
         {
           "test_id": "a05",
           "test_name": "multi_step_recovery",
-          "status": "error",
-          "elapsed_ms": 989.0702910488471,
-          "message": "Step 1 create_wallet \u5931\u8d25: Para API 403: {\"message\":\"invalid secret api key\"}",
+          "status": "fail",
+          "elapsed_ms": 3889.1659589717165,
+          "message": "\u591a\u6b65\u6062\u590d\u5931\u8d25: \u9519\u8bef\u6ce8\u5165\u540e\u65e0\u6cd5\u6062\u590d\u6b63\u5e38\u64cd\u4f5c (Para API 400: {\"message\":\"data must be hex-encoded and have an even number of ch)",
           "detail": {
-            "steps": []
+            "steps": [
+              {
+                "step": "create_wallet",
+                "ok": true,
+                "ms": 1939.3
+              },
+              {
+                "step": "error_inject",
+                "ok": false,
+                "ms": 964.3,
+                "error": "Para API 400: {\"message\":\"data must be hex-encoded and have an even number of characters\"}"
+              },
+              {
+                "step": "recovery_tx",
+                "ok": false,
+                "ms": 985.5,
+                "error": "Para API 400: {\"message\":\"data must be hex-encoded and have an even number of characters\"}"
+              }
+            ],
+            "step2_error": "Para API 400: {\"message\":\"data must be hex-encoded and have an even number of characters\"}",
+            "step3_ok": false,
+            "step3_error": "Para API 400: {\"message\":\"data must be hex-encoded and have an even number of characters\"}"
           },
           "owner": "provider",
           "source": "auto"
@@ -7225,10 +7269,13 @@
         {
           "test_id": "t01",
           "test_name": "key_generate",
-          "status": "error",
-          "elapsed_ms": 0.0,
-          "message": "Para API 403: {\"message\":\"invalid secret api key\"}",
-          "detail": {},
+          "status": "pass",
+          "elapsed_ms": 1943.5582499718294,
+          "message": "\u94b1\u5305\u5df2\u521b\u5efa [REDACTED]",
+          "detail": {
+            "address": "[REDACTED]",
+            "chain": "ethereum"
+          },
           "owner": "",
           "source": "auto"
         },
@@ -7236,8 +7283,8 @@
           "test_id": "t02",
           "test_name": "sign_message",
           "status": "error",
-          "elapsed_ms": 984.432665980421,
-          "message": "Para API 403: {\"message\":\"invalid secret api key\"}",
+          "elapsed_ms": 21014.4375419477,
+          "message": "Para API 500: {\"message\":\"Internal Server Error\"}",
           "detail": {},
           "owner": "",
           "source": "auto"
@@ -7256,8 +7303,8 @@
           "test_id": "t04",
           "test_name": "send_tx",
           "status": "error",
-          "elapsed_ms": 985.2550000650808,
-          "message": "Para API 403: {\"message\":\"invalid secret api key\"}",
+          "elapsed_ms": 1027.0902080228552,
+          "message": "Para API 400: {\"message\":\"data must be hex-encoded and have an even number of characters\"}",
           "detail": {},
           "owner": "",
           "source": "auto"
@@ -7265,10 +7312,17 @@
         {
           "test_id": "t05",
           "test_name": "multi_chain",
-          "status": "error",
-          "elapsed_ms": 966.1804999923334,
-          "message": "Para API 403: {\"message\":\"invalid secret api key\"}",
-          "detail": {},
+          "status": "pass",
+          "elapsed_ms": 1963.2211659336463,
+          "message": "Adapter \u58f0\u660e 3 \u6761\u94fe: ethereum, solana, cosmos",
+          "detail": {
+            "chains": [
+              "ethereum",
+              "solana",
+              "cosmos"
+            ],
+            "address": "[REDACTED]"
+          },
           "owner": "",
           "source": "auto"
         },
@@ -7286,17 +7340,19 @@
           "test_id": "t08",
           "test_name": "concurrent_ops",
           "status": "fail",
-          "elapsed_ms": 1005.673083011061,
-          "message": "\u5e76\u53d1\u6df7\u5408\u8d1f\u8f7d\u5931\u8d25: 5 \u4e2a\u95ee\u9898",
+          "elapsed_ms": 21001.624459051527,
+          "message": "\u5e76\u53d1\u6df7\u5408\u8d1f\u8f7d\u5931\u8d25: 4 \u4e2a\u95ee\u9898",
           "detail": {
             "errors": [
-              "create_wallet: Para API 403: {\"message\":\"invalid secret api key\"}",
-              "create_wallet: Para API 403: {\"message\":\"invalid secret api key\"}",
-              "sign_message: Para API 403: {\"message\":\"invalid secret api key\"}",
-              "sign_message: Para API 403: {\"message\":\"invalid secret api key\"}",
-              "send_transaction: Para API 403: {\"message\":\"invalid secret api key\"}"
+              "sign_message: Para API 500: {\"message\":\"Internal Server Error\"}",
+              "sign_message: Para API 500: {\"message\":\"Internal Server Error\"}",
+              "send_transaction: Para API 400: {\"message\":\"data must be hex-encoded and have an even number of characters\"}",
+              "create_wallet: duplicate addresses in concurrent results"
             ],
-            "addresses": [],
+            "addresses": [
+              "[REDACTED]",
+              "[REDACTED]"
+            ],
             "signatures": [],
             "tx_hashes": []
           },
@@ -7307,19 +7363,19 @@
           "test_id": "t09",
           "test_name": "failure_recovery",
           "status": "pass",
-          "elapsed_ms": 1948.2602080097422,
+          "elapsed_ms": 1973.2117500388995,
           "message": "\u6240\u6709\u6545\u969c\u573a\u666f\u5747\u6b63\u5e38\u5904\u7406",
           "detail": {
             "checks": [
               {
                 "test": "bad_address",
                 "ok": true,
-                "msg": "Clean error: Para API 403: {\"message\":\"invalid secret api key\"}"
+                "msg": "Clean error: Para API 400: {\"message\":\"data must be hex-encoded and have an even number of characters\"}"
               },
               {
                 "test": "huge_value",
                 "ok": true,
-                "msg": "Clean error: Para API 403: {\"message\":\"invalid secret api key\"}"
+                "msg": "Clean error: Para API 400: {\"message\":\"data must be hex-encoded and have an even number of characters\"}"
               }
             ]
           },
@@ -7330,7 +7386,7 @@
           "test_id": "t10",
           "test_name": "preflight_fee",
           "status": "pass",
-          "elapsed_ms": 258.31612502224743,
+          "elapsed_ms": 277.5527499616146,
           "message": "Gas \u9884\u4f30\u8fd4\u56de\u6210\u529f",
           "detail": {
             "estimation": {
@@ -7345,14 +7401,14 @@
           "test_id": "t11",
           "test_name": "rate_limit_resilience",
           "status": "fail",
-          "elapsed_ms": 2017.6079999655485,
+          "elapsed_ms": 23002.55008402746,
           "message": "\u9650\u6d41\u6062\u590d: \u90e8\u5206\u68c0\u67e5\u5931\u8d25",
           "detail": {
             "checks": [
               {
                 "test": "burst",
-                "ok": false,
-                "msg": "0 ok, 0 rate-limited, 5 errors (burst=5)"
+                "ok": true,
+                "msg": "5 ok, 0 rate-limited, 0 errors (burst=5)"
               },
               {
                 "test": "retry_after_limit",
@@ -7373,20 +7429,77 @@
         {
           "test_id": "t12",
           "test_name": "portability_recovery",
-          "status": "error",
-          "elapsed_ms": 0.0,
-          "message": "create_wallet \u5931\u8d25: Para API 403: {\"message\":\"invalid secret api key\"}",
-          "detail": {},
+          "status": "fail",
+          "elapsed_ms": 24976.746042026207,
+          "message": "Portability: \u786e\u5b9a\u6027 identity, \u5b58\u5728\u5931\u8d25",
+          "detail": {
+            "checks": [
+              {
+                "test": "initial_create",
+                "ok": true,
+                "msg": "Created wallet: 0x46062370..."
+              },
+              {
+                "test": "session_restart",
+                "ok": true,
+                "msg": "Teardown + re-setup succeeded"
+              },
+              {
+                "test": "identity_persistence",
+                "ok": true,
+                "msg": "Same address (deterministic): 0x46062370..."
+              },
+              {
+                "test": "sign_after_recovery",
+                "ok": false,
+                "msg": "Sign after recovery failed: Para API 500: {\"message\":\"Internal Server Error\"}"
+              },
+              {
+                "test": "export_capability",
+                "ok": true,
+                "msg": "Key export: not supported"
+              }
+            ],
+            "same_identity": true
+          },
           "owner": "",
           "source": "auto"
         },
         {
           "test_id": "t13",
           "test_name": "authorization_audit_trace",
-          "status": "error",
-          "elapsed_ms": 0.0,
-          "message": "create_wallet \u5931\u8d25: Para API 403: {\"message\":\"invalid secret api key\"}",
-          "detail": {},
+          "status": "fail",
+          "elapsed_ms": 23973.480207961984,
+          "message": "\u5ba1\u8ba1\u94fe: 3/5 \u9879\u68c0\u67e5\u901a\u8fc7",
+          "detail": {
+            "checks": [
+              {
+                "test": "wallet_audit_fields",
+                "ok": true,
+                "msg": "address=yes, chain=yes, timestamp=yes"
+              },
+              {
+                "test": "sign_audit_fields",
+                "ok": false,
+                "msg": "sign_message failed: Para API 500: {\"message\":\"Internal Server Error\"}"
+              },
+              {
+                "test": "tx_audit_fields",
+                "ok": false,
+                "msg": "Unstructured error: Para API 400: {\"message\":\"data must be hex-encoded and have an even number of characters\"}"
+              },
+              {
+                "test": "capabilities_completeness",
+                "ok": true,
+                "msg": "capabilities has 8 keys, missing core: none"
+              },
+              {
+                "test": "metadata_completeness",
+                "ok": true,
+                "msg": "Metadata: 4/4 fields populated (name, arch_class, custody_model, submission_mode)"
+              }
+            ]
+          },
           "owner": "",
           "source": "auto"
         },
@@ -7449,10 +7562,10 @@
           "test_id": "t19",
           "test_name": "nonce_management",
           "status": "error",
-          "elapsed_ms": 987.2942089568824,
-          "message": "\u9996\u7b14\u4ea4\u6613\u5f02\u5e38: Para API 403: {\"message\":\"invalid secret api key\"}",
+          "elapsed_ms": 1012.0842079631984,
+          "message": "\u9996\u7b14\u4ea4\u6613\u5f02\u5e38: Para API 400: {\"message\":\"data must be hex-encoded and have an even number of characters\"}",
           "detail": {
-            "error": "Para API 403: {\"message\":\"invalid secret api key\"}"
+            "error": "Para API 400: {\"message\":\"data must be hex-encoded and have an even number of characters\"}"
           },
           "owner": "provider",
           "source": "auto"
@@ -7461,12 +7574,12 @@
           "test_id": "t20",
           "test_name": "tx_confirmation",
           "status": "error",
-          "elapsed_ms": 959.7547079902142,
-          "message": "send_transaction \u5f02\u5e38: Para API 403: {\"message\":\"invalid secret api key\"}",
+          "elapsed_ms": 1029.6438339864835,
+          "message": "send_transaction \u5f02\u5e38: Para API 400: {\"message\":\"data must be hex-encoded and have an even number of characters\"}",
           "detail": {
             "to": "[REDACTED]",
             "value": 0,
-            "error": "Para API 403: {\"message\":\"invalid secret api key\"}"
+            "error": "Para API 400: {\"message\":\"data must be hex-encoded and have an even number of characters\"}"
           },
           "owner": "provider",
           "source": "auto"
@@ -7475,10 +7588,10 @@
           "test_id": "t22",
           "test_name": "denial_reason_quality",
           "status": "fail",
-          "elapsed_ms": 984.8398750182241,
+          "elapsed_ms": 957.3406670242548,
           "message": "\u62d2\u7edd\u5f02\u5e38\u4ec5\u539f\u59cb\u5b57\u7b26\u4e32\uff0c\u7f3a\u5c11\u7ed3\u6784\u5316\u539f\u56e0",
           "detail": {
-            "raw_error": "Para API 403: {\"message\":\"invalid secret api key\"}"
+            "raw_error": "Para API 400: {\"message\":\"data must be hex-encoded and have an even number of characters\"}"
           },
           "owner": "",
           "source": "auto"
@@ -7487,8 +7600,8 @@
           "test_id": "t23",
           "test_name": "idempotent_submit",
           "status": "error",
-          "elapsed_ms": 943.3598329778761,
-          "message": "\u9996\u6b21\u63d0\u4ea4\u5f02\u5e38: Para API 403: {\"message\":\"invalid secret api key\"}",
+          "elapsed_ms": 964.7854999639094,
+          "message": "\u9996\u6b21\u63d0\u4ea4\u5f02\u5e38: Para API 400: {\"message\":\"data must be hex-encoded and have an even number of characters\"}",
           "detail": {},
           "owner": "",
           "source": "auto"
@@ -7497,7 +7610,7 @@
           "test_id": "t24",
           "test_name": "retry_backoff",
           "status": "pass",
-          "elapsed_ms": 9768.756792065687,
+          "elapsed_ms": 210044.50570896734,
           "message": "\u672a\u68c0\u6d4b\u5230\u9650\u6d41\uff0c\u8fde\u7eed\u8c03\u7528\u7a33\u5b9a",
           "detail": {
             "burst": 10,
@@ -7507,52 +7620,52 @@
               {
                 "call": 0,
                 "status": "error",
-                "error": "Para API 403: {\"message\":\"invalid secret api key\"}"
+                "error": "Para API 500: {\"message\":\"Internal Server Error\"}"
               },
               {
                 "call": 1,
                 "status": "error",
-                "error": "Para API 403: {\"message\":\"invalid secret api key\"}"
+                "error": "Para API 500: {\"message\":\"Internal Server Error\"}"
               },
               {
                 "call": 2,
                 "status": "error",
-                "error": "Para API 403: {\"message\":\"invalid secret api key\"}"
+                "error": "Para API 500: {\"message\":\"Internal Server Error\"}"
               },
               {
                 "call": 3,
                 "status": "error",
-                "error": "Para API 403: {\"message\":\"invalid secret api key\"}"
+                "error": "Para API 500: {\"message\":\"Internal Server Error\"}"
               },
               {
                 "call": 4,
                 "status": "error",
-                "error": "Para API 403: {\"message\":\"invalid secret api key\"}"
+                "error": "Para API 500: {\"message\":\"Internal Server Error\"}"
               },
               {
                 "call": 5,
                 "status": "error",
-                "error": "Para API 403: {\"message\":\"invalid secret api key\"}"
+                "error": "Para API 500: {\"message\":\"Internal Server Error\"}"
               },
               {
                 "call": 6,
                 "status": "error",
-                "error": "Para API 403: {\"message\":\"invalid secret api key\"}"
+                "error": "Para API 500: {\"message\":\"Internal Server Error\"}"
               },
               {
                 "call": 7,
                 "status": "error",
-                "error": "Para API 403: {\"message\":\"invalid secret api key\"}"
+                "error": "Para API 500: {\"message\":\"Internal Server Error\"}"
               },
               {
                 "call": 8,
                 "status": "error",
-                "error": "Para API 403: {\"message\":\"invalid secret api key\"}"
+                "error": "Para API 500: {\"message\":\"Internal Server Error\"}"
               },
               {
                 "call": 9,
                 "status": "error",
-                "error": "Para API 403: {\"message\":\"invalid secret api key\"}"
+                "error": "Para API 500: {\"message\":\"Internal Server Error\"}"
               }
             ]
           },
@@ -7583,8 +7696,8 @@
           "test_id": "t27",
           "test_name": "erc20_transfer",
           "status": "error",
-          "elapsed_ms": 947.6211670553312,
-          "message": "Para API 403: {\"message\":\"invalid secret api key\"}",
+          "elapsed_ms": 22955.968542024493,
+          "message": "Para API 500: {\"message\":\"Internal Server Error\"}",
           "detail": {},
           "owner": "provider",
           "source": "auto"
@@ -7593,8 +7706,8 @@
           "test_id": "t28",
           "test_name": "contract_write",
           "status": "fail",
-          "elapsed_ms": 956.3092079479247,
-          "message": "\u53d1\u9001\u542b data \u4ea4\u6613\u5931\u8d25: Para API 403: {\"message\":\"invalid secret api key\"}",
+          "elapsed_ms": 21019.77758400608,
+          "message": "\u53d1\u9001\u542b data \u4ea4\u6613\u5931\u8d25: Para API 500: {\"message\":\"Internal Server Error\"}",
           "detail": {
             "data": "0xd09de08a",
             "to": "[REDACTED]"
@@ -7606,8 +7719,8 @@
           "test_id": "t29",
           "test_name": "sig_verify",
           "status": "error",
-          "elapsed_ms": 948.2712500030175,
-          "message": "Para API 403: {\"message\":\"invalid secret api key\"}",
+          "elapsed_ms": 22996.377457980998,
+          "message": "Para API 500: {\"message\":\"Internal Server Error\"}",
           "detail": {},
           "owner": "provider",
           "source": "auto"
@@ -7616,8 +7729,8 @@
           "test_id": "t30",
           "test_name": "tx_finality",
           "status": "error",
-          "elapsed_ms": 976.4456669799984,
-          "message": "Para API 403: {\"message\":\"invalid secret api key\"}",
+          "elapsed_ms": 1079.1924999793991,
+          "message": "Para API 400: {\"message\":\"data must be hex-encoded and have an even number of characters\"}",
           "detail": {},
           "owner": "provider",
           "source": "auto"
@@ -7656,22 +7769,22 @@
           "test_id": "t34",
           "test_name": "soak_24h",
           "status": "fail",
-          "elapsed_ms": 19577.252040966414,
-          "message": "\u6301\u7eed\u8fd0\u884c\u6210\u529f\u7387 0% \u4f4e\u4e8e\u9608\u503c 90% (0/20\u8f6e, P50=0ms)",
+          "elapsed_ms": 124628.89775005169,
+          "message": "\u6301\u7eed\u8fd0\u884c\u6210\u529f\u7387 35% \u4f4e\u4e8e\u9608\u503c 90% (7/20\u8f6e, P50=1942ms)",
           "detail": {
             "rounds": 20,
-            "successes": 0,
-            "success_rate": 0.0,
-            "p50_ms": 0.0,
-            "p95_ms": 0.0,
-            "error_count": 20,
+            "successes": 7,
+            "success_rate": 0.35,
+            "p50_ms": 1941.5,
+            "p95_ms": 2008.3,
+            "error_count": 13,
             "threshold": 0.9,
             "sample_errors": [
-              "round 0: Para API 403: {\"message\":\"invalid secret api key\"}",
-              "round 1: Para API 403: {\"message\":\"invalid secret api key\"}",
-              "round 2: Para API 403: {\"message\":\"invalid secret api key\"}",
-              "round 3: Para API 403: {\"message\":\"invalid secret api key\"}",
-              "round 4: Para API 403: {\"message\":\"invalid secret api key\"}"
+              "round 1: timeout",
+              "round 2: Para API 400: {\"message\":\"data must be hex-encoded and have an even number of ch",
+              "round 4: timeout",
+              "round 5: Para API 400: {\"message\":\"data must be hex-encoded and have an even number of ch",
+              "round 7: timeout"
             ]
           },
           "owner": "provider",
@@ -7681,15 +7794,15 @@
           "test_id": "t35",
           "test_name": "timeout_sla",
           "status": "fail",
-          "elapsed_ms": 4981.227207928896,
-          "message": "\u6240\u6709 5 \u8f6e\u5747\u5931\u8d25: round 0: Para API 403: {\"message\":\"invalid secret api key\"}; round 1: Para API 403: {\"message\":\"invalid secret api key\"}; round 2: Para API 403: {\"message\":\"invalid secret api key\"}",
+          "elapsed_ms": 75005.55950007401,
+          "message": "\u6240\u6709 5 \u8f6e\u5747\u5931\u8d25: round 0: timeout >15s; round 1: timeout >15s; round 2: timeout >15s",
           "detail": {
             "errors": [
-              "round 0: Para API 403: {\"message\":\"invalid secret api key\"}",
-              "round 1: Para API 403: {\"message\":\"invalid secret api key\"}",
-              "round 2: Para API 403: {\"message\":\"invalid secret api key\"}",
-              "round 3: Para API 403: {\"message\":\"invalid secret api key\"}",
-              "round 4: Para API 403: {\"message\":\"invalid secret api key\"}"
+              "round 0: timeout >15s",
+              "round 1: timeout >15s",
+              "round 2: timeout >15s",
+              "round 3: timeout >15s",
+              "round 4: timeout >15s"
             ],
             "rounds": 5
           },
@@ -7700,10 +7813,10 @@
           "test_id": "t36",
           "test_name": "idempotency_key",
           "status": "error",
-          "elapsed_ms": 965.5307910870761,
-          "message": "\u9996\u6b21\u4ea4\u6613\u5f02\u5e38: Para API 403: {\"message\":\"invalid secret api key\"}",
+          "elapsed_ms": 986.6792079992592,
+          "message": "\u9996\u6b21\u4ea4\u6613\u5f02\u5e38: Para API 400: {\"message\":\"data must be hex-encoded and have an even number of characters\"}",
           "detail": {
-            "error": "Para API 403: {\"message\":\"invalid secret api key\"}"
+            "error": "Para API 400: {\"message\":\"data must be hex-encoded and have an even number of characters\"}"
           },
           "owner": "provider",
           "source": "auto"
@@ -7721,19 +7834,16 @@
         {
           "test_id": "t38",
           "test_name": "version_compat",
-          "status": "fail",
-          "elapsed_ms": 967.8157499292865,
-          "message": "\u517c\u5bb9\u6027\u68c0\u67e5 4/5 \u901a\u8fc7: create_wallet() failed: Para API 403: {\"message\":\"invalid secret api key\"}",
+          "status": "pass",
+          "elapsed_ms": 1918.1481250561774,
+          "message": "\u6240\u6709 5 \u9879\u517c\u5bb9\u6027\u68c0\u67e5\u901a\u8fc7 (name=Para Wallet, arch=mpc)",
           "detail": {
-            "checks_passed": 4,
+            "checks_passed": 5,
             "checks_total": 5,
             "adapter_name": "Para Wallet",
             "arch_class": "mpc",
             "chains_count": 3,
-            "capabilities_count": 8,
-            "issues": [
-              "create_wallet() failed: Para API 403: {\"message\":\"invalid secret api key\"}"
-            ]
+            "capabilities_count": 8
           },
           "owner": "provider",
           "source": "auto"
@@ -7834,39 +7944,39 @@
         "session_delegation": false,
         "estimate_gas": false
       },
-      "timestamp": "2026-03-07T10:13:03.440536+00:00",
+      "timestamp": "2026-03-07T11:34:57.792395+00:00",
       "results": [
         {
           "test_id": "a01",
           "test_name": "schema_quality",
-          "status": "fail",
-          "elapsed_ms": 6.658916943706572,
-          "message": "schema checks: 0/2 (0.00%); sign_message \u4e0d\u652f\u6301\uff0c\u6309\u89c4\u683c\u8df3\u8fc7\u7b7e\u540d\u5b57\u6bb5\u68c0\u67e5; send_transaction \u4e0d\u652f\u6301\uff0c\u5df2\u8df3\u8fc7\u4ea4\u6613\u5b57\u6bb5\u68c0\u67e5",
+          "status": "pass",
+          "elapsed_ms": 0.20949996542185545,
+          "message": "schema checks: 2/2 (100.00%); sign_message \u4e0d\u652f\u6301\uff0c\u6309\u89c4\u683c\u8df3\u8fc7\u7b7e\u540d\u5b57\u6bb5\u68c0\u67e5; send_transaction \u4e0d\u652f\u6301\uff0c\u5df2\u8df3\u8fc7\u4ea4\u6613\u5b57\u6bb5\u68c0\u67e5",
           "detail": {
             "checks": [
               {
                 "name": "wallet.address_non_empty",
-                "ok": false
+                "ok": true
               },
               {
                 "name": "wallet.address_0x_prefix",
-                "ok": false
+                "ok": true
               }
             ],
             "operations": {
               "create_wallet": {
-                "address": "",
+                "address": "[REDACTED]",
                 "chain": "polygon",
                 "meta": {
-                  "elapsed_ms": 6.401499966159463
+                  "elapsed_ms": 0.000125030055642128
                 }
               }
             },
-            "checks_passed": 0,
+            "checks_passed": 2,
             "total_checks": 2,
-            "score": 0.0
+            "score": 1.0
           },
-          "owner": "provider",
+          "owner": "industry",
           "source": "auto"
         },
         {
@@ -7893,21 +8003,21 @@
         {
           "test_id": "a03",
           "test_name": "deterministic_response",
-          "status": "fail",
-          "elapsed_ms": 15.398334013298154,
-          "message": "create_wallet \u4e09\u6b21\u8fd4\u56de\u7ed3\u6784\u4e0d\u4e00\u81f4",
+          "status": "pass",
+          "elapsed_ms": 0.021458021365106106,
+          "message": "sign_message \u4e0d\u53ef\u7528\uff0ccreate_wallet \u4e09\u6b21\u7ed3\u6784\u4e00\u81f4",
           "detail": {
             "mode": "create_wallet_fallback",
             "checks": {
-              "address_non_empty_all": false,
-              "address_prefix_consistent": false,
+              "address_non_empty_all": true,
+              "address_prefix_consistent": true,
               "chain_presence_consistent": true,
               "meta_type_consistent": true
             },
             "addresses": [
-              "",
-              "",
-              ""
+              "[REDACTED]",
+              "[REDACTED]",
+              "[REDACTED]"
             ],
             "chains": [
               "polygon",
@@ -7915,24 +8025,24 @@
               "polygon"
             ]
           },
-          "owner": "provider",
+          "owner": "industry",
           "source": "auto"
         },
         {
           "test_id": "a04",
           "test_name": "token_cost",
           "status": "pass",
-          "elapsed_ms": 5.683750030584633,
-          "message": "\u6807\u51c6\u4efb\u52a1\u5b8c\u6210: 1/1 \u8c03\u7528\u6210\u529f, \u603b\u8017\u65f6 6ms, \u5e73\u5747 6ms/\u8c03\u7528",
+          "elapsed_ms": 0.022540916688740253,
+          "message": "\u6807\u51c6\u4efb\u52a1\u5b8c\u6210: 1/1 \u8c03\u7528\u6210\u529f, \u603b\u8017\u65f6 0ms, \u5e73\u5747 0ms/\u8c03\u7528",
           "detail": {
             "total_calls": 1,
             "successful_calls": 1,
-            "total_api_ms": 5.7,
-            "avg_ms_per_call": 5.7,
+            "total_api_ms": 0.0,
+            "avg_ms_per_call": 0.0,
             "calls": [
               {
                 "op": "create_wallet",
-                "ms": 5.7,
+                "ms": 0.0,
                 "ok": true
               }
             ]
@@ -7953,11 +8063,12 @@
         {
           "test_id": "t01",
           "test_name": "key_generate",
-          "status": "fail",
-          "elapsed_ms": 5.066541954874992,
-          "message": "\u5730\u5740\u683c\u5f0f\u65e0\u6548: ",
+          "status": "pass",
+          "elapsed_ms": 0.001959037035703659,
+          "message": "\u94b1\u5305\u5df2\u521b\u5efa [REDACTED]",
           "detail": {
-            "address": ""
+            "address": "[REDACTED]",
+            "chain": "polygon"
           },
           "owner": "",
           "source": "auto"
@@ -8046,7 +8157,7 @@
           "test_id": "t11",
           "test_name": "rate_limit_resilience",
           "status": "pass",
-          "elapsed_ms": 26.7357089323923,
+          "elapsed_ms": 0.09291607420891523,
           "message": "\u9650\u6d41\u6062\u590d: \u6240\u6709\u68c0\u67e5\u901a\u8fc7",
           "detail": {
             "checks": [
@@ -8069,15 +8180,15 @@
         {
           "test_id": "t12",
           "test_name": "portability_recovery",
-          "status": "fail",
-          "elapsed_ms": 12.912292033433914,
-          "message": "Portability: \u786e\u5b9a\u6027 identity, \u5b58\u5728\u5931\u8d25",
+          "status": "pass",
+          "elapsed_ms": 11.172582977451384,
+          "message": "Portability: \u786e\u5b9a\u6027 identity, \u6240\u6709\u68c0\u67e5\u901a\u8fc7",
           "detail": {
             "checks": [
               {
                 "test": "initial_create",
-                "ok": false,
-                "msg": "Created wallet: ..."
+                "ok": true,
+                "msg": "Created wallet: 0xd248fb43..."
               },
               {
                 "test": "session_restart",
@@ -8087,7 +8198,7 @@
               {
                 "test": "identity_persistence",
                 "ok": true,
-                "msg": "Same address (deterministic): ..."
+                "msg": "Same address (deterministic): 0xd248fb43..."
               },
               {
                 "test": "export_capability",
@@ -8103,15 +8214,15 @@
         {
           "test_id": "t13",
           "test_name": "authorization_audit_trace",
-          "status": "fail",
-          "elapsed_ms": 5.286250030621886,
-          "message": "\u5ba1\u8ba1\u94fe: 4/5 \u9879\u68c0\u67e5\u901a\u8fc7",
+          "status": "pass",
+          "elapsed_ms": 0.016583013348281384,
+          "message": "\u5ba1\u8ba1\u94fe: 5/5 \u9879\u68c0\u67e5\u901a\u8fc7",
           "detail": {
             "checks": [
               {
                 "test": "wallet_audit_fields",
-                "ok": false,
-                "msg": "address=no, chain=yes, timestamp=yes"
+                "ok": true,
+                "msg": "address=yes, chain=yes, timestamp=yes"
               },
               {
                 "test": "sign_audit_fields",
@@ -8332,14 +8443,14 @@
           "test_id": "t34",
           "test_name": "soak_24h",
           "status": "pass",
-          "elapsed_ms": 115.61737500596792,
-          "message": "\u6301\u7eed\u8fd0\u884c 20 \u8f6e, \u6210\u529f\u7387 100%, P50=6ms, P95=7ms",
+          "elapsed_ms": 0.07804099004715681,
+          "message": "\u6301\u7eed\u8fd0\u884c 20 \u8f6e, \u6210\u529f\u7387 100%, P50=0ms, P95=0ms",
           "detail": {
             "rounds": 20,
             "successes": 20,
             "success_rate": 1.0,
-            "p50_ms": 5.8,
-            "p95_ms": 7.5,
+            "p50_ms": 0.0,
+            "p95_ms": 0.0,
             "error_count": 0,
             "threshold": 0.9
           },
@@ -8379,19 +8490,16 @@
         {
           "test_id": "t38",
           "test_name": "version_compat",
-          "status": "fail",
-          "elapsed_ms": 5.807542009279132,
-          "message": "\u517c\u5bb9\u6027\u68c0\u67e5 4/5 \u901a\u8fc7: create_wallet() returned empty address",
+          "status": "pass",
+          "elapsed_ms": 0.00466697383671999,
+          "message": "\u6240\u6709 5 \u9879\u517c\u5bb9\u6027\u68c0\u67e5\u901a\u8fc7 (name=Polymarket Agent, arch=local)",
           "detail": {
-            "checks_passed": 4,
+            "checks_passed": 5,
             "checks_total": 5,
             "adapter_name": "Polymarket Agent",
             "arch_class": "local",
             "chains_count": 1,
-            "capabilities_count": 8,
-            "issues": [
-              "create_wallet() returned empty address"
-            ]
+            "capabilities_count": 8
           },
           "owner": "provider",
           "source": "auto"
@@ -8410,10 +8518,10 @@
           "test_id": "tc01",
           "test_name": "derivation_path",
           "status": "pass",
-          "elapsed_ms": 13.18941602949053,
-          "message": "\u786e\u5b9a\u6027\u6d3e\u751f\u5df2\u786e\u8ba4: ",
+          "elapsed_ms": 0.0025830231606960297,
+          "message": "\u786e\u5b9a\u6027\u6d3e\u751f\u5df2\u786e\u8ba4: [REDACTED]",
           "detail": {
-            "address": ""
+            "address": "[REDACTED]"
           },
           "owner": "",
           "source": "auto"
@@ -8422,7 +8530,7 @@
           "test_id": "tc02",
           "test_name": "keychain_lock",
           "status": "fail",
-          "elapsed_ms": 22.30208390392363,
+          "elapsed_ms": 7.513207965530455,
           "message": "\u7a7a\u5bc6\u94a5\u4ea7\u751f\u4e86\u4e0e\u771f\u5b9e\u5bc6\u94a5\u76f8\u540c\u7684\u5730\u5740",
           "detail": {},
           "owner": "",
@@ -8432,10 +8540,10 @@
           "test_id": "tc03",
           "test_name": "backup_recovery",
           "status": "pass",
-          "elapsed_ms": 14.937208034098148,
-          "message": "\u6062\u590d\u5df2\u9a8c\u8bc1: ",
+          "elapsed_ms": 7.334124995395541,
+          "message": "\u6062\u590d\u5df2\u9a8c\u8bc1: [REDACTED]",
           "detail": {
-            "address": ""
+            "address": "[REDACTED]"
           },
           "owner": "",
           "source": "auto"
@@ -9580,13 +9688,13 @@
         "session_delegation": false,
         "estimate_gas": true
       },
-      "timestamp": "2026-03-07T10:13:01.838936+00:00",
+      "timestamp": "2026-03-07T11:01:42.065130+00:00",
       "results": [
         {
           "test_id": "a01",
           "test_name": "schema_quality",
           "status": "fail",
-          "elapsed_ms": 0.3244170220568776,
+          "elapsed_ms": 2360.2020419202745,
           "message": "schema checks: 2/4 (50.00%); sign_message \u4e0d\u652f\u6301\uff0c\u6309\u89c4\u683c\u8df3\u8fc7\u7b7e\u540d\u5b57\u6bb5\u68c0\u67e5",
           "detail": {
             "checks": [
@@ -9612,7 +9720,7 @@
                 "address": "",
                 "chain": "bsc",
                 "meta": {
-                  "elapsed_ms": 0.011209049262106419,
+                  "elapsed_ms": 0.02191704697906971,
                   "repo_path": "universal-account-example"
                 }
               },
@@ -9620,16 +9728,18 @@
                 "tx_hash": "",
                 "status": 0,
                 "meta": {
-                  "revert": true,
-                  "error": "No suitable script found in examples/"
+                  "script": "transfer-evm.ts",
+                  "error": "Command exited 1: (node:7728) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n/Users/user/Documents/workspace/wallet-bench/universal-account-example/node_modules/e",
+                  "revert": true
                 }
               },
               "send_transaction_invalid": {
                 "tx_hash": "",
                 "status": 0,
                 "meta": {
-                  "revert": true,
-                  "error": "No suitable script found in examples/"
+                  "script": "transfer-evm.ts",
+                  "error": "Command exited 1: (node:7793) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n/Users/user/Documents/workspace/wallet-bench/universal-account-example/node_modules/e",
+                  "revert": true
                 }
               }
             },
@@ -9644,7 +9754,7 @@
           "test_id": "a02",
           "test_name": "machine_errors",
           "status": "pass",
-          "elapsed_ms": 0.15258300118148327,
+          "elapsed_ms": 2125.459000002593,
           "message": "\u9519\u8bef\u53ef\u6355\u83b7\u3001\u975e\u7a7a\u4e14\u7a33\u5b9a",
           "detail": {
             "trigger_for_a_and_c": "send_invalid_param",
@@ -9658,37 +9768,40 @@
               "same_class_stable": true
             },
             "messages": {
-              "a": "No suitable script found in examples/",
-              "b": "No suitable script found in examples/",
-              "c": "No suitable script found in examples/"
+              "a": "Command exited 1: (node:7864) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n/Users/user/Documents/workspace/wallet-bench/universal-account-example/node_modules/e",
+              "b": "Command exited 1: (node:7983) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n/Users/user/Documents/workspace/wallet-bench/universal-account-example/node_modules/e",
+              "c": "Command exited 1: (node:7927) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n/Users/user/Documents/workspace/wallet-bench/universal-account-example/node_modules/e"
             },
             "subjects": {
-              "a": "no suitable script found in examples/",
-              "c": "no suitable script found in examples/"
+              "a": "command exited <n>",
+              "c": "command exited <n>"
             },
             "raw": {
               "a": {
                 "kind": "result",
                 "tx_hash": "",
                 "meta": {
-                  "revert": true,
-                  "error": "No suitable script found in examples/"
+                  "script": "transfer-evm.ts",
+                  "error": "Command exited 1: (node:7864) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n/Users/user/Documents/workspace/wallet-bench/universal-account-example/node_modules/e",
+                  "revert": true
                 }
               },
               "b": {
                 "kind": "result",
                 "tx_hash": "",
                 "meta": {
-                  "revert": true,
-                  "error": "No suitable script found in examples/"
+                  "script": "transfer-evm.ts",
+                  "error": "Command exited 1: (node:7983) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n/Users/user/Documents/workspace/wallet-bench/universal-account-example/node_modules/e",
+                  "revert": true
                 }
               },
               "c": {
                 "kind": "result",
                 "tx_hash": "",
                 "meta": {
-                  "revert": true,
-                  "error": "No suitable script found in examples/"
+                  "script": "transfer-evm.ts",
+                  "error": "Command exited 1: (node:7927) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n/Users/user/Documents/workspace/wallet-bench/universal-account-example/node_modules/e",
+                  "revert": true
                 }
               }
             }
@@ -9700,7 +9813,7 @@
           "test_id": "a03",
           "test_name": "deterministic_response",
           "status": "fail",
-          "elapsed_ms": 0.03854196984320879,
+          "elapsed_ms": 0.11437502689659595,
           "message": "create_wallet \u4e09\u6b21\u8fd4\u56de\u7ed3\u6784\u4e0d\u4e00\u81f4",
           "detail": {
             "mode": "create_wallet_fallback",
@@ -9728,13 +9841,13 @@
           "test_id": "a04",
           "test_name": "token_cost",
           "status": "pass",
-          "elapsed_ms": 0.08487491868436337,
-          "message": "\u6807\u51c6\u4efb\u52a1\u5b8c\u6210: 2/2 \u8c03\u7528\u6210\u529f, \u603b\u8017\u65f6 0ms, \u5e73\u5747 0ms/\u8c03\u7528",
+          "elapsed_ms": 717.7330830600113,
+          "message": "\u6807\u51c6\u4efb\u52a1\u5b8c\u6210: 2/2 \u8c03\u7528\u6210\u529f, \u603b\u8017\u65f6 718ms, \u5e73\u5747 359ms/\u8c03\u7528",
           "detail": {
             "total_calls": 2,
             "successful_calls": 2,
-            "total_api_ms": 0.0,
-            "avg_ms_per_call": 0.0,
+            "total_api_ms": 717.7,
+            "avg_ms_per_call": 358.9,
             "calls": [
               {
                 "op": "create_wallet",
@@ -9743,7 +9856,7 @@
               },
               {
                 "op": "send_transaction",
-                "ms": 0.0,
+                "ms": 717.7,
                 "ok": true
               }
             ]
@@ -9755,25 +9868,25 @@
           "test_id": "a05",
           "test_name": "multi_step_recovery",
           "status": "pass",
-          "elapsed_ms": 0.17625000327825546,
+          "elapsed_ms": 1410.1786249084398,
           "message": "\u591a\u6b65\u6062\u590d\u6210\u529f: \u9519\u8bef\u6ce8\u5165\u540e\u6b63\u5e38\u4ea4\u6613\u6062\u590d",
           "detail": {
             "steps": [
               {
                 "step": "create_wallet",
                 "ok": true,
-                "ms": 0.0
+                "ms": 0.1
               },
               {
                 "step": "error_inject",
                 "ok": true,
-                "ms": 0.1,
+                "ms": 713.5,
                 "note": "unexpectedly succeeded"
               },
               {
                 "step": "recovery_tx",
                 "ok": true,
-                "ms": 0.1,
+                "ms": 696.5,
                 "tx_hash": ""
               }
             ],
@@ -9788,7 +9901,7 @@
           "test_id": "t01",
           "test_name": "key_generate",
           "status": "fail",
-          "elapsed_ms": 0.016666017472743988,
+          "elapsed_ms": 0.08312507998198271,
           "message": "\u5730\u5740\u683c\u5f0f\u65e0\u6548: ",
           "detail": {
             "address": ""
@@ -9820,11 +9933,11 @@
           "test_id": "t04",
           "test_name": "send_tx",
           "status": "pass",
-          "elapsed_ms": 0.02616702113300562,
+          "elapsed_ms": 683.4080830449238,
           "message": "\u4ea4\u6613\u5df2\u63d0\u4ea4\u4f46\u88ab revert\uff08\u9884\u671f: \u6d4b\u8bd5\u94b1\u5305\u65e0\u4f59\u989d\uff09",
           "detail": {
             "revert": true,
-            "elapsed_ms": 0.02616702113300562
+            "elapsed_ms": 683.4080830449238
           },
           "owner": "",
           "source": "auto"
@@ -9833,7 +9946,7 @@
           "test_id": "t05",
           "test_name": "multi_chain",
           "status": "pass",
-          "elapsed_ms": 0.008209026418626308,
+          "elapsed_ms": 0.08166604675352573,
           "message": "Adapter \u58f0\u660e 6 \u6761\u94fe: ethereum, bsc, polygon, arbitrum, optimism, solana",
           "detail": {
             "chains": [
@@ -9873,7 +9986,7 @@
           "test_id": "t09",
           "test_name": "failure_recovery",
           "status": "pass",
-          "elapsed_ms": 0.03645801916718483,
+          "elapsed_ms": 1388.1811660248786,
           "message": "\u6240\u6709\u6545\u969c\u573a\u666f\u5747\u6b63\u5e38\u5904\u7406",
           "detail": {
             "checks": [
@@ -9906,7 +10019,7 @@
           "test_id": "t11",
           "test_name": "rate_limit_resilience",
           "status": "pass",
-          "elapsed_ms": 0.13970793224871159,
+          "elapsed_ms": 0.213916995562613,
           "message": "\u9650\u6d41\u6062\u590d: \u6240\u6709\u68c0\u67e5\u901a\u8fc7",
           "detail": {
             "checks": [
@@ -9930,7 +10043,7 @@
           "test_id": "t12",
           "test_name": "portability_recovery",
           "status": "fail",
-          "elapsed_ms": 0.018874998204410076,
+          "elapsed_ms": 0.32879202626645565,
           "message": "Portability: \u786e\u5b9a\u6027 identity, \u5b58\u5728\u5931\u8d25",
           "detail": {
             "checks": [
@@ -9964,7 +10077,7 @@
           "test_id": "t13",
           "test_name": "authorization_audit_trace",
           "status": "fail",
-          "elapsed_ms": 0.03474997356534004,
+          "elapsed_ms": 698.2849590713158,
           "message": "\u5ba1\u8ba1\u94fe: 4/5 \u9879\u68c0\u67e5\u901a\u8fc7",
           "detail": {
             "checks": [
@@ -10052,7 +10165,7 @@
           "test_id": "t19",
           "test_name": "nonce_management",
           "status": "fail",
-          "elapsed_ms": 0.04670792259275913,
+          "elapsed_ms": 1425.256249960512,
           "message": "nonce \u7ba1\u7406\u5931\u8d25: \u81f3\u5c11\u4e00\u4e2a\u4ea4\u6613\u672a\u8fd4\u56de tx_hash",
           "detail": {
             "tx1_hash": "",
@@ -10060,12 +10173,14 @@
             "tx1_status": 0,
             "tx2_status": 0,
             "tx1_meta": {
-              "revert": true,
-              "error": "No suitable script found in examples/"
+              "script": "transfer-evm.ts",
+              "error": "Command exited 1: (node:8543) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n/Users/user/Documents/workspace/wallet-bench/universal-account-example/node_modules/e",
+              "revert": true
             },
             "tx2_meta": {
-              "revert": true,
-              "error": "No suitable script found in examples/"
+              "script": "transfer-evm.ts",
+              "error": "Command exited 1: (node:8601) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n/Users/user/Documents/workspace/wallet-bench/universal-account-example/node_modules/e",
+              "revert": true
             }
           },
           "owner": "provider",
@@ -10075,7 +10190,7 @@
           "test_id": "t20",
           "test_name": "tx_confirmation",
           "status": "fail",
-          "elapsed_ms": 0.019832979887723923,
+          "elapsed_ms": 700.897500035353,
           "message": "tx_confirmation \u5931\u8d25: tx_hash \u7f3a\u5931",
           "detail": {
             "tx_hash": "",
@@ -10088,12 +10203,13 @@
           "test_id": "t22",
           "test_name": "denial_reason_quality",
           "status": "fail",
-          "elapsed_ms": 0.017249956727027893,
+          "elapsed_ms": 705.3530829725787,
           "message": "\u62d2\u7edd\u4fe1\u606f\u8d28\u91cf\u4e0d\u8db3: \u7f3a\u5c11 error_code \u6216 message",
           "detail": {
             "meta": {
-              "revert": true,
-              "error": "No suitable script found in examples/"
+              "script": "transfer-evm.ts",
+              "error": "Command exited 1: (node:8701) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n/Users/user/Documents/workspace/wallet-bench/universal-account-example/node_modules/e",
+              "revert": true
             }
           },
           "owner": "",
@@ -10103,18 +10219,20 @@
           "test_id": "t23",
           "test_name": "idempotent_submit",
           "status": "fail",
-          "elapsed_ms": 0.03212492447346449,
+          "elapsed_ms": 1572.8215830167755,
           "message": "\u91cd\u590d\u63d0\u4ea4\u7ed3\u679c\u4e0d\u660e\u786e",
           "detail": {
             "first_tx_hash": "",
             "second_tx_hash": "",
             "first_meta": {
-              "revert": true,
-              "error": "No suitable script found in examples/"
+              "script": "transfer-evm.ts",
+              "error": "Command exited 1: (node:8789) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n/Users/user/Documents/workspace/wallet-bench/universal-account-example/node_modules/e",
+              "revert": true
             },
             "second_meta": {
-              "revert": true,
-              "error": "No suitable script found in examples/"
+              "script": "transfer-evm.ts",
+              "error": "Command exited 1: (node:8843) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n/Users/user/Documents/workspace/wallet-bench/universal-account-example/node_modules/e",
+              "revert": true
             }
           },
           "owner": "",
@@ -10154,7 +10272,7 @@
           "test_id": "t27",
           "test_name": "erc20_transfer",
           "status": "pass",
-          "elapsed_ms": 0.03204098902642727,
+          "elapsed_ms": 692.8142909891903,
           "message": "\u4ea4\u6613\u63d0\u4ea4\u6210\u529f\u4f46\u6267\u884c revert\uff08\u9884\u671f\u53ef\u63a5\u53d7\uff09\u3002",
           "detail": {
             "revert": true,
@@ -10169,7 +10287,7 @@
           "test_id": "t28",
           "test_name": "contract_write",
           "status": "pass",
-          "elapsed_ms": 0.019583036191761494,
+          "elapsed_ms": 718.5507499380037,
           "message": "\u542b calldata \u7684\u4ea4\u6613\u53ef\u88ab\u9002\u914d\u5668\u5904\u7406\u5e76\u63d0\u4ea4\u3002",
           "detail": {
             "tx_hash": "",
@@ -10194,12 +10312,13 @@
           "test_id": "t30",
           "test_name": "tx_finality",
           "status": "fail",
-          "elapsed_ms": 0.020458013750612736,
+          "elapsed_ms": 783.0092909280211,
           "message": "\u4ea4\u6613\u672a\u8fd4\u56de tx_hash\uff0c\u65e0\u6cd5\u9a8c\u8bc1\u6700\u7ec8\u6027\u3002",
           "detail": {
             "raw": {
-              "revert": true,
-              "error": "No suitable script found in examples/"
+              "script": "transfer-evm.ts",
+              "error": "Command exited 1: (node:9095) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n/Users/user/Documents/workspace/wallet-bench/universal-account-example/node_modules/e",
+              "revert": true
             }
           },
           "owner": "provider",
@@ -10239,14 +10358,14 @@
           "test_id": "t34",
           "test_name": "soak_24h",
           "status": "pass",
-          "elapsed_ms": 0.21595903672277927,
-          "message": "\u6301\u7eed\u8fd0\u884c 20 \u8f6e, \u6210\u529f\u7387 100%, P50=0ms, P95=0ms",
+          "elapsed_ms": 4209.042042028159,
+          "message": "\u6301\u7eed\u8fd0\u884c 20 \u8f6e, \u6210\u529f\u7387 100%, P50=0ms, P95=721ms",
           "detail": {
             "rounds": 20,
             "successes": 20,
             "success_rate": 1.0,
-            "p50_ms": 0.0,
-            "p95_ms": 0.0,
+            "p50_ms": 0.1,
+            "p95_ms": 720.8,
             "error_count": 0,
             "threshold": 0.9
           },
@@ -10267,12 +10386,13 @@
           "test_id": "t36",
           "test_name": "idempotency_key",
           "status": "fail",
-          "elapsed_ms": 0.0197909539565444,
+          "elapsed_ms": 675.9497920284048,
           "message": "\u9996\u6b21\u4ea4\u6613\u672a\u8fd4\u56de tx_hash\uff0c\u65e0\u6cd5\u8fdb\u884c\u5e42\u7b49\u6027\u6d4b\u8bd5",
           "detail": {
             "r1_meta": {
-              "revert": true,
-              "error": "No suitable script found in examples/"
+              "script": "transfer-evm.ts",
+              "error": "Command exited 1: (node:9516) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n/Users/user/Documents/workspace/wallet-bench/universal-account-example/node_modules/e",
+              "revert": true
             }
           },
           "owner": "provider",
@@ -10292,7 +10412,7 @@
           "test_id": "t38",
           "test_name": "version_compat",
           "status": "fail",
-          "elapsed_ms": 0.008999952115118504,
+          "elapsed_ms": 0.08450006134808064,
           "message": "\u517c\u5bb9\u6027\u68c0\u67e5 4/5 \u901a\u8fc7: create_wallet() returned empty address",
           "detail": {
             "checks_passed": 4,
@@ -10322,7 +10442,7 @@
           "test_id": "tc01",
           "test_name": "derivation_path",
           "status": "pass",
-          "elapsed_ms": 0.010499963536858559,
+          "elapsed_ms": 0.02045789733529091,
           "message": "\u786e\u5b9a\u6027\u6d3e\u751f\u5df2\u786e\u8ba4: ",
           "detail": {
             "address": ""
@@ -10334,7 +10454,7 @@
           "test_id": "tc02",
           "test_name": "keychain_lock",
           "status": "fail",
-          "elapsed_ms": 0.1299170544371009,
+          "elapsed_ms": 0.6026249611750245,
           "message": "\u7a7a\u5bc6\u94a5\u4ea7\u751f\u4e86\u4e0e\u771f\u5b9e\u5bc6\u94a5\u76f8\u540c\u7684\u5730\u5740",
           "detail": {},
           "owner": "",
@@ -10344,7 +10464,7 @@
           "test_id": "tc03",
           "test_name": "backup_recovery",
           "status": "pass",
-          "elapsed_ms": 0.04591699689626694,
+          "elapsed_ms": 0.11866702698171139,
           "message": "\u6062\u590d\u5df2\u9a8c\u8bc1: ",
           "detail": {
             "address": ""
@@ -10383,7 +10503,7 @@
     }
   ],
   "summary": {
-    "generated_at": "2026-03-07T10:14:06.182732+00:00",
+    "generated_at": "2026-03-07T11:43:07.477213+00:00",
     "provider_count": 12
   }
 }

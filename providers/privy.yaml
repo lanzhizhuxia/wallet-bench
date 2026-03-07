@@ -1,4 +1,5 @@
 name: Privy Agentic Wallets
+tier: waas_infrastructure  # WaaS 基础设施供应商
 class: tee
 custody_model: TEE+Shard
 signing_modes: [personal_sign, eip712, raw_tx, secp256k1_raw]

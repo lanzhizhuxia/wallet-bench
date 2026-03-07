@@ -492,7 +492,7 @@ function renderCoverageBanner(providers, summaryData) {
     }
 
     const providerCount = providers.length;
-    container.innerHTML = `📊 基准套件: ${totalTestCount} 项测试 · ${providerCount} 家 Provider · ${autoCount} 自动验证 · ${yamlCount} 人工评估 · 最后更新: ${lastUpdated}`;
+    container.innerHTML = `📊 基准套件: ${totalTestCount} 项测试 · ${providerCount} 个评测对象（WaaS + OpenClaw Skills）· ${autoCount} 自动验证 · ${yamlCount} 人工评估 · 最后更新: ${lastUpdated}`;
 }
 async function loadData() {
     try {
@@ -1700,7 +1700,7 @@ function renderDetail(provider) {
     let html = '';
     // AC-005-12 Deferred Banner
     if (DEFERRED_PROVIDERS.includes(provider.provider)) {
-        html += '<div class="detail-provider-banner">此服务商已被标记为 DEFERRED，以下数据仅供参考。</div>';
+        html += '<div class="detail-provider-banner">此评测对象已被标记为 DEFERRED，以下数据仅供参考。</div>';
     }
 
     html += '<div class="detail-tab-pane" id="detail-basics">';

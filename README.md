@@ -1,8 +1,10 @@
 # wallet-bench
 
-钱包服务商横向对比测试平台 — 自动化测试 Wallet-as-a-Service 供应商的密钥管理、签名、交易、治理、稳定性及 DeFi 能力。
+AI Agent 钱包服务横向对比测试平台 — 覆盖 WaaS 基础设施供应商与 OpenClaw 生态 Agent Skills。自动化测试密钥管理、签名、交易、治理、稳定性及 DeFi 能力。
 
-## 支持的钱包供应商
+## 评测对象
+
+### WaaS 基础设施供应商（7 家）
 
 | 供应商 | `--provider` 参数值 | 架构类型 | 测试网链 |
 |--------|---------------------|---------|----------|
@@ -13,11 +15,18 @@
 | MoonPay | `moonpay` | delegated | Ethereum |
 | Minara | `minara` | custodial | Base |
 | OKX OnchainOS | `okx_onchainos` | intent | — |
+
+### OpenClaw 生态 Agent Skills（5 家）
+
+| 供应商 | `--provider` 参数值 | 架构类型 | 测试网链 |
+|--------|---------------------|---------|----------|
 | Clawlett | `clawlett` | smart_account | Base (主网) |
 | Para Wallet | `para_wallet` | mpc | Ethereum, Solana, Cosmos |
 | Universal Trading | `universal_trading` | local | BSC, ETH, Solana 等 |
 | Polymarket Agent | `polymarket_agent` | local | Polygon (主网) |
 | Coinpilot Hyperliquid | `coinpilot_hyperliquid` | intent | Hyperliquid L1 |
+
+> 以上 5 家来自 [OpenClaw ClawHub](https://github.com/openclaw/skills) 生态，是 Agent 技能插件而非独立钱包服务商。它们封装了底层钱包/交易能力，供 AI Agent 调用。
 
 ## 前置要求
 
