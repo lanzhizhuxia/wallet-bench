@@ -1,6 +1,7 @@
 """t20 — Transaction confirmation surface quality."""
 from __future__ import annotations
 
+import asyncio
 import re
 import time
 
@@ -10,9 +11,15 @@ TEST_ID = "t20"
 TEST_NAME = "tx_confirmation"
 
 _TO = "0x0000000000000000000000000000000000000001"
+_DEFAULT_TIMEOUT = 30
+
+# Standard Ethereum tx_hash: 0x + 64 hex chars (32 bytes)
+_TX_HASH_RE = re.compile(r"^0x[0-9a-fA-F]{64}$")
 
 
 async def run(adapter: WalletAdapter, config: dict) -> TestResult:
+    timeout = config.get("test_params", {}).get("t20", {}).get("timeout", _DEFAULT_TIMEOUT)
+
     if not adapter.capabilities().get("send_transaction", False):
         return TestResult(
             test_id=TEST_ID,
@@ -25,28 +32,60 @@ async def run(adapter: WalletAdapter, config: dict) -> TestResult:
     t0 = time.perf_counter()
     try:
         tx = TxParams(to=_TO, value=0)
-        result = await adapter.send_transaction(tx)
+        result = await asyncio.wait_for(adapter.send_transaction(tx), timeout=timeout)
+    except asyncio.TimeoutError:
+        return TestResult(
+            test_id=TEST_ID,
+            test_name=TEST_NAME,
+            status=TestStatus.ERROR,
+            elapsed_ms=(time.perf_counter() - t0) * 1000,
+            message=f"send_transaction 超时 (>{timeout}s)",
+            detail={"to": _TO, "value": 0},
+            owner="provider",
+        )
     except Exception as exc:
         return TestResult(
             test_id=TEST_ID,
             test_name=TEST_NAME,
             status=TestStatus.ERROR,
             elapsed_ms=(time.perf_counter() - t0) * 1000,
-            message=str(exc),
+            message=f"send_transaction 异常: {exc}",
+            detail={"to": _TO, "value": 0, "error": str(exc)[:500]},
+            owner="provider",
         )
 
     elapsed = (time.perf_counter() - t0) * 1000
     tx_hash = (result.tx_hash or "").strip()
-    valid_hex = bool(re.fullmatch(r"0x[0-9a-fA-F]+", tx_hash))
+    valid_hex = bool(_TX_HASH_RE.fullmatch(tx_hash))
 
-    if not tx_hash or not valid_hex:
+    detail = {
+        "tx_hash": tx_hash,
+        "block_number": result.block_number,
+        "gas_used": result.gas_used,
+        "status": result.status,
+        "meta": result.meta,
+    }
+
+    if not tx_hash:
         return TestResult(
             test_id=TEST_ID,
             test_name=TEST_NAME,
             status=TestStatus.FAIL,
             elapsed_ms=elapsed,
-            message="tx_confirmation 失败: tx_hash 缺失或格式无效",
-            detail={"tx_hash": tx_hash, "meta": result.meta},
+            message="tx_confirmation 失败: tx_hash 缺失",
+            detail=detail,
+            owner="provider",
+        )
+
+    if not valid_hex:
+        return TestResult(
+            test_id=TEST_ID,
+            test_name=TEST_NAME,
+            status=TestStatus.FAIL,
+            elapsed_ms=elapsed,
+            message=f"tx_confirmation 失败: tx_hash 格式无效 (期望 0x + 64位hex, 实际长度={len(tx_hash)})",
+            detail=detail,
+            owner="provider",
         )
 
     return TestResult(
@@ -54,11 +93,7 @@ async def run(adapter: WalletAdapter, config: dict) -> TestResult:
         test_name=TEST_NAME,
         status=TestStatus.PASS,
         elapsed_ms=elapsed,
-        message="tx_hash 返回有效",
-        detail={
-            "tx_hash": tx_hash,
-            "block_number": result.block_number,
-            "gas_used": result.gas_used,
-            "meta": result.meta,
-        },
+        message="tx_hash 返回有效 (0x + 64位hex)",
+        detail=detail,
+        owner="provider",
     )

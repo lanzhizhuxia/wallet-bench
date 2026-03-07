@@ -9,17 +9,62 @@ from adapters.base import TestResult, TestStatus, WalletAdapter
 TEST_ID = "t17"
 TEST_NAME = "prediction_market"
 
+# Defaults — overridable via config["test_params"]["t17"]
+_DEFAULT_PLATFORM = "polymarket"
+_DEFAULT_TIMEOUT = 30
+
 
 def _provider_name(adapter: WalletAdapter) -> str:
     return f"{adapter.__class__.__name__} {getattr(adapter, 'name', '')}".lower()
 
 
+def _params(config: dict) -> dict[str, Any]:
+    """Extract test parameters from config with sane defaults."""
+    overrides = config.get("test_params", {}).get("t17", {})
+    return {
+        "platform": overrides.get("platform", _DEFAULT_PLATFORM),
+        "timeout": overrides.get("timeout", _DEFAULT_TIMEOUT),
+    }
+
+
+def _looks_like_success(result: Any) -> bool:
+    """Heuristic: check that the result doesn't indicate a hidden failure.
+
+    Handles both string responses and dict/object results with explicit
+    success/status fields.
+    """
+    if result is None:
+        return False
+
+    # Structured result with explicit success/status field
+    if isinstance(result, dict):
+        if "success" in result and not result["success"]:
+            return False
+        if "status" in result and str(result["status"]).lower() in ("failed", "error", "rejected"):
+            return False
+    elif hasattr(result, "success") and not getattr(result, "success", True):
+        return False
+    elif hasattr(result, "status") and str(getattr(result, "status", "")).lower() in ("failed", "error", "rejected"):
+        return False
+
+    # Keyword blacklist on stringified result (narrower scope: only check short reprs)
+    raw = str(result).lower()
+    if len(raw) > 2000:
+        return True  # too large to keyword-scan reliably; trust structured checks above
+    failure_signals = ("error", "failed", "not found", "denied", "rejected")
+    return not any(sig in raw for sig in failure_signals)
+
+
 async def run(adapter: WalletAdapter, config: dict) -> TestResult:
     caps = adapter.capabilities()
     provider = _provider_name(adapter)
+    p = _params(config)
+    timeout = p["timeout"]
 
-    has_cap = any(caps.get(k, False) for k in ("prediction_market", "market_prediction"))
-    has_method = any(callable(getattr(adapter, k, None)) for k in ("prediction_market", "market_prediction"))
+    # --- capability detection ---
+    cap_keys = ("prediction_market", "market_prediction")
+    has_cap = any(caps.get(k, False) for k in cap_keys)
+    has_method = any(callable(getattr(adapter, k, None)) for k in cap_keys)
     has_hint = "moonpay" in provider
 
     if not (has_cap or has_method or has_hint):
@@ -34,8 +79,8 @@ async def run(adapter: WalletAdapter, config: dict) -> TestResult:
     t0 = time.perf_counter()
     detail: dict[str, Any] = {
         "provider": provider,
-        "supported_platforms": ["polymarket"],
-        "capabilities": {k: caps.get(k, False) for k in ("prediction_market", "market_prediction")},
+        "params": p,
+        "capabilities": {k: caps.get(k, False) for k in cap_keys},
     }
 
     try:
@@ -49,39 +94,83 @@ async def run(adapter: WalletAdapter, config: dict) -> TestResult:
                 adapter._run_mp(  # type: ignore[attr-defined]
                     "prediction-market", "markets",
                     "--wallet", wallet,
-                    "--platform", "polymarket",
-                    timeout=30,
+                    "--platform", p["platform"],
+                    timeout=timeout,
                 ),
-                timeout=30,
+                timeout=timeout,
             )
 
         elif callable(getattr(adapter, "prediction_market", None)):
             detail["path"] = "adapter_prediction_market"
             result = await asyncio.wait_for(
-                adapter.prediction_market(platform="polymarket", dry_run=True),  # type: ignore[attr-defined]
-                timeout=30,
+                adapter.prediction_market(  # type: ignore[attr-defined]
+                    platform=p["platform"], dry_run=True,
+                ),
+                timeout=timeout,
+            )
+
+        elif callable(getattr(adapter, "market_prediction", None)):
+            detail["path"] = "adapter_market_prediction"
+            result = await asyncio.wait_for(
+                adapter.market_prediction(  # type: ignore[attr-defined]
+                    platform=p["platform"], dry_run=True,
+                ),
+                timeout=timeout,
             )
 
         else:
+            # Capability declared but no callable implementation found
+            status = TestStatus.UNSUPPORTED if not has_cap else TestStatus.FAIL
+            msg = (
+                "该供应商当前不提供预测市场交易功能。如需 Agent 参与预测市场，需评估其他方案。"
+                if not has_cap
+                else "适配器声明支持 prediction_market 能力，但未找到可调用的实现方法。"
+            )
+            owner = "provider" if not has_cap else "benchmark"
             return TestResult(
                 test_id=TEST_ID,
                 test_name=TEST_NAME,
-                status=TestStatus.UNSUPPORTED,
+                status=status,
                 elapsed_ms=(time.perf_counter() - t0) * 1000,
-                message="该供应商当前不提供预测市场交易功能。如需 Agent 参与预测市场，需评估其他方案。",
-                owner="provider",
+                message=msg,
+                owner=owner,
                 detail=detail,
             )
 
         elapsed = (time.perf_counter() - t0) * 1000
         detail["result_type"] = type(result).__name__
         detail["raw"] = str(result)[:500]
+
+        # --- validate result semantics ---
+        if not _looks_like_success(result):
+            return TestResult(
+                test_id=TEST_ID,
+                test_name=TEST_NAME,
+                status=TestStatus.FAIL,
+                elapsed_ms=elapsed,
+                message="prediction market dry-run 返回结果包含错误信号",
+                owner="provider",
+                detail=detail,
+            )
+
         return TestResult(
             test_id=TEST_ID,
             test_name=TEST_NAME,
             status=TestStatus.PASS,
             elapsed_ms=elapsed,
-            message="已尝试执行 prediction market 操作",
+            message="prediction market dry-run 执行成功",
+            owner="provider",
+            detail=detail,
+        )
+
+    except asyncio.TimeoutError:
+        return TestResult(
+            test_id=TEST_ID,
+            test_name=TEST_NAME,
+            status=TestStatus.FAIL,
+            elapsed_ms=(time.perf_counter() - t0) * 1000,
+            message=f"prediction market 执行超时 (>{timeout}s)",
+            owner="provider",
             detail=detail,
         )
     except Exception as exc:
@@ -93,5 +182,6 @@ async def run(adapter: WalletAdapter, config: dict) -> TestResult:
             status=TestStatus.FAIL,
             elapsed_ms=elapsed,
             message=f"prediction market 执行失败: {exc}",
+            owner="provider",
             detail=detail,
         )
