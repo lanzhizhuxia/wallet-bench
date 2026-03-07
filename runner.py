@@ -336,20 +336,6 @@ def _load_adapter(provider_name: str, config: dict):
             user_identifier=provider_cfg.get("user_identifier", "wallet-bench@test.com"),
             chain=provider_cfg.get("chain", "ethereum"),
         )
-    elif provider_name == "universal_trading":
-        adapter = adapter_cls(
-            repo_path=provider_cfg.get("repo_path", ""),
-            chain=provider_cfg.get("chain", "bsc"),
-        )
-    elif provider_name == "polymarket_agent":
-        adapter = adapter_cls(
-            chain=provider_cfg.get("chain", "polygon"),
-        )
-    elif provider_name == "coinpilot_hyperliquid":
-        adapter = adapter_cls(
-            config_path=provider_cfg.get("config_path", ""),
-            api_base_url=provider_cfg.get("api_base_url", ""),
-        )
     else:
         adapter = adapter_cls(**provider_cfg)
 

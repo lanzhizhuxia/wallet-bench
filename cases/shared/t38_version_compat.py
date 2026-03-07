@@ -35,7 +35,7 @@ async def run(adapter: WalletAdapter, config: dict) -> TestResult:
 
     # Check 2: adapter.arch_class
     checks_total += 1
-    valid_classes = {"local", "api_custodial", "intent", "tee", "mpc_aa"}
+    valid_classes = {"local", "api_custodial", "intent", "tee", "mpc_aa", "mpc", "smart_account"}
     if adapter.arch_class in valid_classes:
         checks_passed += 1
     else:

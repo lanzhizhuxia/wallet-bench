@@ -973,13 +973,13 @@
         "session_delegation": false,
         "estimate_gas": true
       },
-      "timestamp": "2026-03-07T10:07:17.881801+00:00",
+      "timestamp": "2026-03-07T10:13:01.211093+00:00",
       "results": [
         {
           "test_id": "a01",
           "test_name": "schema_quality",
           "status": "fail",
-          "elapsed_ms": 0.0766250304877758,
+          "elapsed_ms": 0.056750024668872356,
           "message": "schema checks: 2/4 (50.00%); create_wallet \u5f02\u5e38: Clawlett repo not found. Set providers.clawlett.clawlett_repo_path to the cloned repo path.; sign_message \u4e0d\u652f\u6301\uff0c\u6309\u89c4\u683c\u8df3\u8fc7\u7b7e\u540d\u5b57\u6bb5\u68c0\u67e5; send_transaction(\u6b63\u5e38\u8def\u5f84) \u5f02\u5e38: Clawlett repo not found. Set providers.clawlett.clawlett_repo_path to the cloned repo path.; send_transaction(\u975e\u6cd5\u5730\u5740\u8def\u5f84) \u5f02\u5e38: Clawlett repo not found. Set providers.clawlett.clawlett_repo_path to the cloned repo path.",
           "detail": {
             "checks": [
@@ -1016,7 +1016,7 @@
           "test_id": "a02",
           "test_name": "machine_errors",
           "status": "pass",
-          "elapsed_ms": 0.10537495836615562,
+          "elapsed_ms": 0.09033409878611565,
           "message": "\u9519\u8bef\u53ef\u6355\u83b7\u3001\u975e\u7a7a\u4e14\u7a33\u5b9a",
           "detail": {
             "trigger_for_a_and_c": "send_invalid_param",
@@ -1060,7 +1060,7 @@
           "test_id": "a03",
           "test_name": "deterministic_response",
           "status": "error",
-          "elapsed_ms": 0.005124951712787151,
+          "elapsed_ms": 0.013541080988943577,
           "message": "create_wallet \u9884\u68c0\u67e5\u5931\u8d25: Clawlett repo not found. Set providers.clawlett.clawlett_repo_path to the cloned repo path.",
           "detail": {
             "error": "Clawlett repo not found. Set providers.clawlett.clawlett_repo_path to the cloned repo path."
@@ -1072,7 +1072,7 @@
           "test_id": "a04",
           "test_name": "token_cost",
           "status": "error",
-          "elapsed_ms": 0.04875008016824722,
+          "elapsed_ms": 0.034541008062660694,
           "message": "create_wallet \u5931\u8d25\uff0c\u65e0\u6cd5\u5b8c\u6210\u6210\u672c\u8bc4\u4f30: Clawlett repo not found. Set providers.clawlett.clawlett_repo_path to the cloned repo path.",
           "detail": {
             "calls": [
@@ -1091,7 +1091,7 @@
           "test_id": "a05",
           "test_name": "multi_step_recovery",
           "status": "error",
-          "elapsed_ms": 0.015166937373578548,
+          "elapsed_ms": 0.012499978765845299,
           "message": "Step 1 create_wallet \u5931\u8d25: Clawlett repo not found. Set providers.clawlett.clawlett_repo_path to the cloned repo path.",
           "detail": {
             "steps": []
@@ -1133,7 +1133,7 @@
           "test_id": "t04",
           "test_name": "send_tx",
           "status": "error",
-          "elapsed_ms": 0.00608398113399744,
+          "elapsed_ms": 0.00900006853044033,
           "message": "Clawlett repo not found. Set providers.clawlett.clawlett_repo_path to the cloned repo path.",
           "detail": {},
           "owner": "",
@@ -1173,7 +1173,7 @@
           "test_id": "t09",
           "test_name": "failure_recovery",
           "status": "pass",
-          "elapsed_ms": 0.009707990102469921,
+          "elapsed_ms": 0.01183303538709879,
           "message": "\u6240\u6709\u6545\u969c\u573a\u666f\u5747\u6b63\u5e38\u5904\u7406",
           "detail": {
             "checks": [
@@ -1196,7 +1196,7 @@
           "test_id": "t10",
           "test_name": "preflight_fee",
           "status": "error",
-          "elapsed_ms": 346.6325419722125,
+          "elapsed_ms": 322.62437499593943,
           "message": "eth_estimateGas error: {'code': -32602, 'message': 'invalid argument 0: json: cannot unmarshal hex string of odd length into Go struct field TransactionArgs.from of type common.Address'}",
           "detail": {},
           "owner": "",
@@ -1206,7 +1206,7 @@
           "test_id": "t11",
           "test_name": "rate_limit_resilience",
           "status": "fail",
-          "elapsed_ms": 0.14775001909583807,
+          "elapsed_ms": 0.2072920324280858,
           "message": "\u9650\u6d41\u6062\u590d: \u90e8\u5206\u68c0\u67e5\u5931\u8d25",
           "detail": {
             "checks": [
@@ -1260,7 +1260,7 @@
           "test_id": "t15",
           "test_name": "defi_interaction",
           "status": "unsupported",
-          "elapsed_ms": 0.00200001522898674,
+          "elapsed_ms": 0.002708984538912773,
           "message": "\u8be5\u4f9b\u5e94\u5546\u5f53\u524d\u4e0d\u63d0\u4f9b DeFi \u4ea4\u4e92\u529f\u80fd\u3002\u5982\u9700 Agent \u53c2\u4e0e DeFi \u534f\u8bae\uff0c\u9700\u8bc4\u4f30\u5176\u4ed6\u65b9\u6848\u3002",
           "detail": {
             "provider": "clawlettadapter clawlett",
@@ -1315,7 +1315,7 @@
           "test_id": "t19",
           "test_name": "nonce_management",
           "status": "error",
-          "elapsed_ms": 0.10108400601893663,
+          "elapsed_ms": 0.04329206421971321,
           "message": "\u9996\u7b14\u4ea4\u6613\u5f02\u5e38: Clawlett repo not found. Set providers.clawlett.clawlett_repo_path to the cloned repo path.",
           "detail": {
             "error": "Clawlett repo not found. Set providers.clawlett.clawlett_repo_path to the cloned repo path."
@@ -1327,7 +1327,7 @@
           "test_id": "t20",
           "test_name": "tx_confirmation",
           "status": "error",
-          "elapsed_ms": 0.019042054191231728,
+          "elapsed_ms": 0.015374971553683281,
           "message": "send_transaction \u5f02\u5e38: Clawlett repo not found. Set providers.clawlett.clawlett_repo_path to the cloned repo path.",
           "detail": {
             "to": "[REDACTED]",
@@ -1341,7 +1341,7 @@
           "test_id": "t22",
           "test_name": "denial_reason_quality",
           "status": "fail",
-          "elapsed_ms": 0.007083057425916195,
+          "elapsed_ms": 0.006124959327280521,
           "message": "\u62d2\u7edd\u5f02\u5e38\u4ec5\u539f\u59cb\u5b57\u7b26\u4e32\uff0c\u7f3a\u5c11\u7ed3\u6784\u5316\u539f\u56e0",
           "detail": {
             "raw_error": "Clawlett repo not found. Set providers.clawlett.clawlett_repo_path to the cloned repo path."
@@ -1353,7 +1353,7 @@
           "test_id": "t23",
           "test_name": "idempotent_submit",
           "status": "error",
-          "elapsed_ms": 0.005708076059818268,
+          "elapsed_ms": 0.005792011506855488,
           "message": "\u9996\u6b21\u63d0\u4ea4\u5f02\u5e38: Clawlett repo not found. Set providers.clawlett.clawlett_repo_path to the cloned repo path.",
           "detail": {},
           "owner": "",
@@ -1393,7 +1393,7 @@
           "test_id": "t27",
           "test_name": "erc20_transfer",
           "status": "error",
-          "elapsed_ms": 0.008707982487976551,
+          "elapsed_ms": 0.008792034350335598,
           "message": "Clawlett repo not found. Set providers.clawlett.clawlett_repo_path to the cloned repo path.",
           "detail": {},
           "owner": "provider",
@@ -1403,7 +1403,7 @@
           "test_id": "t28",
           "test_name": "contract_write",
           "status": "fail",
-          "elapsed_ms": 0.00825000461190939,
+          "elapsed_ms": 0.009582960046827793,
           "message": "\u53d1\u9001\u542b data \u4ea4\u6613\u5931\u8d25: Clawlett repo not found. Set providers.clawlett.clawlett_repo_path to the cloned repo path.",
           "detail": {
             "data": "0xd09de08a",
@@ -1426,7 +1426,7 @@
           "test_id": "t30",
           "test_name": "tx_finality",
           "status": "error",
-          "elapsed_ms": 0.007291906513273716,
+          "elapsed_ms": 0.008624978363513947,
           "message": "Clawlett repo not found. Set providers.clawlett.clawlett_repo_path to the cloned repo path.",
           "detail": {},
           "owner": "provider",
@@ -1466,7 +1466,7 @@
           "test_id": "t34",
           "test_name": "soak_24h",
           "status": "fail",
-          "elapsed_ms": 0.09650003630667925,
+          "elapsed_ms": 0.10841700714081526,
           "message": "\u6301\u7eed\u8fd0\u884c\u6210\u529f\u7387 0% \u4f4e\u4e8e\u9608\u503c 90% (0/20\u8f6e, P50=0ms)",
           "detail": {
             "rounds": 20,
@@ -1501,7 +1501,7 @@
           "test_id": "t36",
           "test_name": "idempotency_key",
           "status": "error",
-          "elapsed_ms": 0.006500049494206905,
+          "elapsed_ms": 0.00808399636298418,
           "message": "\u9996\u6b21\u4ea4\u6613\u5f02\u5e38: Clawlett repo not found. Set providers.clawlett.clawlett_repo_path to the cloned repo path.",
           "detail": {
             "error": "Clawlett repo not found. Set providers.clawlett.clawlett_repo_path to the cloned repo path."
@@ -1523,17 +1523,16 @@
           "test_id": "t38",
           "test_name": "version_compat",
           "status": "fail",
-          "elapsed_ms": 0.011625001206994057,
-          "message": "\u517c\u5bb9\u6027\u68c0\u67e5 3/5 \u901a\u8fc7: adapter.arch_class='smart_account' not in {'intent', 'local', 'mpc_aa', 'tee', 'api_custodial'}; create_wallet() failed: Clawlett repo not found. Set providers.clawlett.clawlett_repo_path to the cloned repo path.",
+          "elapsed_ms": 0.007916009053587914,
+          "message": "\u517c\u5bb9\u6027\u68c0\u67e5 4/5 \u901a\u8fc7: create_wallet() failed: Clawlett repo not found. Set providers.clawlett.clawlett_repo_path to the cloned repo path.",
           "detail": {
-            "checks_passed": 3,
+            "checks_passed": 4,
             "checks_total": 5,
             "adapter_name": "Clawlett",
             "arch_class": "smart_account",
             "chains_count": 1,
             "capabilities_count": 8,
             "issues": [
-              "adapter.arch_class='smart_account' not in {'intent', 'local', 'mpc_aa', 'tee', 'api_custodial'}",
               "create_wallet() failed: Clawlett repo not found. Set providers.clawlett.clawlett_repo_path to the cloned repo path."
             ]
           },
@@ -2612,13 +2611,13 @@
         "session_delegation": false,
         "estimate_gas": false
       },
-      "timestamp": "2026-03-07T10:05:40.589284+00:00",
+      "timestamp": "2026-03-07T10:13:03.511073+00:00",
       "results": [
         {
           "test_id": "a01",
           "test_name": "schema_quality",
           "status": "fail",
-          "elapsed_ms": 0.1694579841569066,
+          "elapsed_ms": 0.20124996080994606,
           "message": "schema checks: 0/2 (0.00%); sign_message \u4e0d\u652f\u6301\uff0c\u6309\u89c4\u683c\u8df3\u8fc7\u7b7e\u540d\u5b57\u6bb5\u68c0\u67e5; send_transaction \u4e0d\u652f\u6301\uff0c\u5df2\u8df3\u8fc7\u4ea4\u6613\u5b57\u6bb5\u68c0\u67e5",
           "detail": {
             "checks": [
@@ -2636,7 +2635,7 @@
                 "address": "",
                 "chain": "hyperliquid",
                 "meta": {
-                  "elapsed_ms": 0.005542067810893059,
+                  "elapsed_ms": 0.004208064638078213,
                   "config_path": "coinpilot.json",
                   "api_base_url": ""
                 }
@@ -2674,7 +2673,7 @@
           "test_id": "a03",
           "test_name": "deterministic_response",
           "status": "fail",
-          "elapsed_ms": 0.030415947549045086,
+          "elapsed_ms": 0.03899994771927595,
           "message": "create_wallet \u4e09\u6b21\u8fd4\u56de\u7ed3\u6784\u4e0d\u4e00\u81f4",
           "detail": {
             "mode": "create_wallet_fallback",
@@ -2702,7 +2701,7 @@
           "test_id": "a04",
           "test_name": "token_cost",
           "status": "pass",
-          "elapsed_ms": 0.036125071346759796,
+          "elapsed_ms": 0.05050003528594971,
           "message": "\u6807\u51c6\u4efb\u52a1\u5b8c\u6210: 1/1 \u8c03\u7528\u6210\u529f, \u603b\u8017\u65f6 0ms, \u5e73\u5747 0ms/\u8c03\u7528",
           "detail": {
             "total_calls": 1,
@@ -2734,7 +2733,7 @@
           "test_id": "t01",
           "test_name": "key_generate",
           "status": "fail",
-          "elapsed_ms": 0.00529095996171236,
+          "elapsed_ms": 0.006166985258460045,
           "message": "\u5730\u5740\u683c\u5f0f\u65e0\u6548: ",
           "detail": {
             "address": ""
@@ -2826,7 +2825,7 @@
           "test_id": "t11",
           "test_name": "rate_limit_resilience",
           "status": "pass",
-          "elapsed_ms": 0.1763750333338976,
+          "elapsed_ms": 0.14045799616724253,
           "message": "\u9650\u6d41\u6062\u590d: \u6240\u6709\u68c0\u67e5\u901a\u8fc7",
           "detail": {
             "checks": [
@@ -2850,7 +2849,7 @@
           "test_id": "t12",
           "test_name": "portability_recovery",
           "status": "fail",
-          "elapsed_ms": 0.027292058803141117,
+          "elapsed_ms": 0.016457983292639256,
           "message": "Portability: \u786e\u5b9a\u6027 identity, \u5b58\u5728\u5931\u8d25",
           "detail": {
             "checks": [
@@ -2884,7 +2883,7 @@
           "test_id": "t13",
           "test_name": "authorization_audit_trace",
           "status": "fail",
-          "elapsed_ms": 0.014332938008010387,
+          "elapsed_ms": 0.012582982890307903,
           "message": "\u5ba1\u8ba1\u94fe: 4/5 \u9879\u68c0\u67e5\u901a\u8fc7",
           "detail": {
             "checks": [
@@ -3112,7 +3111,7 @@
           "test_id": "t34",
           "test_name": "soak_24h",
           "status": "pass",
-          "elapsed_ms": 0.13449997641146183,
+          "elapsed_ms": 0.1259580021724105,
           "message": "\u6301\u7eed\u8fd0\u884c 20 \u8f6e, \u6210\u529f\u7387 100%, P50=0ms, P95=0ms",
           "detail": {
             "rounds": 20,
@@ -3160,7 +3159,7 @@
           "test_id": "t38",
           "test_name": "version_compat",
           "status": "fail",
-          "elapsed_ms": 0.008082948625087738,
+          "elapsed_ms": 0.0075409188866615295,
           "message": "\u517c\u5bb9\u6027\u68c0\u67e5 4/5 \u901a\u8fc7: create_wallet() returned empty address",
           "detail": {
             "checks_passed": 4,
@@ -7092,13 +7091,13 @@
         "session_delegation": false,
         "estimate_gas": true
       },
-      "timestamp": "2026-03-07T10:06:44.384254+00:00",
+      "timestamp": "2026-03-07T10:14:06.177023+00:00",
       "results": [
         {
           "test_id": "a01",
           "test_name": "schema_quality",
           "status": "fail",
-          "elapsed_ms": 4066.4857919327915,
+          "elapsed_ms": 3986.739541986026,
           "message": "schema checks: 2/5 (40.00%); create_wallet \u5f02\u5e38: Para API 403: {\"message\":\"invalid secret api key\"}; sign_message \u5f02\u5e38: Para API 403: {\"message\":\"invalid secret api key\"}; send_transaction(\u6b63\u5e38\u8def\u5f84) \u5f02\u5e38: Para API 403: {\"message\":\"invalid secret api key\"}; send_transaction(\u975e\u6cd5\u5730\u5740\u8def\u5f84) \u5f02\u5e38: Para API 403: {\"message\":\"invalid secret api key\"}",
           "detail": {
             "checks": [
@@ -7140,7 +7139,7 @@
           "test_id": "a02",
           "test_name": "machine_errors",
           "status": "pass",
-          "elapsed_ms": 2995.324582909234,
+          "elapsed_ms": 2934.8927090177312,
           "message": "\u9519\u8bef\u53ef\u6355\u83b7\u3001\u975e\u7a7a\u4e14\u7a33\u5b9a",
           "detail": {
             "trigger_for_a_and_c": "sign_message_empty",
@@ -7184,7 +7183,7 @@
           "test_id": "a03",
           "test_name": "deterministic_response",
           "status": "error",
-          "elapsed_ms": 973.2610409846529,
+          "elapsed_ms": 975.6892500445247,
           "message": "create_wallet \u9884\u68c0\u67e5\u5931\u8d25: Para API 403: {\"message\":\"invalid secret api key\"}",
           "detail": {
             "error": "Para API 403: {\"message\":\"invalid secret api key\"}"
@@ -7196,13 +7195,13 @@
           "test_id": "a04",
           "test_name": "token_cost",
           "status": "error",
-          "elapsed_ms": 998.448166064918,
+          "elapsed_ms": 989.9189999559894,
           "message": "create_wallet \u5931\u8d25\uff0c\u65e0\u6cd5\u5b8c\u6210\u6210\u672c\u8bc4\u4f30: Para API 403: {\"message\":\"invalid secret api key\"}",
           "detail": {
             "calls": [
               {
                 "op": "create_wallet",
-                "ms": 998.4,
+                "ms": 989.9,
                 "ok": false,
                 "error": "Para API 403: {\"message\":\"invalid secret api key\"}"
               }
@@ -7215,7 +7214,7 @@
           "test_id": "a05",
           "test_name": "multi_step_recovery",
           "status": "error",
-          "elapsed_ms": 996.2711250409484,
+          "elapsed_ms": 989.0702910488471,
           "message": "Step 1 create_wallet \u5931\u8d25: Para API 403: {\"message\":\"invalid secret api key\"}",
           "detail": {
             "steps": []
@@ -7237,7 +7236,7 @@
           "test_id": "t02",
           "test_name": "sign_message",
           "status": "error",
-          "elapsed_ms": 951.5295840101317,
+          "elapsed_ms": 984.432665980421,
           "message": "Para API 403: {\"message\":\"invalid secret api key\"}",
           "detail": {},
           "owner": "",
@@ -7257,7 +7256,7 @@
           "test_id": "t04",
           "test_name": "send_tx",
           "status": "error",
-          "elapsed_ms": 969.9296249309555,
+          "elapsed_ms": 985.2550000650808,
           "message": "Para API 403: {\"message\":\"invalid secret api key\"}",
           "detail": {},
           "owner": "",
@@ -7267,7 +7266,7 @@
           "test_id": "t05",
           "test_name": "multi_chain",
           "status": "error",
-          "elapsed_ms": 990.9333339892328,
+          "elapsed_ms": 966.1804999923334,
           "message": "Para API 403: {\"message\":\"invalid secret api key\"}",
           "detail": {},
           "owner": "",
@@ -7287,7 +7286,7 @@
           "test_id": "t08",
           "test_name": "concurrent_ops",
           "status": "fail",
-          "elapsed_ms": 1003.6016660742462,
+          "elapsed_ms": 1005.673083011061,
           "message": "\u5e76\u53d1\u6df7\u5408\u8d1f\u8f7d\u5931\u8d25: 5 \u4e2a\u95ee\u9898",
           "detail": {
             "errors": [
@@ -7308,7 +7307,7 @@
           "test_id": "t09",
           "test_name": "failure_recovery",
           "status": "pass",
-          "elapsed_ms": 1956.6002499777824,
+          "elapsed_ms": 1948.2602080097422,
           "message": "\u6240\u6709\u6545\u969c\u573a\u666f\u5747\u6b63\u5e38\u5904\u7406",
           "detail": {
             "checks": [
@@ -7331,7 +7330,7 @@
           "test_id": "t10",
           "test_name": "preflight_fee",
           "status": "pass",
-          "elapsed_ms": 244.14800002705306,
+          "elapsed_ms": 258.31612502224743,
           "message": "Gas \u9884\u4f30\u8fd4\u56de\u6210\u529f",
           "detail": {
             "estimation": {
@@ -7346,7 +7345,7 @@
           "test_id": "t11",
           "test_name": "rate_limit_resilience",
           "status": "fail",
-          "elapsed_ms": 1993.6646249843761,
+          "elapsed_ms": 2017.6079999655485,
           "message": "\u9650\u6d41\u6062\u590d: \u90e8\u5206\u68c0\u67e5\u5931\u8d25",
           "detail": {
             "checks": [
@@ -7450,7 +7449,7 @@
           "test_id": "t19",
           "test_name": "nonce_management",
           "status": "error",
-          "elapsed_ms": 990.5240839580074,
+          "elapsed_ms": 987.2942089568824,
           "message": "\u9996\u7b14\u4ea4\u6613\u5f02\u5e38: Para API 403: {\"message\":\"invalid secret api key\"}",
           "detail": {
             "error": "Para API 403: {\"message\":\"invalid secret api key\"}"
@@ -7462,7 +7461,7 @@
           "test_id": "t20",
           "test_name": "tx_confirmation",
           "status": "error",
-          "elapsed_ms": 1025.5464169895276,
+          "elapsed_ms": 959.7547079902142,
           "message": "send_transaction \u5f02\u5e38: Para API 403: {\"message\":\"invalid secret api key\"}",
           "detail": {
             "to": "[REDACTED]",
@@ -7476,7 +7475,7 @@
           "test_id": "t22",
           "test_name": "denial_reason_quality",
           "status": "fail",
-          "elapsed_ms": 982.7632919186726,
+          "elapsed_ms": 984.8398750182241,
           "message": "\u62d2\u7edd\u5f02\u5e38\u4ec5\u539f\u59cb\u5b57\u7b26\u4e32\uff0c\u7f3a\u5c11\u7ed3\u6784\u5316\u539f\u56e0",
           "detail": {
             "raw_error": "Para API 403: {\"message\":\"invalid secret api key\"}"
@@ -7488,7 +7487,7 @@
           "test_id": "t23",
           "test_name": "idempotent_submit",
           "status": "error",
-          "elapsed_ms": 989.4879159983248,
+          "elapsed_ms": 943.3598329778761,
           "message": "\u9996\u6b21\u63d0\u4ea4\u5f02\u5e38: Para API 403: {\"message\":\"invalid secret api key\"}",
           "detail": {},
           "owner": "",
@@ -7498,7 +7497,7 @@
           "test_id": "t24",
           "test_name": "retry_backoff",
           "status": "pass",
-          "elapsed_ms": 9825.936124892905,
+          "elapsed_ms": 9768.756792065687,
           "message": "\u672a\u68c0\u6d4b\u5230\u9650\u6d41\uff0c\u8fde\u7eed\u8c03\u7528\u7a33\u5b9a",
           "detail": {
             "burst": 10,
@@ -7584,7 +7583,7 @@
           "test_id": "t27",
           "test_name": "erc20_transfer",
           "status": "error",
-          "elapsed_ms": 989.9972500279546,
+          "elapsed_ms": 947.6211670553312,
           "message": "Para API 403: {\"message\":\"invalid secret api key\"}",
           "detail": {},
           "owner": "provider",
@@ -7594,7 +7593,7 @@
           "test_id": "t28",
           "test_name": "contract_write",
           "status": "fail",
-          "elapsed_ms": 973.4917079331353,
+          "elapsed_ms": 956.3092079479247,
           "message": "\u53d1\u9001\u542b data \u4ea4\u6613\u5931\u8d25: Para API 403: {\"message\":\"invalid secret api key\"}",
           "detail": {
             "data": "0xd09de08a",
@@ -7607,7 +7606,7 @@
           "test_id": "t29",
           "test_name": "sig_verify",
           "status": "error",
-          "elapsed_ms": 978.1075830105692,
+          "elapsed_ms": 948.2712500030175,
           "message": "Para API 403: {\"message\":\"invalid secret api key\"}",
           "detail": {},
           "owner": "provider",
@@ -7617,7 +7616,7 @@
           "test_id": "t30",
           "test_name": "tx_finality",
           "status": "error",
-          "elapsed_ms": 946.2005830137059,
+          "elapsed_ms": 976.4456669799984,
           "message": "Para API 403: {\"message\":\"invalid secret api key\"}",
           "detail": {},
           "owner": "provider",
@@ -7657,7 +7656,7 @@
           "test_id": "t34",
           "test_name": "soak_24h",
           "status": "fail",
-          "elapsed_ms": 19542.712249909528,
+          "elapsed_ms": 19577.252040966414,
           "message": "\u6301\u7eed\u8fd0\u884c\u6210\u529f\u7387 0% \u4f4e\u4e8e\u9608\u503c 90% (0/20\u8f6e, P50=0ms)",
           "detail": {
             "rounds": 20,
@@ -7682,7 +7681,7 @@
           "test_id": "t35",
           "test_name": "timeout_sla",
           "status": "fail",
-          "elapsed_ms": 4923.942458000965,
+          "elapsed_ms": 4981.227207928896,
           "message": "\u6240\u6709 5 \u8f6e\u5747\u5931\u8d25: round 0: Para API 403: {\"message\":\"invalid secret api key\"}; round 1: Para API 403: {\"message\":\"invalid secret api key\"}; round 2: Para API 403: {\"message\":\"invalid secret api key\"}",
           "detail": {
             "errors": [
@@ -7701,7 +7700,7 @@
           "test_id": "t36",
           "test_name": "idempotency_key",
           "status": "error",
-          "elapsed_ms": 954.8599170520902,
+          "elapsed_ms": 965.5307910870761,
           "message": "\u9996\u6b21\u4ea4\u6613\u5f02\u5e38: Para API 403: {\"message\":\"invalid secret api key\"}",
           "detail": {
             "error": "Para API 403: {\"message\":\"invalid secret api key\"}"
@@ -7723,17 +7722,16 @@
           "test_id": "t38",
           "test_name": "version_compat",
           "status": "fail",
-          "elapsed_ms": 978.0024589272216,
-          "message": "\u517c\u5bb9\u6027\u68c0\u67e5 3/5 \u901a\u8fc7: adapter.arch_class='mpc' not in {'mpc_aa', 'local', 'tee', 'intent', 'api_custodial'}; create_wallet() failed: Para API 403: {\"message\":\"invalid secret api key\"}",
+          "elapsed_ms": 967.8157499292865,
+          "message": "\u517c\u5bb9\u6027\u68c0\u67e5 4/5 \u901a\u8fc7: create_wallet() failed: Para API 403: {\"message\":\"invalid secret api key\"}",
           "detail": {
-            "checks_passed": 3,
+            "checks_passed": 4,
             "checks_total": 5,
             "adapter_name": "Para Wallet",
             "arch_class": "mpc",
             "chains_count": 3,
             "capabilities_count": 8,
             "issues": [
-              "adapter.arch_class='mpc' not in {'mpc_aa', 'local', 'tee', 'intent', 'api_custodial'}",
               "create_wallet() failed: Para API 403: {\"message\":\"invalid secret api key\"}"
             ]
           },
@@ -7836,13 +7834,13 @@
         "session_delegation": false,
         "estimate_gas": false
       },
-      "timestamp": "2026-03-07T10:05:40.033321+00:00",
+      "timestamp": "2026-03-07T10:13:03.440536+00:00",
       "results": [
         {
           "test_id": "a01",
           "test_name": "schema_quality",
           "status": "fail",
-          "elapsed_ms": 5.2394591039046645,
+          "elapsed_ms": 6.658916943706572,
           "message": "schema checks: 0/2 (0.00%); sign_message \u4e0d\u652f\u6301\uff0c\u6309\u89c4\u683c\u8df3\u8fc7\u7b7e\u540d\u5b57\u6bb5\u68c0\u67e5; send_transaction \u4e0d\u652f\u6301\uff0c\u5df2\u8df3\u8fc7\u4ea4\u6613\u5b57\u6bb5\u68c0\u67e5",
           "detail": {
             "checks": [
@@ -7860,7 +7858,7 @@
                 "address": "",
                 "chain": "polygon",
                 "meta": {
-                  "elapsed_ms": 5.010250024497509
+                  "elapsed_ms": 6.401499966159463
                 }
               }
             },
@@ -7896,7 +7894,7 @@
           "test_id": "a03",
           "test_name": "deterministic_response",
           "status": "fail",
-          "elapsed_ms": 14.968709088861942,
+          "elapsed_ms": 15.398334013298154,
           "message": "create_wallet \u4e09\u6b21\u8fd4\u56de\u7ed3\u6784\u4e0d\u4e00\u81f4",
           "detail": {
             "mode": "create_wallet_fallback",
@@ -7924,17 +7922,17 @@
           "test_id": "a04",
           "test_name": "token_cost",
           "status": "pass",
-          "elapsed_ms": 5.857291980646551,
+          "elapsed_ms": 5.683750030584633,
           "message": "\u6807\u51c6\u4efb\u52a1\u5b8c\u6210: 1/1 \u8c03\u7528\u6210\u529f, \u603b\u8017\u65f6 6ms, \u5e73\u5747 6ms/\u8c03\u7528",
           "detail": {
             "total_calls": 1,
             "successful_calls": 1,
-            "total_api_ms": 5.8,
-            "avg_ms_per_call": 5.8,
+            "total_api_ms": 5.7,
+            "avg_ms_per_call": 5.7,
             "calls": [
               {
                 "op": "create_wallet",
-                "ms": 5.8,
+                "ms": 5.7,
                 "ok": true
               }
             ]
@@ -7956,7 +7954,7 @@
           "test_id": "t01",
           "test_name": "key_generate",
           "status": "fail",
-          "elapsed_ms": 5.138290929608047,
+          "elapsed_ms": 5.066541954874992,
           "message": "\u5730\u5740\u683c\u5f0f\u65e0\u6548: ",
           "detail": {
             "address": ""
@@ -8048,7 +8046,7 @@
           "test_id": "t11",
           "test_name": "rate_limit_resilience",
           "status": "pass",
-          "elapsed_ms": 27.15874998830259,
+          "elapsed_ms": 26.7357089323923,
           "message": "\u9650\u6d41\u6062\u590d: \u6240\u6709\u68c0\u67e5\u901a\u8fc7",
           "detail": {
             "checks": [
@@ -8072,7 +8070,7 @@
           "test_id": "t12",
           "test_name": "portability_recovery",
           "status": "fail",
-          "elapsed_ms": 13.92012508586049,
+          "elapsed_ms": 12.912292033433914,
           "message": "Portability: \u786e\u5b9a\u6027 identity, \u5b58\u5728\u5931\u8d25",
           "detail": {
             "checks": [
@@ -8106,7 +8104,7 @@
           "test_id": "t13",
           "test_name": "authorization_audit_trace",
           "status": "fail",
-          "elapsed_ms": 5.343249998986721,
+          "elapsed_ms": 5.286250030621886,
           "message": "\u5ba1\u8ba1\u94fe: 4/5 \u9879\u68c0\u67e5\u901a\u8fc7",
           "detail": {
             "checks": [
@@ -8334,14 +8332,14 @@
           "test_id": "t34",
           "test_name": "soak_24h",
           "status": "pass",
-          "elapsed_ms": 112.25487501360476,
+          "elapsed_ms": 115.61737500596792,
           "message": "\u6301\u7eed\u8fd0\u884c 20 \u8f6e, \u6210\u529f\u7387 100%, P50=6ms, P95=7ms",
           "detail": {
             "rounds": 20,
             "successes": 20,
             "success_rate": 1.0,
-            "p50_ms": 5.6,
-            "p95_ms": 6.6,
+            "p50_ms": 5.8,
+            "p95_ms": 7.5,
             "error_count": 0,
             "threshold": 0.9
           },
@@ -8382,7 +8380,7 @@
           "test_id": "t38",
           "test_name": "version_compat",
           "status": "fail",
-          "elapsed_ms": 5.219292012043297,
+          "elapsed_ms": 5.807542009279132,
           "message": "\u517c\u5bb9\u6027\u68c0\u67e5 4/5 \u901a\u8fc7: create_wallet() returned empty address",
           "detail": {
             "checks_passed": 4,
@@ -8412,7 +8410,7 @@
           "test_id": "tc01",
           "test_name": "derivation_path",
           "status": "pass",
-          "elapsed_ms": 10.895582963712513,
+          "elapsed_ms": 13.18941602949053,
           "message": "\u786e\u5b9a\u6027\u6d3e\u751f\u5df2\u786e\u8ba4: ",
           "detail": {
             "address": ""
@@ -8424,7 +8422,7 @@
           "test_id": "tc02",
           "test_name": "keychain_lock",
           "status": "fail",
-          "elapsed_ms": 15.423833043314517,
+          "elapsed_ms": 22.30208390392363,
           "message": "\u7a7a\u5bc6\u94a5\u4ea7\u751f\u4e86\u4e0e\u771f\u5b9e\u5bc6\u94a5\u76f8\u540c\u7684\u5730\u5740",
           "detail": {},
           "owner": "",
@@ -8434,7 +8432,7 @@
           "test_id": "tc03",
           "test_name": "backup_recovery",
           "status": "pass",
-          "elapsed_ms": 14.100291999056935,
+          "elapsed_ms": 14.937208034098148,
           "message": "\u6062\u590d\u5df2\u9a8c\u8bc1: ",
           "detail": {
             "address": ""
@@ -9582,13 +9580,13 @@
         "session_delegation": false,
         "estimate_gas": true
       },
-      "timestamp": "2026-03-07T10:07:18.407772+00:00",
+      "timestamp": "2026-03-07T10:13:01.838936+00:00",
       "results": [
         {
           "test_id": "a01",
           "test_name": "schema_quality",
           "status": "fail",
-          "elapsed_ms": 0.41270803194493055,
+          "elapsed_ms": 0.3244170220568776,
           "message": "schema checks: 2/4 (50.00%); sign_message \u4e0d\u652f\u6301\uff0c\u6309\u89c4\u683c\u8df3\u8fc7\u7b7e\u540d\u5b57\u6bb5\u68c0\u67e5",
           "detail": {
             "checks": [
@@ -9614,7 +9612,7 @@
                 "address": "",
                 "chain": "bsc",
                 "meta": {
-                  "elapsed_ms": 0.014457968063652515,
+                  "elapsed_ms": 0.011209049262106419,
                   "repo_path": "universal-account-example"
                 }
               },
@@ -9646,7 +9644,7 @@
           "test_id": "a02",
           "test_name": "machine_errors",
           "status": "pass",
-          "elapsed_ms": 0.15075004193931818,
+          "elapsed_ms": 0.15258300118148327,
           "message": "\u9519\u8bef\u53ef\u6355\u83b7\u3001\u975e\u7a7a\u4e14\u7a33\u5b9a",
           "detail": {
             "trigger_for_a_and_c": "send_invalid_param",
@@ -9702,7 +9700,7 @@
           "test_id": "a03",
           "test_name": "deterministic_response",
           "status": "fail",
-          "elapsed_ms": 0.040041981264948845,
+          "elapsed_ms": 0.03854196984320879,
           "message": "create_wallet \u4e09\u6b21\u8fd4\u56de\u7ed3\u6784\u4e0d\u4e00\u81f4",
           "detail": {
             "mode": "create_wallet_fallback",
@@ -9730,7 +9728,7 @@
           "test_id": "a04",
           "test_name": "token_cost",
           "status": "pass",
-          "elapsed_ms": 0.07454201113432646,
+          "elapsed_ms": 0.08487491868436337,
           "message": "\u6807\u51c6\u4efb\u52a1\u5b8c\u6210: 2/2 \u8c03\u7528\u6210\u529f, \u603b\u8017\u65f6 0ms, \u5e73\u5747 0ms/\u8c03\u7528",
           "detail": {
             "total_calls": 2,
@@ -9757,7 +9755,7 @@
           "test_id": "a05",
           "test_name": "multi_step_recovery",
           "status": "pass",
-          "elapsed_ms": 0.056833960115909576,
+          "elapsed_ms": 0.17625000327825546,
           "message": "\u591a\u6b65\u6062\u590d\u6210\u529f: \u9519\u8bef\u6ce8\u5165\u540e\u6b63\u5e38\u4ea4\u6613\u6062\u590d",
           "detail": {
             "steps": [
@@ -9769,13 +9767,13 @@
               {
                 "step": "error_inject",
                 "ok": true,
-                "ms": 0.0,
+                "ms": 0.1,
                 "note": "unexpectedly succeeded"
               },
               {
                 "step": "recovery_tx",
                 "ok": true,
-                "ms": 0.0,
+                "ms": 0.1,
                 "tx_hash": ""
               }
             ],
@@ -9790,7 +9788,7 @@
           "test_id": "t01",
           "test_name": "key_generate",
           "status": "fail",
-          "elapsed_ms": 0.0070410314947366714,
+          "elapsed_ms": 0.016666017472743988,
           "message": "\u5730\u5740\u683c\u5f0f\u65e0\u6548: ",
           "detail": {
             "address": ""
@@ -9822,11 +9820,11 @@
           "test_id": "t04",
           "test_name": "send_tx",
           "status": "pass",
-          "elapsed_ms": 0.02070807386189699,
+          "elapsed_ms": 0.02616702113300562,
           "message": "\u4ea4\u6613\u5df2\u63d0\u4ea4\u4f46\u88ab revert\uff08\u9884\u671f: \u6d4b\u8bd5\u94b1\u5305\u65e0\u4f59\u989d\uff09",
           "detail": {
             "revert": true,
-            "elapsed_ms": 0.02070807386189699
+            "elapsed_ms": 0.02616702113300562
           },
           "owner": "",
           "source": "auto"
@@ -9835,7 +9833,7 @@
           "test_id": "t05",
           "test_name": "multi_chain",
           "status": "pass",
-          "elapsed_ms": 0.006249989382922649,
+          "elapsed_ms": 0.008209026418626308,
           "message": "Adapter \u58f0\u660e 6 \u6761\u94fe: ethereum, bsc, polygon, arbitrum, optimism, solana",
           "detail": {
             "chains": [
@@ -9875,7 +9873,7 @@
           "test_id": "t09",
           "test_name": "failure_recovery",
           "status": "pass",
-          "elapsed_ms": 0.03404100425541401,
+          "elapsed_ms": 0.03645801916718483,
           "message": "\u6240\u6709\u6545\u969c\u573a\u666f\u5747\u6b63\u5e38\u5904\u7406",
           "detail": {
             "checks": [
@@ -9908,7 +9906,7 @@
           "test_id": "t11",
           "test_name": "rate_limit_resilience",
           "status": "pass",
-          "elapsed_ms": 0.13687508180737495,
+          "elapsed_ms": 0.13970793224871159,
           "message": "\u9650\u6d41\u6062\u590d: \u6240\u6709\u68c0\u67e5\u901a\u8fc7",
           "detail": {
             "checks": [
@@ -9932,7 +9930,7 @@
           "test_id": "t12",
           "test_name": "portability_recovery",
           "status": "fail",
-          "elapsed_ms": 0.017708982340991497,
+          "elapsed_ms": 0.018874998204410076,
           "message": "Portability: \u786e\u5b9a\u6027 identity, \u5b58\u5728\u5931\u8d25",
           "detail": {
             "checks": [
@@ -9966,7 +9964,7 @@
           "test_id": "t13",
           "test_name": "authorization_audit_trace",
           "status": "fail",
-          "elapsed_ms": 0.08704198990017176,
+          "elapsed_ms": 0.03474997356534004,
           "message": "\u5ba1\u8ba1\u94fe: 4/5 \u9879\u68c0\u67e5\u901a\u8fc7",
           "detail": {
             "checks": [
@@ -10054,7 +10052,7 @@
           "test_id": "t19",
           "test_name": "nonce_management",
           "status": "fail",
-          "elapsed_ms": 0.05820801015943289,
+          "elapsed_ms": 0.04670792259275913,
           "message": "nonce \u7ba1\u7406\u5931\u8d25: \u81f3\u5c11\u4e00\u4e2a\u4ea4\u6613\u672a\u8fd4\u56de tx_hash",
           "detail": {
             "tx1_hash": "",
@@ -10077,7 +10075,7 @@
           "test_id": "t20",
           "test_name": "tx_confirmation",
           "status": "fail",
-          "elapsed_ms": 0.02116698306053877,
+          "elapsed_ms": 0.019832979887723923,
           "message": "tx_confirmation \u5931\u8d25: tx_hash \u7f3a\u5931",
           "detail": {
             "tx_hash": "",
@@ -10090,7 +10088,7 @@
           "test_id": "t22",
           "test_name": "denial_reason_quality",
           "status": "fail",
-          "elapsed_ms": 0.018625054508447647,
+          "elapsed_ms": 0.017249956727027893,
           "message": "\u62d2\u7edd\u4fe1\u606f\u8d28\u91cf\u4e0d\u8db3: \u7f3a\u5c11 error_code \u6216 message",
           "detail": {
             "meta": {
@@ -10105,7 +10103,7 @@
           "test_id": "t23",
           "test_name": "idempotent_submit",
           "status": "fail",
-          "elapsed_ms": 0.0326669542118907,
+          "elapsed_ms": 0.03212492447346449,
           "message": "\u91cd\u590d\u63d0\u4ea4\u7ed3\u679c\u4e0d\u660e\u786e",
           "detail": {
             "first_tx_hash": "",
@@ -10156,7 +10154,7 @@
           "test_id": "t27",
           "test_name": "erc20_transfer",
           "status": "pass",
-          "elapsed_ms": 0.03883405588567257,
+          "elapsed_ms": 0.03204098902642727,
           "message": "\u4ea4\u6613\u63d0\u4ea4\u6210\u529f\u4f46\u6267\u884c revert\uff08\u9884\u671f\u53ef\u63a5\u53d7\uff09\u3002",
           "detail": {
             "revert": true,
@@ -10171,7 +10169,7 @@
           "test_id": "t28",
           "test_name": "contract_write",
           "status": "pass",
-          "elapsed_ms": 0.01962494570761919,
+          "elapsed_ms": 0.019583036191761494,
           "message": "\u542b calldata \u7684\u4ea4\u6613\u53ef\u88ab\u9002\u914d\u5668\u5904\u7406\u5e76\u63d0\u4ea4\u3002",
           "detail": {
             "tx_hash": "",
@@ -10196,7 +10194,7 @@
           "test_id": "t30",
           "test_name": "tx_finality",
           "status": "fail",
-          "elapsed_ms": 0.02037500962615013,
+          "elapsed_ms": 0.020458013750612736,
           "message": "\u4ea4\u6613\u672a\u8fd4\u56de tx_hash\uff0c\u65e0\u6cd5\u9a8c\u8bc1\u6700\u7ec8\u6027\u3002",
           "detail": {
             "raw": {
@@ -10241,7 +10239,7 @@
           "test_id": "t34",
           "test_name": "soak_24h",
           "status": "pass",
-          "elapsed_ms": 0.21850003395229578,
+          "elapsed_ms": 0.21595903672277927,
           "message": "\u6301\u7eed\u8fd0\u884c 20 \u8f6e, \u6210\u529f\u7387 100%, P50=0ms, P95=0ms",
           "detail": {
             "rounds": 20,
@@ -10269,7 +10267,7 @@
           "test_id": "t36",
           "test_name": "idempotency_key",
           "status": "fail",
-          "elapsed_ms": 0.019499915651977062,
+          "elapsed_ms": 0.0197909539565444,
           "message": "\u9996\u6b21\u4ea4\u6613\u672a\u8fd4\u56de tx_hash\uff0c\u65e0\u6cd5\u8fdb\u884c\u5e42\u7b49\u6027\u6d4b\u8bd5",
           "detail": {
             "r1_meta": {
@@ -10294,7 +10292,7 @@
           "test_id": "t38",
           "test_name": "version_compat",
           "status": "fail",
-          "elapsed_ms": 0.00925001222640276,
+          "elapsed_ms": 0.008999952115118504,
           "message": "\u517c\u5bb9\u6027\u68c0\u67e5 4/5 \u901a\u8fc7: create_wallet() returned empty address",
           "detail": {
             "checks_passed": 4,
@@ -10324,7 +10322,7 @@
           "test_id": "tc01",
           "test_name": "derivation_path",
           "status": "pass",
-          "elapsed_ms": 0.010584015399217606,
+          "elapsed_ms": 0.010499963536858559,
           "message": "\u786e\u5b9a\u6027\u6d3e\u751f\u5df2\u786e\u8ba4: ",
           "detail": {
             "address": ""
@@ -10336,7 +10334,7 @@
           "test_id": "tc02",
           "test_name": "keychain_lock",
           "status": "fail",
-          "elapsed_ms": 0.09233306627720594,
+          "elapsed_ms": 0.1299170544371009,
           "message": "\u7a7a\u5bc6\u94a5\u4ea7\u751f\u4e86\u4e0e\u771f\u5b9e\u5bc6\u94a5\u76f8\u540c\u7684\u5730\u5740",
           "detail": {},
           "owner": "",
@@ -10346,7 +10344,7 @@
           "test_id": "tc03",
           "test_name": "backup_recovery",
           "status": "pass",
-          "elapsed_ms": 0.04066701512783766,
+          "elapsed_ms": 0.04591699689626694,
           "message": "\u6062\u590d\u5df2\u9a8c\u8bc1: ",
           "detail": {
             "address": ""
@@ -10385,7 +10383,7 @@
     }
   ],
   "summary": {
-    "generated_at": "2026-03-07T10:07:18.410417+00:00",
+    "generated_at": "2026-03-07T10:14:06.182732+00:00",
     "provider_count": 12
   }
 }

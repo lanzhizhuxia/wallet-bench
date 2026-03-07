@@ -21,8 +21,8 @@
 | ISSUE-013 | Done     | Privy 链上归因突破 — Paymaster / Bundler 足迹调研                        | CLOSED     | P2       | 确认 Privy 链上不可追踪：paymaster 由开发者自配，Native Sponsorship 地址未公开，两条路径均失败。 | docs/issues/active/ISSUE-013-privy-paymaster-attribution/ |
 | ISSUE-014 | Done | Crossmint vs Coinbase 竞争力对比可视化                                    | DONE | P2       | Task 1-3 全部完成：双线对比图 + 链偏好堆叠条 + 7d WoW badge + 30d 趋势箭头。 | docs/issues/active/ISSUE-014-competitive-comparison-viz/ |
 | ISSUE-015 | Deprecated | Bundler Nonce 实时健康监控                                                | DEPRECATED | ~~P3~~ | 废弃——Oracle 审核判定为运维健康信号，非用户牵引力指标，不符合核心需求。 | docs/issues/active/ISSUE-015-bundler-nonce-monitoring/ |
-| ISSUE-016 | Open | 新增 Clawlett Provider — Smart Account (Gnosis Safe + Zodiac Roles) | OPEN | P0 | Smart Account 原生架构 + Zodiac Roles 细粒度权限引擎，填补 governance 维度空白，自带 MEV 保护。 | docs/issues/active/ISSUE-016-clawlett-provider/ |
-| ISSUE-017 | Open | 新增 Para Wallet Provider — 纯 MPC 钱包基础设施 | OPEN | P1 | 纯 MPC 私钥分片，唯一覆盖 EVM + Solana + Cosmos 三链族的 Skill，与 Privy 直接竞品对标。 | docs/issues/active/ISSUE-017-para-wallet-provider/ |
-| ISSUE-018 | Open | 新增 Universal Trading Provider — Particle Network 跨链交易 | OPEN | P2 | 跨链交易覆盖最广 + Solana MEV Tip + WebSocket 实时监控，验证 Universal Account 场景。 | docs/issues/active/ISSUE-018-universal-trading-provider/ |
-| ISSUE-019 | Open | 新增 Polymarket Agent Provider — 预测市场垂直场景验证 | OPEN | P3 | 验证 t17 (prediction_market) 测试项真实可行性，目前 7 provider 均未通过。 | docs/issues/active/ISSUE-019-polymarket-agent-provider/ |
-| ISSUE-020 | Open | 新增 Coinpilot Hyperliquid Provider — 永续合约垂直场景验证 | OPEN | P3 | 验证 t18 (perps_trading) 测试项真实可行性，目前 7 provider 均未通过。 | docs/issues/active/ISSUE-020-coinpilot-hyperliquid-provider/ |
+| ISSUE-016 | Done | 新增 Clawlett Provider — Smart Account (Gnosis Safe + Zodiac Roles) | DONE | P0 | Smart Account 原生架构 + Zodiac Roles 细粒度权限引擎，填补 governance 维度空白，自带 MEV 保护。 | docs/issues/active/ISSUE-016-clawlett-provider/ |
+| ISSUE-017 | Done | 新增 Para Wallet Provider — 纯 MPC 钱包基础设施 | DONE | P1 | 纯 MPC 私钥分片，唯一覆盖 EVM + Solana + Cosmos 三链族的 Skill，与 Privy 直接竞品对标。 | docs/issues/active/ISSUE-017-para-wallet-provider/ |
+| ISSUE-018 | Done | 新增 Universal Trading Provider — Particle Network 跨链交易 | DONE | P2 | 跨链交易覆盖最广 + Solana MEV Tip + WebSocket 实时监控，验证 Universal Account 场景。 | docs/issues/active/ISSUE-018-universal-trading-provider/ |
+| ISSUE-019 | Done | 新增 Polymarket Agent Provider — 预测市场垂直场景验证 | DONE | P3 | 验证 t17 (prediction_market) 测试项真实可行性，目前 7 provider 均未通过。 | docs/issues/active/ISSUE-019-polymarket-agent-provider/ |
+| ISSUE-020 | Done | 新增 Coinpilot Hyperliquid Provider — 永续合约垂直场景验证 | DONE | P3 | 验证 t18 (perps_trading) 测试项真实可行性，目前 7 provider 均未通过。 | docs/issues/active/ISSUE-020-coinpilot-hyperliquid-provider/ |
