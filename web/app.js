@@ -2773,19 +2773,21 @@ function renderMarketCard5(onchain) {
                 return;
             }
 
+            const growthBadge = _renderGrowthBadge(computeGrowthMetrics(d.daily_series));
+
             if (d.trackable === 'partial') {
                 rows += `<tr>
                     <td>${name} <span class="market-partial-badge">上界估计</span></td>
                     <td>≈ ${formatNum(d.erc4337_active_wallets_30d)}</td>
                     <td>—</td>
-                    <td class="market-green">≈ ${formatNum(total)}</td>
+                    <td class="market-green">≈ ${formatNum(total)}${growthBadge}</td>
                 </tr>`;
             } else { // trackable: true (Coinbase, Crossmint precise, etc.)
                 rows += `<tr>
                     <td>${name}${d.source === 'rpc_precise' ? ' <span class="market-precise-badge">精准归因</span>' : ''}</td>
                     <td>${formatNum(d.erc4337_active_wallets_30d)}</td>
                     <td>${d.eip7702_live_accounts != null ? formatNum(d.eip7702_live_accounts) : '—'}</td>
-                    <td class="market-green">${formatNum(total)}</td>
+                    <td class="market-green">${formatNum(total)}${growthBadge}</td>
                 </tr>`;
             }
         }
@@ -2810,6 +2812,7 @@ function renderMarketCard5(onchain) {
             <thead><tr><th>供应商</th><th>智能账户新增</th><th>EOA 授权新增</th><th>30日新增激活（可观测）</th></tr></thead>
             <tbody>${rows}</tbody>
         </table>
+        ${renderChainDistribution(onchain)}
         <div class="market-chart-container">
             <canvas id="onchain-daily-chart"></canvas>
         </div>
@@ -2835,6 +2838,61 @@ function renderMarketCard5(onchain) {
         <div class="market-confidence status-pass">覆盖说明：${trackableCount}/${PROVIDER_ORDER.length} 可观测；Coinbase 高置信${onchain.providers?.crossmint?.trackable === true ? '，Crossmint 精准归因（factory+bundler）' : onchain.providers?.crossmint?.trackable === 'partial' ? '，Crossmint 为上界估计' : ''}</div>
         <div class="market-upgrade-date">口径升级：2026-03 — 新增 EIP-7702 维度 + 日维度时间序列，schema v4.0</div>
     </div>`;
+}
+
+function computeGrowthMetrics(dailySeries) {
+    if (!dailySeries || !dailySeries.length) return null;
+
+    // Strip trailing days with total <= 0 (BundleBear partial-day artifacts)
+    let series = dailySeries.slice();
+    while (series.length && series[series.length - 1].total <= 0) series.pop();
+    if (series.length < 8) return null; // need at least 8 days for 7d WoW
+
+    // 7d WoW: last 14 days split into recent_7d / prev_7d
+    const tail14 = series.slice(-14);
+    const splitAt = Math.max(0, tail14.length - 7);
+    const recent7 = tail14.slice(splitAt);
+    const prev7 = tail14.slice(Math.max(0, splitAt - 7), splitAt);
+    if (!prev7.length || !recent7.length) return null;
+
+    const sumRecent = recent7.reduce((s, p) => s + (p.total || 0), 0);
+    const sumPrev = prev7.reduce((s, p) => s + (p.total || 0), 0);
+    const wow = sumPrev > 0 ? ((sumRecent - sumPrev) / sumPrev * 100) : null;
+
+    // 30d trend: linear regression slope / mean, threshold ±2%
+    let trend = 'flat';
+    if (series.length >= 7) {
+        const vals = series.map(p => p.total || 0);
+        const n = vals.length;
+        const mean = vals.reduce((a, b) => a + b, 0) / n;
+        if (mean > 0) {
+            let sumXY = 0, sumXX = 0;
+            for (let i = 0; i < n; i++) {
+                sumXY += (i - (n - 1) / 2) * (vals[i] - mean);
+                sumXX += (i - (n - 1) / 2) ** 2;
+            }
+            const slope = sumXX > 0 ? sumXY / sumXX : 0;
+            const relSlope = slope / mean * 100;
+            if (relSlope > 2) trend = 'up';
+            else if (relSlope < -2) trend = 'down';
+        }
+    }
+
+    return { wow, trend };
+}
+
+function _renderGrowthBadge(metrics) {
+    if (!metrics) return '';
+    let html = '';
+    if (metrics.wow !== null) {
+        const cls = metrics.wow >= 0 ? 'market-growth-up' : 'market-growth-down';
+        const sign = metrics.wow >= 0 ? '+' : '';
+        html += ` <span class="${cls}">${sign}${metrics.wow.toFixed(1)}% 7d</span>`;
+    }
+    const trendCls = `market-trend-${metrics.trend}`;
+    const trendIcon = metrics.trend === 'up' ? '↑' : metrics.trend === 'down' ? '↓' : '→';
+    html += ` <span class="${trendCls}">${trendIcon}</span>`;
+    return html;
 }
 
 function initOnchainDailyChart(onchain) {
@@ -2953,6 +3011,69 @@ function initOnchainDailyChart(onchain) {
     });
 }
 
+
+function renderChainDistribution(onchain) {
+    if (!onchain || !onchain.providers) return '';
+
+    const CHAIN_COLORS = {
+        base: '#0052FF',
+        ethereum: '#627EEA',
+        arbitrum: '#28A0F0',
+        optimism: '#FF0420',
+        polygon: '#8247E5',
+    };
+    const CHAIN_NAMES = {
+        base: 'Base',
+        ethereum: 'Ethereum',
+        arbitrum: 'Arbitrum',
+        optimism: 'Optimism',
+        polygon: 'Polygon',
+    };
+
+    const DISPLAY_ORDER = ['coinbase', 'crossmint'];
+    let rowsHtml = '';
+    let hasData = false;
+
+    for (const pid of DISPLAY_ORDER) {
+        const p = onchain.providers[pid];
+        if (!p || !p.chain_distribution) continue;
+        hasData = true;
+        const dist = p.chain_distribution;
+        const total = Object.values(dist).reduce((a, b) => a + b, 0);
+        if (total <= 0) continue;
+
+        const name = MARKET_PROVIDER_NAMES[pid];
+        const sourceBadge = p.chain_distribution_source === 'nonce_ratio'
+            ? ' <span class="market-partial-badge">nonce比例</span>' : '';
+
+        // Build segments
+        let segsHtml = '';
+        let legendHtml = '';
+        const entries = Object.entries(dist).filter(([, v]) => v > 0).sort((a, b) => b[1] - a[1]);
+        for (const [chain, count] of entries) {
+            const pct = (count / total * 100);
+            const color = CHAIN_COLORS[chain] || '#888';
+            const chainName = CHAIN_NAMES[chain] || chain;
+            segsHtml += `<div class="market-chain-seg" style="width:${pct.toFixed(1)}%;background:${color}" title="${chainName}: ${formatNum(count)} (${pct.toFixed(1)}%)"></div>`;
+            legendHtml += `<span class="market-chain-legend-item"><span class="market-chain-dot" style="background:${color}"></span>${chainName} ${pct.toFixed(1)}%</span>`;
+        }
+
+        rowsHtml += `
+        <div class="market-chain-row">
+            <div class="market-chain-label">${name}${sourceBadge}</div>
+            <div class="market-chain-bar">${segsHtml}</div>
+            <div class="market-chain-legend">${legendHtml}</div>
+        </div>`;
+    }
+
+    if (!hasData) return '';
+
+    return `
+    <div class="market-chain-section">
+        <div class="market-chain-title">链偏好分布</div>
+        ${rowsHtml}
+    </div>`;
+}
 
 function renderMarketFreshness(npm, pypi, github, status, docs, onchain) {
     const sources = [npm, pypi, github, status, docs, onchain].filter(Boolean);

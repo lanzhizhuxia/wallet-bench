@@ -1,7 +1,7 @@
 {
   "schema_version": "4.0",
   "source": "bundlebear",
-  "collected_at": "2026-03-07T06:10:27+00:00",
+  "collected_at": "2026-03-07T06:45:42+00:00",
   "period": "last-30d",
   "granularity": "daily",
   "data_freshness": {
@@ -208,6 +208,14 @@
           "total": 642
         }
       ],
+      "chain_distribution": {
+        "base": 512782,
+        "ethereum": 6891,
+        "arbitrum": 141,
+        "optimism": 303,
+        "polygon": 62
+      },
+      "chain_distribution_source": "bundlebear",
       "active_wallets_30d": 646811
     },
     "crossmint": {
@@ -403,6 +411,12 @@
           "total": 0
         }
       ],
+      "chain_distribution": {
+        "base": 139669,
+        "arbitrum": 4561,
+        "optimism": 1062
+      },
+      "chain_distribution_source": "nonce_ratio",
       "active_wallets_30d": 145292
     },
     "privy": {

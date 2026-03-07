@@ -148,6 +148,12 @@ CROSSMINT_RPC_CHAINS: dict[str, dict] = {
     },
 }
 
+# BundleBear 支持的链列表（用于按链采集 chain_distribution）
+BUNDLEBEAR_CHAINS: list[str] = ["base", "ethereum", "arbitrum", "optimism", "polygon"]
+
+# Crossmint bundler 累计 nonce（ISSUE-012 验证，用于静态比例计算）
+CROSSMINT_CHAIN_NONCE: dict[str, int] = {"base": 642342, "arbitrum": 20974, "optimism": 4886}
+
 # 不可追踪供应商的原因说明
 ONCHAIN_NOT_TRACKABLE: dict[str, str] = {
     "privy":       "不部署自有工厂合约，复用底层实现（Coinbase/Kernel/Safe等），链上无法区分来源",
@@ -929,6 +935,49 @@ def _collect_crossmint_precise(days: int = 30) -> dict | None:
         return None
 
 
+def _collect_chain_distribution(label_4337: str, chains: list[str]) -> dict[str, int] | None:
+    """Collect per-chain 30d activation counts from BundleBear for a given factory label.
+
+    Returns {"base": N, "ethereum": N, ...} or None on failure.
+    """
+    result: dict[str, int] = {}
+    today_str = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    for chain in chains:
+        try:
+            url = f"https://bundlebear-api.onrender.com/erc4337-activation?chain={chain}&timeframe=day"
+            resp = _get(url)
+            data = resp.json()
+            rows = data.get("new_users_provider_chart", [])
+            # Collect dates (exclude today) and take last 30
+            all_dates: set[str] = set()
+            for row in rows:
+                date = row.get("DATE", "")
+                if date and date != today_str:
+                    all_dates.add(date)
+            target_dates = sorted(all_dates, reverse=True)[:30]
+            target_set = set(target_dates)
+            total = 0
+            for row in rows:
+                date = row.get("DATE", "")
+                if date not in target_set:
+                    continue
+                provider_raw = row.get("PROVIDER", "")
+                count = row.get("NUM_ACCOUNTS")
+                if not provider_raw or count is None:
+                    continue
+                if provider_raw.startswith("factory - "):
+                    label = provider_raw[len("factory - "):]
+                    if label == label_4337:
+                        total += int(count)
+            result[chain] = total
+            log_info("chain distribution", chain=chain, label=label_4337, total_30d=total)
+            time.sleep(0.3)  # rate limit courtesy
+        except Exception as exc:
+            log_warn("chain distribution fetch failed", chain=chain, error=str(exc))
+            result[chain] = 0
+    return result if any(v > 0 for v in result.values()) else None
+
+
 def collect_onchain() -> dict:
     """Collect on-chain active wallet counts via BundleBear activation API.
 
@@ -1069,6 +1118,12 @@ def collect_onchain() -> dict:
             log_info("onchain data", provider=provider_id,
                      erc4337=sum_4337, eip7702=sum_7702, total=total,
                      series_days=len(series))
+            # Chain distribution for Coinbase
+            if provider_id == "coinbase":
+                chain_dist = _collect_chain_distribution(label_4337, BUNDLEBEAR_CHAINS)
+                if chain_dist:
+                    providers[provider_id]["chain_distribution"] = chain_dist
+                    providers[provider_id]["chain_distribution_source"] = "bundlebear"
 
     # 4. Crossmint — 优先使用精准归因（RPC factory+bundler），失败则降级到 BundleBear 上界
     precise_cm = _collect_crossmint_precise(days=len(target_dates) if target_dates else 30)
@@ -1101,6 +1156,15 @@ def collect_onchain() -> dict:
                  precise=precise_cm["total"], upper_bound=upper_bound,
                  confidence="high", source="rpc_precise",
                  series_days=len(precise_cm["daily_series"]))
+        # Crossmint chain distribution from nonce ratio
+        nonce_total = sum(CROSSMINT_CHAIN_NONCE.values())
+        if nonce_total > 0 and precise_cm["total"] > 0:
+            cm_chain_dist = {
+                chain: round(nonce / nonce_total * precise_cm["total"])
+                for chain, nonce in CROSSMINT_CHAIN_NONCE.items()
+            }
+            providers[CROSSMINT_PROVIDER_ID]["chain_distribution"] = cm_chain_dist
+            providers[CROSSMINT_PROVIDER_ID]["chain_distribution_source"] = "nonce_ratio"
     elif fetch_ok:
         # 精准采集失败，降级到 BundleBear 上界
         series_cm = _build_series(BUNDLEBEAR_CROSSMINT_FACTORY_LABEL, None)
@@ -1119,6 +1183,15 @@ def collect_onchain() -> dict:
         log_info("onchain data", provider=CROSSMINT_PROVIDER_ID,
                  erc4337=sum_cm, confidence="medium-upper-bound-fallback",
                  series_days=len(series_cm))
+        # Crossmint chain distribution (nonce ratio) for fallback path too
+        nonce_total = sum(CROSSMINT_CHAIN_NONCE.values())
+        if nonce_total > 0 and sum_cm > 0:
+            cm_chain_dist = {
+                chain: round(nonce / nonce_total * sum_cm)
+                for chain, nonce in CROSSMINT_CHAIN_NONCE.items()
+            }
+            providers[CROSSMINT_PROVIDER_ID]["chain_distribution"] = cm_chain_dist
+            providers[CROSSMINT_PROVIDER_ID]["chain_distribution_source"] = "nonce_ratio"
     else:
         providers[CROSSMINT_PROVIDER_ID] = {
             "trackable": "partial",
