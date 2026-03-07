@@ -2817,19 +2817,18 @@ function renderMarketCard5(onchain) {
         <div class="market-deepdive">
             <div class="market-deepdive-title">🔍 活跃用户深度分析（Dune 看板）</div>
             <div class="market-deepdive-desc">以下看板提供 MAU/DAU、新增 vs 回访用户、留存分布等深度指标：</div>
-            <ul class="market-deepdive-links">
-                <li><a href="https://dune.com/wilsoncusack/coinbase-smart-wallet-kpis" target="_blank" rel="noopener">Coinbase Smart Wallet KPIs</a> — MAU、DAU、新增 vs 回访、交易次数分布</li>
-                <li><a href="https://www.bundlebear.com/erc4337-overview/all" target="_blank" rel="noopener">BundleBear 活跃账户</a> — 全链每周活跃智能账户数，可按应用筛选</li>
-                <li><a href="https://dune.com/niftytable/account-abstraction" target="_blank" rel="noopener">ERC-4337 Account Abstraction</a> — 跨链月度活跃智能账户、Bundler/Paymaster 市场份额</li>
-            </ul>
-            <div class="market-deepdive-howto">
-                <strong>❶ Coinbase Smart Wallet KPIs：</strong>找「Monthly Active Wallets」图表 = 每月至少发过 1 笔交易的去重钱包数；「New vs Returning」拆分新老用户占比，判断增长质量。
+            <div class="market-deepdive-item">
+                <div class="market-deepdive-link">❶ <a href="https://dune.com/wilsoncusack/coinbase-smart-wallet-kpis" target="_blank" rel="noopener">Coinbase Smart Wallet KPIs</a></div>
+                <div class="market-deepdive-howto">找 <strong>「Monthly Active Wallets」</strong> = 每月至少发过 1 笔交易的去重钱包数；<strong>「New vs Returning」</strong> 拆分新老用户占比，判断增长质量。</div>
             </div>
-            <div class="market-deepdive-howto">
-                <strong>❷ BundleBear 活跃账户：</strong>页面顶部「Weekly Active Smart Accounts」图表 = 每周活跃智能账户数；右上角切换链（All/Base/Ethereum），下方按应用拆分可看各家份额。
+            <div class="market-deepdive-item">
+                <div class="market-deepdive-link">❷ <a href="https://www.bundlebear.com/erc4337-overview/all" target="_blank" rel="noopener">BundleBear 活跃账户</a></div>
+                <div class="market-deepdive-howto">页面顶部 <strong>「Weekly Active Smart Accounts」</strong> = 每周活跃智能账户数；右上角切换链，下方按应用拆分可看 <strong>各家份额</strong>。</div>
             </div>
-            <div class="market-deepdive-howto">
-                <strong>❸ ERC-4337 Account Abstraction：</strong>找「Monthly Active ERC-4337 Smart Accounts」图表 = 跨链月度活跃总量；另含 Bundler/Paymaster 市场份额，可观察基础设施竞争格局。
+            <div class="market-deepdive-item">
+                <div class="market-deepdive-link">❸ <a href="https://dune.com/niftytable/account-abstraction" target="_blank" rel="noopener">ERC-4337 Account Abstraction</a></div>
+                <div class="market-deepdive-howto">找 <strong>「Monthly Active ERC-4337 Smart Accounts」</strong> = 跨链月度活跃总量；另含 <strong>Bundler/Paymaster 市场份额</strong>，观察基础设施竞争格局。</div>
+            </div>
         </div>
         ${notTrackableNote}
         <div class="market-data-month">数据范围：${freshness.series_start || '—'} ~ ${freshness.series_end || '—'} (${freshness.num_days || '—'}d) ｜ 时效：${sla}</div>

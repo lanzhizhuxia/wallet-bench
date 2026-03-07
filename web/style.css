@@ -2611,24 +2611,29 @@ td.defi-difficulty { font-size: 0.82rem; white-space: nowrap; text-align: center
     margin-bottom: var(--space-xs);
 }
 
-.market-deepdive-links {
-    list-style: none;
-    padding: 0;
-    margin: 0 0 var(--space-xs) 0;
+.market-deepdive-item {
+    padding: var(--space-xs) 0;
+    border-bottom: 1px solid var(--bg-border);
 }
 
-.market-deepdive-links li {
+.market-deepdive-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.market-deepdive-link {
     font-size: 12px;
-    padding: 3px 0;
     color: var(--text-secondary);
+    margin-bottom: 2px;
 }
 
-.market-deepdive-links a {
+.market-deepdive-link a {
     color: var(--brand-yellow);
     text-decoration: none;
+    font-weight: 600;
 }
 
-.market-deepdive-links a:hover {
+.market-deepdive-link a:hover {
     text-decoration: underline;
 }
 
@@ -2636,9 +2641,6 @@ td.defi-difficulty { font-size: 0.82rem; white-space: nowrap; text-align: center
     font-size: 11px;
     color: var(--text-tertiary);
     line-height: 1.6;
-    border-top: 1px solid var(--bg-border);
-    padding-top: var(--space-xs);
-    margin-top: var(--space-xs);
 }
 
 
