@@ -2578,8 +2578,9 @@ function renderMarketTab(npm, pypi, github, status, docs, onchain) {
     html += renderMarketFreshness(npm, pypi, github, status, docs, onchain);
 
     container.innerHTML = html;
-    // Initialize onchain daily chart after DOM insertion
+    // Initialize charts after DOM insertion
     initOnchainDailyChart(onchain);
+    initChainPieCharts(onchain);
 }
 
 function formatNum(n) {
@@ -3023,6 +3024,42 @@ function initOnchainDailyChart(onchain) {
 function renderChainDistribution(onchain) {
     if (!onchain || !onchain.providers) return '';
 
+    const DISPLAY_ORDER = ['coinbase', 'crossmint'];
+    let hasData = false;
+    let chartsHtml = '';
+
+    for (const pid of DISPLAY_ORDER) {
+        const p = onchain.providers[pid];
+        if (!p || !p.chain_distribution) continue;
+        const total = Object.values(p.chain_distribution).reduce((a, b) => a + b, 0);
+        if (total <= 0) continue;
+        hasData = true;
+
+        const name = MARKET_PROVIDER_NAMES[pid];
+        const sourceBadge = p.chain_distribution_source === 'nonce_ratio'
+            ? ' <span class="market-partial-badge">nonce比例</span>' : '';
+
+        chartsHtml += `
+        <div class="market-chain-pie-item">
+            <div class="market-chain-pie-label">${name}${sourceBadge}</div>
+            <div class="market-chain-pie-wrap">
+                <canvas id="chain-pie-${pid}"></canvas>
+            </div>
+        </div>`;
+    }
+
+    if (!hasData) return '';
+
+    return `
+    <div class="market-chain-section">
+        <div class="market-chain-title">链偏好分布</div>
+        <div class="market-chain-pie-row">${chartsHtml}</div>
+    </div>`;
+}
+
+function initChainPieCharts(onchain) {
+    if (!onchain || !onchain.providers) return;
+
     const CHAIN_COLORS = {
         base: '#0052FF',
         ethereum: '#627EEA',
@@ -3038,49 +3075,77 @@ function renderChainDistribution(onchain) {
         polygon: 'Polygon',
     };
 
-    const DISPLAY_ORDER = ['coinbase', 'crossmint'];
-    let rowsHtml = '';
-    let hasData = false;
-
-    for (const pid of DISPLAY_ORDER) {
+    for (const pid of ['coinbase', 'crossmint']) {
         const p = onchain.providers[pid];
         if (!p || !p.chain_distribution) continue;
-        hasData = true;
-        const dist = p.chain_distribution;
-        const total = Object.values(dist).reduce((a, b) => a + b, 0);
-        if (total <= 0) continue;
+        const canvas = document.getElementById(`chain-pie-${pid}`);
+        if (!canvas) continue;
 
-        const name = MARKET_PROVIDER_NAMES[pid];
-        const sourceBadge = p.chain_distribution_source === 'nonce_ratio'
-            ? ' <span class="market-partial-badge">nonce比例</span>' : '';
+        const entries = Object.entries(p.chain_distribution)
+            .filter(([, v]) => v > 0)
+            .sort((a, b) => b[1] - a[1]);
+        if (!entries.length) continue;
 
-        // Build segments
-        let segsHtml = '';
-        let legendHtml = '';
-        const entries = Object.entries(dist).filter(([, v]) => v > 0).sort((a, b) => b[1] - a[1]);
-        for (const [chain, count] of entries) {
-            const pct = (count / total * 100);
-            const color = CHAIN_COLORS[chain] || '#888';
-            const chainName = CHAIN_NAMES[chain] || chain;
-            segsHtml += `<div class="market-chain-seg" style="width:${pct.toFixed(1)}%;background:${color}" title="${chainName}: ${formatNum(count)} (${pct.toFixed(1)}%)"></div>`;
-            legendHtml += `<span class="market-chain-legend-item"><span class="market-chain-dot" style="background:${color}"></span>${chainName} ${pct.toFixed(1)}%</span>`;
-        }
+        const total = entries.reduce((s, [, v]) => s + v, 0);
 
-        rowsHtml += `
-        <div class="market-chain-row">
-            <div class="market-chain-label">${name}${sourceBadge}</div>
-            <div class="market-chain-bar">${segsHtml}</div>
-            <div class="market-chain-legend">${legendHtml}</div>
-        </div>`;
+        new Chart(canvas, {
+            type: 'doughnut',
+            data: {
+                labels: entries.map(([chain]) => CHAIN_NAMES[chain] || chain),
+                datasets: [{
+                    data: entries.map(([, v]) => v),
+                    backgroundColor: entries.map(([chain]) => CHAIN_COLORS[chain] || '#888'),
+                    borderWidth: 0,
+                    hoverOffset: 4,
+                }],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                cutout: '55%',
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'right',
+                        labels: {
+                            color: getCssVar('--text-secondary'),
+                            font: { size: 11, family: getCssVar('--font-body') },
+                            boxWidth: 10,
+                            padding: 8,
+                            generateLabels: function(chart) {
+                                const data = chart.data;
+                                return data.labels.map((label, i) => {
+                                    const val = data.datasets[0].data[i];
+                                    const pct = (val / total * 100).toFixed(1);
+                                    return {
+                                        text: `${label} ${pct}%`,
+                                        fillStyle: data.datasets[0].backgroundColor[i],
+                                        strokeStyle: 'transparent',
+                                        index: i,
+                                        hidden: false,
+                                    };
+                                });
+                            },
+                        },
+                    },
+                    tooltip: {
+                        backgroundColor: getCssVar('--bg-elevated'),
+                        titleColor: getCssVar('--text-primary'),
+                        bodyColor: getCssVar('--text-secondary'),
+                        borderColor: getCssVar('--bg-border'),
+                        borderWidth: 1,
+                        callbacks: {
+                            label: function(ctx) {
+                                const val = ctx.parsed;
+                                const pct = (val / total * 100).toFixed(1);
+                                return `${ctx.label}: ${val.toLocaleString('en-US')} (${pct}%)`;
+                            },
+                        },
+                    },
+                },
+            },
+        });
     }
-
-    if (!hasData) return '';
-
-    return `
-    <div class="market-chain-section">
-        <div class="market-chain-title">链偏好分布</div>
-        ${rowsHtml}
-    </div>`;
 }
 
 function renderMarketFreshness(npm, pypi, github, status, docs, onchain) {

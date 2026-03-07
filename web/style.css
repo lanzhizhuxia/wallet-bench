@@ -2619,7 +2619,7 @@ td.defi-difficulty { font-size: 0.82rem; white-space: nowrap; text-align: center
 
 .market-chain-section {
     margin-top: var(--space-m);
-    padding: var(--space-s) var(--space-s);
+    padding: var(--space-s) var(--space-m);
     background: var(--bg-subtle);
     border-radius: var(--radius-s);
     border: 1px solid var(--bg-border);
@@ -2633,78 +2633,28 @@ td.defi-difficulty { font-size: 0.82rem; white-space: nowrap; text-align: center
     letter-spacing: 0.02em;
 }
 
-.market-chain-row {
-    display: grid;
-    grid-template-columns: 110px 1fr;
-    grid-template-rows: auto auto;
-    gap: 4px 12px;
-    align-items: center;
-    margin-bottom: var(--space-s);
+.market-chain-pie-row {
+    display: flex;
+    gap: var(--space-m);
+    flex-wrap: wrap;
 }
 
-.market-chain-row:last-child {
-    margin-bottom: 0;
+.market-chain-pie-item {
+    flex: 1;
+    min-width: 200px;
 }
 
-.market-chain-label {
-    font-size: 11px;
+.market-chain-pie-label {
+    font-size: 12px;
     color: var(--text-secondary);
     font-weight: 500;
-    grid-row: 1 / 3;
-    align-self: center;
+    margin-bottom: 6px;
+    text-align: center;
 }
 
-.market-chain-bar {
-    display: flex;
-    height: 12px;
-    border-radius: 6px;
-    overflow: hidden;
-    background: rgba(255,255,255,0.04);
-    gap: 1px;
-}
-
-.market-chain-seg {
-    min-width: 3px;
-    transition: filter 0.2s;
-    border-radius: 1px;
-}
-
-.market-chain-seg:first-child {
-    border-radius: 6px 1px 1px 6px;
-}
-
-.market-chain-seg:last-child {
-    border-radius: 1px 6px 6px 1px;
-}
-
-.market-chain-seg:only-child {
-    border-radius: 6px;
-}
-
-.market-chain-seg:hover {
-    filter: brightness(1.2);
-}
-
-.market-chain-legend {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px 12px;
-}
-
-.market-chain-legend-item {
-    font-size: 10px;
-    color: var(--text-tertiary);
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-}
-
-.market-chain-dot {
-    display: inline-block;
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    flex-shrink: 0;
+.market-chain-pie-wrap {
+    position: relative;
+    height: 160px;
 }
 
 .market-upgrade-date {
