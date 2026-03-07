@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "source": "statuspage",
-  "collected_at": "2026-03-07T06:59:34+00:00",
+  "collected_at": "2026-03-07T07:08:20+00:00",
   "period": "last-30d",
   "providers": {
     "privy": {
@@ -35,6 +35,12 @@
       "note": "no known public status page"
     },
     "minara": {
+      "incidents_30d": null,
+      "mttr_minutes": null,
+      "status_page_url": null,
+      "note": "no known public status page"
+    },
+    "okx_onchainos": {
       "incidents_30d": null,
       "mttr_minutes": null,
       "status_page_url": null,
