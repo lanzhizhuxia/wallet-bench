@@ -35,6 +35,7 @@ const PROVIDER_COLORS = {
   privy: '#FF6B6B',
   minara: '#28A473',
   moonpay: '#60A5FA',
+  okx_onchainos: '#000000',
 };
 
 const STATUS_ICONS = { pass: "✅", fail: "❌", skip: "⚠️", error: "❗️", not_applicable: "—", unsupported: "🚫", inconclusive: "❓" };
@@ -146,6 +147,10 @@ const AI_INSIGHTS = {
     minara: {
         title: '一站式 DeFi 助手（内置 swap/perps/transfer），但完全托管且无签名原语',
         body: 'Custodial Smart Wallet 架构，密钥完全由服务端托管，无任何签名 API 暴露。内置 swap 命令可做聚合器级别的Token Swap（Simple†），但无法直接调用 Uniswap V3 Router。借贷/永续/预测均不可行（🔴），DeFi 等权分 20.0。技术测试通过率最低（38.1%），8 pass / 7 fail / 6 unsupported。--json flag 不输出 JSON、token 选择器弹出交互式 UI 阻塞自动化等问题增加集成摩擦。唯一亮点是内置 HITL 确认流（-y 可跳过）。适合对密钥控制无要求、只需简单 DeFi 操作的轻量场景。',
+    },
+    okx_onchainos: {
+        title: '覆盖面最广的链上操作网关（60+ 链），内置 DEX 聚合 + Swap 报价，但无签名原语',
+        body: '本地 Rust CLI 工具，5 skill / 34 命令，覆盖 Portfolio 查询、DEX 行情、Swap 报价、代币搜索、链上网关。60+ 链支持是七家中最广。内置 swap quote 命令提供 DEX 聚合级别报价，gateway 模块支持 gas 预估和交易模拟。但不暴露 sign_message / sign_typed_data 签名原语，也不做密钥托管——定位为"查询+报价+网关"而非"签名+提交"。需要 OKX API 凭证（API Key + Secret + Passphrase）。适合 Agent 需要跨链查询、比价、获取 Swap 报价但使用自己签名方案的场景。',
     },
 };
 
@@ -2663,7 +2668,7 @@ function renderMarketCard2(github) {
 }
 
 function renderMarketCard3(status) {
-    const noStatusPage = ['bnbchain_mcp', 'moonpay', 'minara'];
+    const noStatusPage = ['bnbchain_mcp', 'moonpay', 'minara', 'okx_onchainos'];
     let rows = '';
     MARKET_PROVIDER_ORDER.forEach(id => {
         const d = status && status.providers && status.providers[id];

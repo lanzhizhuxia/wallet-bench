@@ -1,0 +1,99 @@
+provider: okx_onchainos
+evaluator: claude-opus-4.6 (AI agent)
+date: "2026-03-07"
+
+summary: |
+  OKX OnchainOS 是一个**本地 Rust CLI 工具**，覆盖面在所有 provider 中最广（60+ 链），
+  提供 5 个 skill / 34 个命令——Portfolio 查询、DEX 行情、Swap 报价、代币搜索、链上网关。
+  定位为**链上操作网关**，与 BNB Chain MCP 同层但能力面更广（DEX 聚合、行情数据）。
+  **不提供签名原语**（sign_message / sign_typed_data），也不托管密钥——用户自持地址和 API Key。
+  内置 swap quote/swap 命令，可做 DEX 聚合级别的 Token Swap。
+  gateway 模块提供 gas 预估、交易模拟和广播功能。
+  适合需要**广链覆盖 + DEX 聚合行情 + Swap 报价**的 Agent 场景。
+
+scores:
+  onboarding_ease: 3          # 1-5, 1=极难上手 5=零摩擦
+  doc_quality: 3               # 1-5, 1=严重误导 5=完美
+  api_consistency: 4           # 1-5, 1=处处意外 5=完全一致
+  error_message_quality: 3     # 1-5, 1=不可读 5=清晰可操作
+  agent_autonomy: 4            # 1-5, 1=完全依赖人类 5=全自主
+  time_to_first_success_min: 10
+  # --- ISSUE-008 新增评分 (e01-e06) ---
+  governance_completeness: 1   # e01, 1-5. 无治理层/策略引擎
+  network_environment: 3       # e02, 1-5. 60+ 链支持，含主网和测试网
+  sdk_doc_quality: 3           # e03, 1-5. GitHub README 基本可用，无 API 参考文档
+  app_tool_coverage: 4         # t27, 1-5. 5 skill / 34 命令，Portfolio/DEX/Swap/Token/Gateway
+  app_execution_quality: 3     # e04, 1-5. Swap 报价可靠，广播需用户自行签名
+  cost_transparency: 3         # e05, 1-5. Gas 预估透明，API 配额规则遵循 OKX 平台
+  kyc_requirement_clarity: 3   # e06, 1-5. 需 OKX API Key，注册流程清晰
+
+human_interventions:
+  - type: api_credential_setup
+    reason: "需要在 OKX 平台创建 API Key（API Key + Secret + Passphrase）"
+    blocker: true
+  - type: address_configuration
+    reason: "用户需在 config.yaml 中填入自己的以太坊地址（OnchainOS 不创建钱包）"
+    blocker: false
+
+integration_bugs: []
+
+doc_gaps:
+  - "CLI 命令的完整参数文档仅在 --help 中，缺少在线 API 参考"
+  - "签名/广播的完整流程未在文档中说明（需结合 OKX DEX API 文档）"
+  - "chain-index 参数的完整映射表未在 README 中列出"
+
+agent_experience: |
+  ## 作为 AI Agent 的集成体验
+
+  ### 优点
+  - Rust 编写，CLI 响应快速（< 200ms），JSON 输出结构化
+  - 5 skill 统一入口，命令结构清晰：`onchainos <skill> <command> [args]`
+  - 60+ 链支持，DEX 聚合行情和 Swap 报价覆盖主流链
+  - portfolio 命令可查询任意地址的资产总览
+  - gateway 模块提供 gas-limit、simulate、broadcast 三步操作
+
+  ### 痛点
+  - 不暴露签名原语，无法用于 EIP-191/EIP-712 签名场景
+  - 广播交易需要已签名的交易数据，CLI 本身不做签名
+  - 需要 3 个环境变量（API Key + Secret + Passphrase），首次配置需访问 OKX 平台
+
+  ### 人类依赖
+  - OKX 账户注册和 API Key 创建需人类完成（一次性）
+  - 钱包地址需人类提供（OnchainOS 不创建钱包）
+
+  ### 总体评价
+  作为"链上操作网关"，OnchainOS 的定位非常明确：提供行情、报价和链上数据查询能力。
+  不做密钥托管也不做签名，与 BNB Chain MCP 的"签名+提交一体化"模式互补。
+  适合 Agent 需要跨链查询、比价、获取 Swap 报价但使用自己签名方案的场景。
+
+agent_memo: |
+  ## OKX OnchainOS — Agent 集成速查表
+
+  ### 安装
+  ```bash
+  curl -sSL https://raw.githubusercontent.com/okx/onchainos-skills/main/install.sh | sh
+  ```
+
+  ### 环境变量
+  ```bash
+  export OKX_API_KEY=your_api_key
+  export OKX_SECRET_KEY=your_secret_key
+  export OKX_PASSPHRASE=your_passphrase
+  ```
+
+  ### 5 个 Skill
+  1. **portfolio** — 资产查询：`onchainos portfolio total-value --address <addr> --chain-index 1`
+  2. **dex** — DEX 行情：`onchainos dex supported-chains`
+  3. **swap** — Swap 操作：`onchainos swap quote --from USDC --to USDT --amount 1 --chain-index 1`
+  4. **token** — 代币搜索：`onchainos token search --keyword USDC`
+  5. **gateway** — 链上网关：`onchainos gateway gas-limit --to <addr> --chain-index 1`
+
+  ### 常用 chain-index
+  - 1=Ethereum, 56=BSC, 137=Polygon, 42161=Arbitrum, 10=Optimism
+  - 8453=Base, 43114=Avalanche, 250=Fantom, 501=Solana
+
+  ### 已知限制
+  1. 无 sign_message / sign_typed_data — 不做签名
+  2. 无 create_wallet — 用户自行提供地址
+  3. broadcast 需要已签名交易数据（raw tx hex）
+  4. API 调用受 OKX 平台配额限制
