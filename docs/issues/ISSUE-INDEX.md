@@ -1,6 +1,6 @@
 # wallet-bench Issue Index
 
-**Last Updated**: 2026-03-07 (ISSUE-022 适配器修复)
+**Last Updated**: 2026-03-07 (ISSUE-023 Dashboard 双层分类 + OKX 补全)
 
 ## Current Execution Focus
 
@@ -28,3 +28,4 @@
 | ISSUE-020 | Done | 新增 Coinpilot Hyperliquid Provider — 永续合约垂直场景验证 | DONE | P3 | 验证 t18 (perps_trading) 测试项真实可行性，目前 7 provider 均未通过。 | docs/issues/active/ISSUE-020-coinpilot-hyperliquid-provider/ |
 | ISSUE-021 | Done | 测试维度扩展 33→45 项 | DONE | P0 | Security/Compliance/Agent 三个新维度 + 12 个 P0 测试项 + 评分体系改造，测试覆盖从 33 项扩展至 45 项 | docs/issues/ISSUE-021-test-dimension-expansion.md |
 | ISSUE-022 | Done | Para Wallet + Universal Trading 适配器修复 | DONE | P1 | 修复 hex 编码/地址解析 bug，Universal Trading 分数 33.3%→50.0% | docs/issues/ISSUE-022-adapter-bugfix.md |
+| ISSUE-023 | Done | Dashboard 双层分类 UI + OKX 测试补全 | DONE | P0 | OKX 加入 decision_view、12 provider 全量 45 测试对齐、Dashboard tier-aware 分组（WaaS vs OpenClaw Skill）、CSS tier badge | — |

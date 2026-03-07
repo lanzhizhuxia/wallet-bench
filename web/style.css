@@ -2802,3 +2802,35 @@ td.defi-difficulty { font-size: 0.82rem; white-space: nowrap; text-align: center
   .market-table { font-size: 12px; }
   .market-chart-container { height: 160px; }
 }
+
+
+/* Tier badges */
+.tier-badge {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+  vertical-align: middle;
+  margin-left: 8px;
+}
+
+.tier-waas {
+  background-color: #3B82F6;
+  color: white;
+}
+
+.tier-skill {
+  background-color: #8B5CF6;
+  color: white;
+}
+
+.comparison-grid h2 {
+    grid-column: 1 / -1;
+    font-size: 16px;
+    color: var(--text-secondary);
+    margin: 16px 0 0 0;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--bg-border);
+}

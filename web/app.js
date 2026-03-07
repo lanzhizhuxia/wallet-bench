@@ -658,16 +658,31 @@ function renderComparisonTab(providers) {
 
 function renderComparisonCards(providers) {
     const container = document.getElementById('summary-table-container');
+
+    // Helper to get tier info, with fallback
+    const getTierInfo = (providerId) => {
+        if (decisionData && decisionData.providers) {
+            const provider = decisionData.providers.find(p => p.id === providerId);
+            if (provider) return provider.tier;
+        }
+        // Fallback hardcoded map
+        const fallbackTiers = {
+            privy: 'waas_infrastructure', coinbase_agentkit: 'waas_infrastructure', crossmint: 'waas_infrastructure',
+            bnbchain_mcp: 'waas_infrastructure', moonpay: 'waas_infrastructure', minara: 'waas_infrastructure',
+            okx_onchainos: 'waas_infrastructure',
+            clawlett: 'openclaw_skill', para_wallet: 'openclaw_skill', universal_trading: 'openclaw_skill',
+            polymarket_agent: 'openclaw_skill', coinpilot_hyperliquid: 'openclaw_skill'
+        };
+        return fallbackTiers[providerId] || 'unknown';
+    };
+
     const sorted = [...providers].sort((a, b) => {
-        // Deferred providers always last
         const aDef = DEFERRED_PROVIDERS.includes(a.provider) ? 1 : 0;
         const bDef = DEFERRED_PROVIDERS.includes(b.provider) ? 1 : 0;
         if (aDef !== bDef) return aDef - bDef;
-        // Sort by pass rate descending (推荐 first, 不推荐 last)
-        const aPct = getPct(a);
-        const bPct = getPct(b);
-        return bPct - aPct;
+        return getPct(b) - getPct(a);
     });
+
     function getPct(p) {
         const results = p.results || [];
         const applicable = results.filter(r => r.status !== 'not_applicable');
@@ -676,118 +691,123 @@ function renderComparisonCards(providers) {
         return scorable.length > 0 ? Math.round(passed / scorable.length * 100) : 0;
     }
 
+    const groupedByTier = sorted.reduce((acc, p) => {
+        const tier = getTierInfo(p.provider);
+        if (!acc[tier]) {
+            acc[tier] = [];
+        }
+        acc[tier].push(p);
+        return acc;
+    }, {});
+
     let html = '<div class="comparison-grid">';
+    const tierOrder = ['waas_infrastructure', 'openclaw_skill'];
+    const tierHeaders = {
+        waas_infrastructure: 'WaaS 基础设施供应商',
+        openclaw_skill: 'OpenClaw 生态 Agent Skills'
+    };
 
-    for (const p of sorted) {
-        const meta = p.provider_meta || {};
-        const gov = meta.governance || {};
-        const results = p.results || [];
-        const applicable = results.filter(r => r.status !== 'not_applicable');
-        const scorable = applicable.filter(r => r.status !== 'inconclusive' && r.status !== 'skip');
-        const passed = scorable.filter(r => r.status === 'pass').length;
-        const scorableTotal = scorable.length;
-        const pct = scorableTotal > 0 ? Math.round(passed / scorableTotal * 100) : 0;
-        const isDeferred = DEFERRED_PROVIDERS.includes(p.provider);
-        const providerColor = PROVIDER_COLORS[p.provider] || '#888';
-        // Governance feature tags
-        const govFeatures = [];
-        if (gov.policy_engine) govFeatures.push('策略引擎');
-        if (gov.spend_limit) govFeatures.push('限额');
-        if (gov.address_allowlist) govFeatures.push('白名单');
-        if (gov.human_in_loop) govFeatures.push('HITL');
+    tierOrder.forEach(tier => {
+        if (groupedByTier[tier]) {
+            html += `<h2>${tierHeaders[tier]}</h2>`;
+            groupedByTier[tier].forEach(p => {
+                const meta = p.provider_meta || {};
+                const gov = meta.governance || {};
+                const results = p.results || [];
+                const scorable = results.filter(r => r.status !== 'not_applicable' && r.status !== 'inconclusive' && r.status !== 'skip');
+                const passed = scorable.filter(r => r.status === 'pass').length;
+                const pct = scorable.length > 0 ? Math.round(passed / scorable.length * 100) : 0;
+                const providerColor = PROVIDER_COLORS[p.provider] || '#888';
+                const chains = meta.chains || [];
+                const mappedChains = [...new Set(chains.map(mapChainName))];
+                const coreCaps = ['key_generate', 'sign_message', 'sign_typed_data', 'send_tx', 'multi_chain', 'preflight_fee'];
+                const resultMap = new Map(results.map(r => [r.test_name, r.status]));
+                const tier = getTierInfo(p.provider);
+                const tierLabel = tier === 'waas_infrastructure' ? 'WaaS' : 'Skill';
+                const tierClass = tier === 'waas_infrastructure' ? 'tier-waas' : 'tier-skill';
 
-        // Chain tags
-        const chains = meta.chains || [];
-        const mappedChains = [...new Set(chains.map(mapChainName))];
+                html += `<div class="comp-card" data-provider="${p.provider}">`;
+                html += `<div class="comp-card-header">`;
+                html += `<div class="comp-card-title-row">`;
+                html += `<span class="comp-card-name">${meta.name || p.provider}</span>`;
+                html += `<span class="tier-badge ${tierClass}">${tierLabel}</span>`;
+                html += `</div>`;
+                html += `<span class="arch-badge ${meta.class || 'unknown'}" title="${ARCH_TOOLTIPS[meta.class] || ARCH_TOOLTIPS.unknown}">${ARCH_LABELS[meta.class] || meta.class || '—'}</span>`;
+                html += `</div>`;
 
-        // Key capabilities — take first 6 from wallet_core category
-        const coreCaps = ['key_generate', 'sign_message', 'sign_typed_data', 'send_tx', 'multi_chain', 'preflight_fee'];
-        const resultMap = new Map(results.map(r => [r.test_name, r.status]));
+                const verdictLabel = pct >= 80 ? '✅推荐' : pct >= 50 ? '⚠️谨慎' : '❌不推荐';
+                const verdictClass = pct >= 80 ? 'verdict-badge-pass' : pct >= 50 ? 'verdict-badge-warn' : 'verdict-badge-fail';
+                html += `<div class="comp-card-verdict">`;
+                html += `<span class="${verdictClass}">${verdictLabel} ${pct}%</span>`;
+                html += `<span class="comp-card-verdict-meta">Key: ${meta.custody_model || '—'} | ${mappedChains.length}链</span>`;
+                html += `</div>`;
 
-        html += `<div class="comp-card${isDeferred ? ' comp-card-deferred' : ''}" data-provider="${p.provider}">`;
-
-        // Header: name + arch badge
-        html += `<div class="comp-card-header">`;
-        html += `<div class="comp-card-title-row">`;
-        html += `<span class="comp-card-name">${meta.name || p.provider}</span>`;
-        html += `</div>`;
-        html += `<span class="arch-badge ${meta.class || 'unknown'}" title="${ARCH_TOOLTIPS[meta.class] || ARCH_TOOLTIPS.unknown}">${ARCH_LABELS[meta.class] || meta.class || '—'}</span>`;
-        html += `</div>`;
-
-        // Verdict badge row
-        const verdictLabel = pct >= 80 ? '✅推荐' : pct >= 50 ? '⚠️谨慎' : '❌不推荐';
-        const verdictClass = pct >= 80 ? 'verdict-badge-pass' : pct >= 50 ? 'verdict-badge-warn' : 'verdict-badge-fail';
-        html += `<div class="comp-card-verdict">`;
-        html += `<span class="${verdictClass}">${verdictLabel} ${pct}%</span>`;
-        html += `<span class="comp-card-verdict-meta">Key: ${meta.custody_model || '—'} | ${mappedChains.length}链</span>`;
-        html += `</div>`;
-
-        // AI insight one-liner
-        const insight = AI_INSIGHTS[p.provider];
-        if (insight) {
-            html += `<div class="comp-card-ai-insight" title="${escapeHtml(insight.body + '\n\n⚠️ 以上洞察基于项目维护者的测试结果撰写，实际数据可能因环境不同而有差异。')}">🤖 ${escapeHtml(insight.title)}</div>`;
-        }
-
-        // Core capabilities quick view
-        html += `<div class="comp-card-caps">`;
-        for (const cap of coreCaps) {
-            const status = resultMap.get(cap) || 'not_applicable';
-            const label = TEST_NAME_ZH[cap] || cap;
-            const icon = STATUS_ICONS[status] || '—';
-            html += `<div class="comp-card-cap-item" title="${label}"><span class="comp-card-cap-icon">${icon}</span><span class="comp-card-cap-label">${label}</span></div>`;
-        }
-        html += `</div>`;
-
-        // DeFi 场景集成
-        const defiProvider = decisionData?.providers?.find(dp => dp.id === p.provider);
-        if (defiProvider?.defi) {
-            const scenarios = defiProvider.defi.scenarios || {};
-            const coverage = defiProvider.defi.coverage || '0/0';
-            const defiScore = defiProvider.defi.scores?.equal || 0;
-            const SCENARIO_NAMES = {
-                uniswap_swap: 'Uniswap', aave_morpho: 'Aave/Morpho',
-                hyperliquid: 'Hyperliquid', polymarket: 'Polymarket'
-            };
-            html += `<div class="comp-card-defi">`;
-            html += `<div class="comp-card-defi-header">`;
-            html += `<span>DeFi 场景集成</span>`;
-            html += `<span class="comp-card-defi-coverage">覆盖 ${coverage}</span>`;
-            html += `</div>`;
-            html += `<div class="comp-card-defi-grid">`;
-            for (const [sid, sname] of Object.entries(SCENARIO_NAMES)) {
-                const s = scenarios[sid];
-                if (s) {
-                    html += `<span class="comp-card-defi-item">${s.emoji} ${sname}</span>`;
+                const insight = AI_INSIGHTS[p.provider];
+                if (insight) {
+                    html += `<div class="comp-card-ai-insight" title="${escapeHtml(insight.body + '\n\n⚠️ 以上洞察基于项目维护者的测试结果撰写，实际数据可能因环境不同而有差异。')}">🤖 ${escapeHtml(insight.title)}</div>`;
                 }
-            }
-            html += `</div>`;
-            html += `<div class="comp-card-defi-score">DeFi ${defiScore}</div>`;
-            html += `</div>`;
-        } else {
-            html += `<div class="comp-card-defi comp-card-defi-empty"><span>DeFi 场景：暂无数据</span></div>`;
-        }
 
-        // Governance tags
-        html += `<div class="comp-card-gov">`;
-        if (govFeatures.length > 0) {
-            govFeatures.forEach(f => {
-                html += `<span class="comp-card-gov-tag">${f}</span>`;
+                html += `<div class="comp-card-caps">`;
+                for (const cap of coreCaps) {
+                    const status = resultMap.get(cap) || 'not_applicable';
+                    const label = TEST_NAME_ZH[cap] || cap;
+                    const icon = STATUS_ICONS[status] || '—';
+                    html += `<div class="comp-card-cap-item" title="${label}"><span class="comp-card-cap-icon">${icon}</span><span class="comp-card-cap-label">${label}</span></div>`;
+                }
+                html += `</div>`;
+
+                const defiProvider = decisionData?.providers?.find(dp => dp.id === p.provider);
+                if (defiProvider?.defi) {
+                    const scenarios = defiProvider.defi.scenarios || {};
+                    const coverage = defiProvider.defi.coverage || '0/0';
+                    const defiScore = defiProvider.defi.scores?.equal || 0;
+                    const SCENARIO_NAMES = {
+                        uniswap_swap: 'Uniswap', aave_morpho: 'Aave/Morpho',
+                        hyperliquid: 'Hyperliquid', polymarket: 'Polymarket'
+                    };
+                    html += `<div class="comp-card-defi">`;
+                    html += `<div class="comp-card-defi-header">`;
+                    html += `<span>DeFi 场景集成</span>`;
+                    html += `<span class="comp-card-defi-coverage">覆盖 ${coverage}</span>`;
+                    html += `</div>`;
+                    html += `<div class="comp-card-defi-grid">`;
+                    for (const [sid, sname] of Object.entries(SCENARIO_NAMES)) {
+                        const s = scenarios[sid];
+                        if (s) {
+                            html += `<span class="comp-card-defi-item">${s.emoji} ${sname}</span>`;
+                        }
+                    }
+                    html += `</div>`;
+                    html += `<div class="comp-card-defi-score">DeFi ${defiScore}</div>`;
+                    html += `</div>`;
+                } else {
+                    html += `<div class="comp-card-defi comp-card-defi-empty"><span>DeFi 场景：暂无数据</span></div>`;
+                }
+                const govFeatures = [];
+                if (gov.policy_engine) govFeatures.push('策略引擎');
+                if (gov.spend_limit) govFeatures.push('限额');
+                if (gov.address_allowlist) govFeatures.push('白名单');
+                if (gov.human_in_loop) govFeatures.push('HITL');
+
+                html += `<div class="comp-card-gov">`;
+                if (govFeatures.length > 0) {
+                    govFeatures.forEach(f => {
+                        html += `<span class="comp-card-gov-tag">${f}</span>`;
+                    });
+                } else {
+                    html += `<span class="comp-card-gov-empty">无治理功能</span>`;
+                }
+                html += `</div>`;
+
+                html += `<div class="comp-card-accent" style="background:${providerColor}"></div>`;
+                html += `</div>`; // .comp-card
             });
-        } else {
-            html += `<span class="comp-card-gov-empty">无治理功能</span>`;
         }
-        html += `</div>`;
-
-        // Bottom accent line
-        html += `<div class="comp-card-accent" style="background:${providerColor}"></div>`;
-
-        html += `</div>`; // .comp-card
-    }
+    });
 
     html += '</div>'; // .comparison-grid
     container.innerHTML = html;
 
-    // Click to open detail
     container.querySelectorAll('.comp-card').forEach(card => {
         card.addEventListener('click', () => showDetail(card.dataset.provider));
     });
@@ -1170,27 +1190,31 @@ const RADAR_DIMENSIONS = [
     { key: 'ops', label: '运维能力',
       desc: '运维类测试通过率（权重 50%）+ 环境矩阵和文档上手度 YAML 评分均值（权重 50%）。' },
     { key: 'app', label: '应用能力',
-      desc: 'DeFi 对接能力：基于 4 场景（Uniswap Swap / Aave 借贷 / Hyperliquid 永续 / Polymarket 预测市场）的对接成本评伌，等权平均。数据来源：DeFi Integration Cost Matrix v1。' },
+      desc: 'DeFi 对接能力：基于 4 场景（Uniswap Swap / Aave 借贷 / Hyperliquid 永续 / Polymarket 预测市场）的对接成本评估，等权平均。数据来源：DeFi Integration Cost Matrix v1。' },
     { key: 'security', label: '安全性',
       desc: '签名验证、密钥轮换等安全测试通过率。公式：pass ÷ (pass + fail + error + unsupported) × 100。' },
     { key: 'agent', label: 'Agent 可用性',
       desc: 'AI Agent 集成质量：返回结构完整性、错误可机读性、响应确定性的通过率。公式：pass ÷ (pass + fail + error + unsupported) × 100。' },
 ];
 
-async function renderRadarTab(providers) {
-    const activeProviders = providers.filter(p => !DEFERRED_PROVIDERS.includes(p.provider));
-    renderRadarToggle(activeProviders);
-    renderMainRadarChart(activeProviders);
-    renderRadarLegend(activeProviders);
-    // DeFi heatmap below radar chart
-    await loadDecisionData();
-    if (decisionData) {
-        renderDefiHeatmap(decisionData.providers, decisionData.scenarios, decisionData.rating_definitions, 'radar-defi-heatmap');
-    }
-}
-
 function renderRadarLegend(providers) {
     const container = document.getElementById('radar-legend');
+
+    // Helper to get tier info, with fallback
+    const getTierInfo = (providerId) => {
+        if (decisionData && decisionData.providers) {
+            const dp = decisionData.providers.find(p => p.id === providerId);
+            if (dp) return dp.tier;
+        }
+        const fallbackTiers = {
+            privy: 'waas_infrastructure', coinbase_agentkit: 'waas_infrastructure', crossmint: 'waas_infrastructure',
+            bnbchain_mcp: 'waas_infrastructure', moonpay: 'waas_infrastructure', minara: 'waas_infrastructure',
+            okx_onchainos: 'waas_infrastructure',
+            clawlett: 'openclaw_skill', para_wallet: 'openclaw_skill', universal_trading: 'openclaw_skill',
+            polymarket_agent: 'openclaw_skill', coinpilot_hyperliquid: 'openclaw_skill'
+        };
+        return fallbackTiers[providerId] || 'unknown';
+    };
 
     // Provider ranking by pass rate
     const ranked = providers.map(p => {
@@ -1209,10 +1233,13 @@ function renderRadarLegend(providers) {
     ranked.forEach((r, i) => {
         const color = PROVIDER_COLORS[r.provider.provider] || '#888';
         const verdictClass = r.pct >= 80 ? 'rank-pass' : r.pct >= 50 ? 'rank-warn' : 'rank-fail';
+        const tier = getTierInfo(r.provider.provider);
+        const tierLabel = tier === 'waas_infrastructure' ? 'WaaS' : 'Skill';
+        const tierClass = tier === 'waas_infrastructure' ? 'tier-waas' : 'tier-skill';
         html += `<div class="radar-rank-item ${verdictClass}" data-provider="${r.provider.provider}">
             <span class="radar-rank-pos">#${i + 1}</span>
             <span class="radar-rank-swatch" style="background:${color}"></span>
-            <span class="radar-rank-name">${r.name}</span>
+            <span class="radar-rank-name">${r.name} <span class="tier-badge ${tierClass}">${tierLabel}</span></span>
             <span class="radar-rank-score">${r.pct}%</span>
             <span class="radar-rank-detail">${r.passed}/${r.total} 通过 · 综合 ${r.overall}</span>
         </div>`;
