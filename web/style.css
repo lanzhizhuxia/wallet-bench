@@ -2590,6 +2590,57 @@ td.defi-difficulty { font-size: 0.82rem; white-space: nowrap; text-align: center
     margin-top: var(--space-xs);
 }
 
+.market-deepdive {
+    margin-top: var(--space-m);
+    padding: var(--space-s) var(--space-m);
+    background: var(--bg-subtle);
+    border: 1px solid var(--bg-border);
+    border-radius: var(--radius-s);
+}
+
+.market-deepdive-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: var(--space-2xs);
+}
+
+.market-deepdive-desc {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-bottom: var(--space-xs);
+}
+
+.market-deepdive-links {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 var(--space-xs) 0;
+}
+
+.market-deepdive-links li {
+    font-size: 12px;
+    padding: 3px 0;
+    color: var(--text-secondary);
+}
+
+.market-deepdive-links a {
+    color: var(--brand-yellow);
+    text-decoration: none;
+}
+
+.market-deepdive-links a:hover {
+    text-decoration: underline;
+}
+
+.market-deepdive-howto {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    line-height: 1.6;
+    border-top: 1px solid var(--bg-border);
+    padding-top: var(--space-xs);
+    margin-top: var(--space-xs);
+}
+
 
 /* Mobile responsive */
 @media (max-width: 700px) {

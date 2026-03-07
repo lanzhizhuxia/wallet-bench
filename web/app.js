@@ -2814,6 +2814,19 @@ function renderMarketCard5(onchain) {
             <canvas id="onchain-daily-chart"></canvas>
         </div>
         <div class="market-card-insight">该指标回答：谁在最近30天持续新增可用钱包账户。不能回答：真实活跃用户数 / 留存率。</div>
+        <div class="market-deepdive">
+            <div class="market-deepdive-title">🔍 活跃用户深度分析（Dune 看板）</div>
+            <div class="market-deepdive-desc">以下看板提供 MAU/DAU、新增 vs 回访用户、留存分布等深度指标：</div>
+            <ul class="market-deepdive-links">
+                <li><a href="https://dune.com/wilsoncusack/coinbase-smart-wallet-kpis" target="_blank" rel="noopener">Coinbase Smart Wallet KPIs</a> — MAU、DAU、新增 vs 回访、交易次数分布</li>
+                <li><a href="https://www.bundlebear.com/erc4337-overview/all" target="_blank" rel="noopener">BundleBear 活跃账户</a> — 全链每周活跃智能账户数，可按应用筛选</li>
+                <li><a href="https://dune.com/niftytable/account-abstraction" target="_blank" rel="noopener">ERC-4337 Account Abstraction</a> — 跨链月度活跃智能账户、Bundler/Paymaster 市场份额</li>
+            </ul>
+            <div class="market-deepdive-howto">
+                <strong>怎么看：</strong>打开 Coinbase KPIs 看板 → 找「Monthly Active Wallets」图表，即为每月至少发过 1 笔交易的去重钱包数。
+                「New vs Returning」图表拆分了新用户和老用户占比，可判断增长质量。
+            </div>
+        </div>
         ${notTrackableNote}
         <div class="market-data-month">数据范围：${freshness.series_start || '—'} ~ ${freshness.series_end || '—'} (${freshness.num_days || '—'}d) ｜ 时效：${sla}</div>
         <div class="market-confidence status-pass">覆盖说明：${trackableCount}/${PROVIDER_ORDER.length} 可观测；Coinbase 高置信，Crossmint 为上界估计</div>
