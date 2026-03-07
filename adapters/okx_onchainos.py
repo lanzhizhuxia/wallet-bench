@@ -21,6 +21,32 @@ from adapters.base import (
     WalletInfo,
 )
 
+# Well-known token contract addresses (Ethereum mainnet) for swap tests
+_TOKEN_CONTRACTS: dict[str, dict[str, str]] = {
+    "ethereum": {
+        "USDC": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+        "USDT": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+        "WETH": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+        "DAI": "0x6B175474E89094C44Da98b954EedeAC495271d0F",
+    },
+    "bsc": {
+        "USDC": "0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d",
+        "USDT": "0x55d398326f99059fF775485246999027B3197955",
+    },
+    "polygon": {
+        "USDC": "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",
+        "USDT": "0xc2132D05D31c914a87C6611C10748AEb04B58e8F",
+    },
+    "base": {
+        "USDC": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "USDT": "0xfde4C96c8593536E31F229EA8f37b2ADa2699bb2",
+    },
+    "arbitrum": {
+        "USDC": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+        "USDT": "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9",
+    },
+}
+
 
 class OkxOnchainosAdapter(WalletAdapter):
     """Local-class adapter for OKX OnchainOS CLI.
@@ -45,29 +71,21 @@ class OkxOnchainosAdapter(WalletAdapter):
     signing_modes = ["raw_tx"]
     submission_mode = "client_submit"
 
-    # OKX chain index mapping (subset)
-    _CHAIN_INDEX: dict[str, str] = {
-        "ethereum": "1",
-        "bsc": "56",
-        "polygon": "137",
-        "arbitrum": "42161",
-        "optimism": "10",
-        "base": "8453",
-        "avalanche": "43114",
-        "fantom": "250",
-        "solana": "501",
-    }
-
     def __init__(
         self,
         address: str = "",
-        chain_index: str = "1",
+        chain: str = "ethereum",
         **kwargs: Any,
     ) -> None:
         self._address = address
-        self._chain_index = chain_index
+        self._chain = chain
 
     # -- helpers -------------------------------------------------------------
+
+    def _resolve_token(self, ticker: str) -> str:
+        """Resolve a token ticker to a contract address for the current chain."""
+        chain_tokens = _TOKEN_CONTRACTS.get(self._chain, _TOKEN_CONTRACTS["ethereum"])
+        return chain_tokens.get(ticker.upper(), ticker)
 
     async def _run_onchainos(
         self,
@@ -114,22 +132,18 @@ class OkxOnchainosAdapter(WalletAdapter):
         """Verify CLI is installed and API credentials are set."""
         # Check CLI is available
         try:
-            await self._run_onchainos("--version", "", timeout=10)
-        except (FileNotFoundError, RuntimeError, TimeoutError):
-            # Try bare version check
-            try:
-                proc = await asyncio.create_subprocess_exec(
-                    "onchainos", "--version",
-                    stdout=asyncio.subprocess.PIPE,
-                    stderr=asyncio.subprocess.PIPE,
-                    stdin=asyncio.subprocess.DEVNULL,
-                )
-                await asyncio.wait_for(proc.communicate(), timeout=10)
-            except FileNotFoundError:
-                raise RuntimeError(
-                    "onchainos CLI not found. Install: "
-                    "curl -sSL https://raw.githubusercontent.com/okx/onchainos-skills/main/install.sh | sh"
-                )
+            proc = await asyncio.create_subprocess_exec(
+                "onchainos", "--version",
+                stdout=asyncio.subprocess.PIPE,
+                stderr=asyncio.subprocess.PIPE,
+                stdin=asyncio.subprocess.DEVNULL,
+            )
+            await asyncio.wait_for(proc.communicate(), timeout=10)
+        except FileNotFoundError:
+            raise RuntimeError(
+                "onchainos CLI not found. Install: "
+                "curl -sSL https://raw.githubusercontent.com/okx/onchainos-skills/main/install.sh | sh"
+            )
 
         # Check required env vars
         missing = [
@@ -161,19 +175,17 @@ class OkxOnchainosAdapter(WalletAdapter):
                 result = await self._run_onchainos(
                     "portfolio", "total-value",
                     "--address", address,
-                    "--chain-index", self._chain_index,
+                    "--chains", self._chain,
                 )
                 elapsed = (time.perf_counter() - t0) * 1000
                 meta: dict[str, Any] = {"elapsed_ms": elapsed, "local": True}
                 if isinstance(result, dict):
-                    meta["portfolio"] = {
-                        k: result[k]
-                        for k in ("totalValue", "total_value", "value")
-                        if k in result
-                    }
+                    data = result.get("data", [{}])
+                    if data:
+                        meta["totalValue"] = data[0].get("totalValue", "")
                 return WalletInfo(
                     address=address,
-                    chain=self._chain_index,
+                    chain=self._chain,
                     meta=meta,
                 )
             except Exception:
@@ -181,7 +193,7 @@ class OkxOnchainosAdapter(WalletAdapter):
                 elapsed = (time.perf_counter() - t0) * 1000
                 return WalletInfo(
                     address=address,
-                    chain=self._chain_index,
+                    chain=self._chain,
                     meta={"elapsed_ms": elapsed, "local": True, "verified": False},
                 )
 
@@ -189,7 +201,7 @@ class OkxOnchainosAdapter(WalletAdapter):
         elapsed = (time.perf_counter() - t0) * 1000
         return WalletInfo(
             address="",
-            chain=self._chain_index,
+            chain=self._chain,
             meta={
                 "elapsed_ms": elapsed,
                 "local": True,
@@ -206,17 +218,16 @@ class OkxOnchainosAdapter(WalletAdapter):
     async def send_transaction(self, tx: TxParams) -> TxResult:
         """Attempt to broadcast a transaction via gateway.
 
-        Will likely fail (no private key in CLI), but we capture the error
-        cleanly as a revert.
+        Will fail (broadcast requires a pre-signed tx hex which we don't have),
+        but we capture the error cleanly as a revert.
         """
         t0 = time.perf_counter()
         try:
             result = await self._run_onchainos(
                 "gateway", "broadcast",
-                "--to", tx.to,
-                "--value", str(tx.value),
-                "--data", tx.data,
-                "--chain-index", self._chain_index,
+                "--signed-tx", tx.data if tx.data != "0x" else "0x00",
+                "--address", self._address or tx.to,
+                "--chain", self._chain,
                 timeout=60,
             )
             elapsed = (time.perf_counter() - t0) * 1000
@@ -234,7 +245,7 @@ class OkxOnchainosAdapter(WalletAdapter):
             if any(k in error_msg for k in (
                 "insufficient", "balance", "revert", "rejected", "failed",
                 "not enough", "zero", "no funds", "broadcast", "sign",
-                "key", "unauthorized", "invalid",
+                "key", "unauthorized", "invalid", "decode", "rlp",
             )):
                 return TxResult(
                     tx_hash="",
@@ -250,14 +261,16 @@ class OkxOnchainosAdapter(WalletAdapter):
         try:
             result = await self._run_onchainos(
                 "gateway", "gas-limit",
+                "--from", self._address or "0x0000000000000000000000000000000000000000",
                 "--to", tx.to,
-                "--value", str(tx.value),
-                "--data", tx.data,
-                "--chain-index", self._chain_index,
+                "--chain", self._chain,
             )
             elapsed = (time.perf_counter() - t0) * 1000
             if isinstance(result, dict):
-                gas = result.get("gasLimit", result.get("gas_limit", 0))
+                data = result.get("data", [{}])
+                gas = 0
+                if data:
+                    gas = data[0].get("gasLimit", data[0].get("gas_limit", 0))
                 return {"gas_estimate": int(gas), "elapsed_ms": elapsed, "source": "onchainos"}
             return {"gas_estimate": 0, "elapsed_ms": elapsed, "raw": str(result)[:300]}
         except Exception:
@@ -279,21 +292,30 @@ class OkxOnchainosAdapter(WalletAdapter):
     ) -> dict[str, Any]:
         """Execute or quote a token swap via onchainos swap skill."""
         t0 = time.perf_counter()
+        # Resolve tickers to contract addresses
+        from_addr = self._resolve_token(token_in)
+        to_addr = self._resolve_token(token_out)
+        # Convert human amount to minimal units (assume 6 decimals for stablecoins)
+        try:
+            minimal = str(int(float(amount) * 1_000_000))
+        except (ValueError, OverflowError):
+            minimal = amount
+
         if dry_run:
             result = await self._run_onchainos(
                 "swap", "quote",
-                "--from", token_in,
-                "--to", token_out,
-                "--amount", amount,
-                "--chain-index", self._chain_index,
+                "--from", from_addr,
+                "--to", to_addr,
+                "--amount", minimal,
+                "--chain", self._chain,
             )
         else:
             result = await self._run_onchainos(
                 "swap", "swap",
-                "--from", token_in,
-                "--to", token_out,
-                "--amount", amount,
-                "--chain-index", self._chain_index,
+                "--from", from_addr,
+                "--to", to_addr,
+                "--amount", minimal,
+                "--chain", self._chain,
                 timeout=60,
             )
         elapsed = (time.perf_counter() - t0) * 1000

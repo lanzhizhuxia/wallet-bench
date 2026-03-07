@@ -2743,7 +2743,7 @@ function renderMarketCard4(docs) {
 }
 
 function renderMarketCard5(onchain) {
-    const PROVIDER_ORDER = ['privy', 'coinbase', 'crossmint', 'bnbchain_mcp', 'moonpay', 'minara'];
+    const PROVIDER_ORDER = ['privy', 'coinbase', 'crossmint', 'bnbchain_mcp', 'moonpay', 'minara', 'okx_onchainos'];
 
     if (!onchain || !onchain.providers) {
         return `

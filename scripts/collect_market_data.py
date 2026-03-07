@@ -78,6 +78,7 @@ NPM_PACKAGES: dict[str, list[str]] = {
     "minara": [
         "minara",
     ],
+    # OKX OnchainOS is a Rust CLI (cargo), not published on npm
 }
 
 PYPI_PACKAGES: dict[str, list[str]] = {
@@ -91,6 +92,7 @@ GITHUB_REPOS: dict[str, list[str]] = {
     "bnbchain_mcp": ["bnb-chain/bnbchain-mcp"],
     "moonpay": [],  # no public repos
     "minara": ["Minara-AI/skills"],
+    "okx_onchainos": ["okx/onchainos-skills"],
 }
 
 # Status page base URLs (None = no known status page)
@@ -101,6 +103,7 @@ STATUS_PAGES: dict[str, str | None] = {
     "bnbchain_mcp": None,
     "moonpay": None,
     "minara": None,
+    "okx_onchainos": None,
 }
 
 # Per-repo docs/changelog paths (empty list = no tracked paths)
@@ -115,6 +118,7 @@ DOCS_PATHS_BY_REPO: dict[str, list[str]] = {
     "Crossmint/mcp-crossmint-checkout": [],
     "bnb-chain/bnbchain-mcp":           [],
     "Minara-AI/skills":                 ["skills/minara/SKILL.md"],
+    "okx/onchainos-skills":             ["README.md"],
 }
 
 BREAKING_KEYWORDS: list[str] = ["breaking", "BREAKING", "breaking change"]
@@ -160,6 +164,7 @@ ONCHAIN_NOT_TRACKABLE: dict[str, str] = {
     "bnbchain_mcp": "本地 EOA 钱包，无工厂合约",
     "moonpay":     "HD 钱包架构，链上无工厂合约",
     "minara":      "托管钱包，链上不可追踪",
+    "okx_onchainos": "本地 CLI 工具，不部署合约，链上无法追踪",
 }
 
 # ---------------------------------------------------------------------------

@@ -79,17 +79,13 @@ async def run(adapter: WalletAdapter, config: dict) -> TestResult:
                 timeout=30,
             )
 
-        elif "okx" in provider and callable(getattr(adapter, "_run_onchainos", None)):
-            chain_index = getattr(adapter, "_chain_index", "1")
+        elif "okx" in provider and callable(getattr(adapter, "token_swap", None)):
+            chain = getattr(adapter, "_chain", "ethereum")
             detail["path"] = "okx_onchainos_cli"
-            detail["chain_index"] = chain_index
+            detail["chain"] = chain
             result = await asyncio.wait_for(
-                adapter._run_onchainos(  # type: ignore[attr-defined]
-                    "swap", "quote",
-                    "--from", "USDC",
-                    "--to", "USDT",
-                    "--amount", "0.01",
-                    "--chain-index", chain_index,
+                adapter.token_swap(  # type: ignore[attr-defined]
+                    "USDC", "USDT", "0.01", dry_run=True,
                 ),
                 timeout=30,
             )
