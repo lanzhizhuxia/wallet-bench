@@ -935,8 +935,12 @@ def _collect_crossmint_precise(days: int = 30) -> dict | None:
         return None
 
 
-def _collect_chain_distribution(label_4337: str, chains: list[str]) -> dict[str, int] | None:
-    """Collect per-chain 30d activation counts from BundleBear for a given factory label.
+def _collect_chain_distribution(
+    label_4337: str,
+    chains: list[str],
+    label_7702: str | None = None,
+) -> dict[str, int] | None:
+    """Collect per-chain 30d activation counts from BundleBear (ERC-4337 + EIP-7702).
 
     Returns {"base": N, "ethereum": N, ...} or None on failure.
     """
@@ -965,12 +969,16 @@ def _collect_chain_distribution(label_4337: str, chains: list[str]) -> dict[str,
                 count = row.get("NUM_ACCOUNTS")
                 if not provider_raw or count is None:
                     continue
+                cnt = int(count)
                 if provider_raw.startswith("factory - "):
-                    label = provider_raw[len("factory - "):]
-                    if label == label_4337:
-                        total += int(count)
+                    if provider_raw[len("factory - "):] == label_4337:
+                        total += cnt
+                elif label_7702 and provider_raw.startswith("eip7702 - "):
+                    if provider_raw[len("eip7702 - "):] == label_7702:
+                        total += cnt
             result[chain] = total
-            log_info("chain distribution", chain=chain, label=label_4337, total_30d=total)
+            log_info("chain distribution", chain=chain, label_4337=label_4337,
+                     label_7702=label_7702, total_30d=total)
             time.sleep(0.3)  # rate limit courtesy
         except Exception as exc:
             log_warn("chain distribution fetch failed", chain=chain, error=str(exc))
@@ -1118,9 +1126,11 @@ def collect_onchain() -> dict:
             log_info("onchain data", provider=provider_id,
                      erc4337=sum_4337, eip7702=sum_7702, total=total,
                      series_days=len(series))
-            # Chain distribution for Coinbase
+            # Chain distribution for Coinbase (ERC-4337 + EIP-7702)
             if provider_id == "coinbase":
-                chain_dist = _collect_chain_distribution(label_4337, BUNDLEBEAR_CHAINS)
+                chain_dist = _collect_chain_distribution(
+                    label_4337, BUNDLEBEAR_CHAINS, label_7702=label_7702,
+                )
                 if chain_dist:
                     providers[provider_id]["chain_distribution"] = chain_dist
                     providers[provider_id]["chain_distribution_source"] = "bundlebear"
