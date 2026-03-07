@@ -2886,13 +2886,16 @@ function _renderGrowthBadge(metrics) {
     let html = '';
     if (metrics.wow !== null) {
         const cls = metrics.wow >= 0 ? 'market-growth-up' : 'market-growth-down';
+        const icon = metrics.wow >= 0 ? '▲' : '▼';
         const sign = metrics.wow >= 0 ? '+' : '';
-        html += ` <span class="${cls}">${sign}${metrics.wow.toFixed(1)}% 7d</span>`;
+        html += `<div class="market-growth-badge ${cls}">${icon} ${sign}${metrics.wow.toFixed(1)}%<span class="market-growth-label"> 7d</span></div>`;
     }
-    const trendCls = `market-trend-${metrics.trend}`;
-    const trendIcon = metrics.trend === 'up' ? '↑' : metrics.trend === 'down' ? '↓' : '→';
-    html += ` <span class="${trendCls}">${trendIcon}</span>`;
-    return html;
+    if (metrics.trend !== 'flat') {
+        const trendCls = metrics.trend === 'up' ? 'market-trend-up' : 'market-trend-down';
+        const trendLabel = metrics.trend === 'up' ? '30d 趋势向上' : '30d 趋势向下';
+        html += `<div class="market-trend-badge ${trendCls}">${trendLabel}</div>`;
+    }
+    return html ? `<div class="market-growth-wrap">${html}</div>` : '';
 }
 
 function initOnchainDailyChart(onchain) {
