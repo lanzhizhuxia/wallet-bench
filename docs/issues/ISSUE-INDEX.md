@@ -1,6 +1,6 @@
 # wallet-bench Issue Index
 
-**Last Updated**: 2026-03-06 (ISSUE-011 Phase 0+1+2 完成：6 维度日频采集 + Dashboard 上线 + 链上 stale 降级 + Crossmint Squadcast 适配)
+**Last Updated**: 2026-03-07 (Crossmint 精准采集上线 + ISSUE-014/015 开题)
 
 ## Current Execution Focus
 
@@ -18,4 +18,6 @@
 | ISSUE-010 | Done     | 一级导航重构 — 评测合并 + 知识阅读扩充                                  | COMPLETE   | P1       | 3 Tab 导航重构 + 了解更多子 Tab（测试设计/测试详解/下一步）+ Markdown 渲染。 | docs/issues/active/ISSUE-010-nav-restructure/ |
 | ISSUE-011 | Done     | 竞品活跃度监控 — 链上数据 + SDK 下载量 + 社区指标                       | PHASE_0-2_COMPLETE | P2 | 6 维度日频自动采集（npm/PyPI/GitHub/StatusPage/Docs/链上）+ Dashboard Market Tab + BundleBear API stale 降级。Phase 3 Backlog。 | docs/issues/active/ISSUE-011-competitor-monitoring/ |
 | ISSUE-012 | Done     | Crossmint 链上工厂合约反查 — 通过自测钱包提取 factory 地址               | DONE       | P2       | 确认 Crossmint 精准归因：`trackable: true`。Factory `0xd703aae...` + Bundler `0x9d4c1c9e...` 组合，主网+测试网均验证。 | docs/issues/active/ISSUE-012-crossmint-onchain-attribution/ |
-|| ISSUE-013 | Done     | Privy 链上归因突破 — Paymaster / Bundler 足迹调研                        | CLOSED     | P2       | 确认 Privy 链上不可追踪：paymaster 由开发者自配，Native Sponsorship 地址未公开，两条路径均失败。 | docs/issues/active/ISSUE-013-privy-paymaster-attribution/ |
+| ISSUE-013 | Done     | Privy 链上归因突破 — Paymaster / Bundler 足迹调研                        | CLOSED     | P2       | 确认 Privy 链上不可追踪：paymaster 由开发者自配，Native Sponsorship 地址未公开，两条路径均失败。 | docs/issues/active/ISSUE-013-privy-paymaster-attribution/ |
+| ISSUE-014 | Open     | Crossmint vs Coinbase 竞争力对比可视化                                    | OPEN       | P2       | 双线对比图 + 链偏好分析 + 增长率对比，帮助 PM 直观判断两家相对实力。 | docs/issues/active/ISSUE-014-competitive-comparison-viz/ |
+| ISSUE-015 | Open     | Bundler Nonce 实时健康监控                                                | OPEN       | P3       | 定期采集 bundler nonce 增量作为交易量代理，异常检测（交易量骤降=故障），亚 T+1 时效。 | docs/issues/active/ISSUE-015-bundler-nonce-monitoring/ |

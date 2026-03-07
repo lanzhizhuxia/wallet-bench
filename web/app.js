@@ -2773,18 +2773,18 @@ function renderMarketCard5(onchain) {
                 return;
             }
 
-            if (d.trackable === 'partial') { // Crossmint
+            if (d.trackable === 'partial') {
                 rows += `<tr>
                     <td>${name} <span class="market-partial-badge">上界估计</span></td>
                     <td>≈ ${formatNum(d.erc4337_active_wallets_30d)}</td>
                     <td>—</td>
                     <td class="market-green">≈ ${formatNum(total)}</td>
                 </tr>`;
-            } else { // Coinbase (trackable: true)
+            } else { // trackable: true (Coinbase, Crossmint precise, etc.)
                 rows += `<tr>
-                    <td>${name}</td>
+                    <td>${name}${d.source === 'rpc_precise' ? ' <span class="market-precise-badge">精准归因</span>' : ''}</td>
                     <td>${formatNum(d.erc4337_active_wallets_30d)}</td>
-                    <td>${formatNum(d.eip7702_live_accounts)}</td>
+                    <td>${d.eip7702_live_accounts != null ? formatNum(d.eip7702_live_accounts) : '—'}</td>
                     <td class="market-green">${formatNum(total)}</td>
                 </tr>`;
             }
@@ -2832,7 +2832,7 @@ function renderMarketCard5(onchain) {
         </div>
         ${notTrackableNote}
         <div class="market-data-month">数据范围：${freshness.series_start || '—'} ~ ${freshness.series_end || '—'} (${freshness.num_days || '—'}d) ｜ 时效：${sla}</div>
-        <div class="market-confidence status-pass">覆盖说明：${trackableCount}/${PROVIDER_ORDER.length} 可观测；Coinbase 高置信，Crossmint 为上界估计</div>
+        <div class="market-confidence status-pass">覆盖说明：${trackableCount}/${PROVIDER_ORDER.length} 可观测；Coinbase 高置信${onchain.providers?.crossmint?.trackable === true ? '，Crossmint 精准归因（factory+bundler）' : onchain.providers?.crossmint?.trackable === 'partial' ? '，Crossmint 为上界估计' : ''}</div>
         <div class="market-upgrade-date">口径升级：2026-03 — 新增 EIP-7702 维度 + 日维度时间序列，schema v4.0</div>
     </div>`;
 }

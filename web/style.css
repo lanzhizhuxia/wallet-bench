@@ -2555,6 +2555,15 @@ td.defi-difficulty { font-size: 0.82rem; white-space: nowrap; text-align: center
     margin-left: 6px;
 }
 
+.market-precise-badge {
+    background: rgba(14, 203, 129, 0.15);
+    color: #0ecb81;
+    font-size: 10px;
+    padding: 1px 5px;
+    border-radius: 3px;
+    margin-left: 6px;
+}
+
 .market-upgrade-date {
     color: var(--text-tertiary);
     font-size: 10px;

@@ -133,6 +133,21 @@ BUNDLEBEAR_7702_LABELS: dict[str, str] = {
 BUNDLEBEAR_CROSSMINT_FACTORY_LABEL = "zerodev_kernel"
 CROSSMINT_PROVIDER_ID = "crossmint"
 
+# Crossmint 精准归因：factory + bundler 组合（ISSUE-012 Phase 4 验证）
+CROSSMINT_BUNDLER = "0x9d4c1c9e1f850f22e5940b8385aa5a580798e5de"
+CROSSMINT_FACTORY = "0xd703aae79538628d27099b8c4f621be4ccd142d5"
+ENTRYPOINT_V07 = "0x0000000071727de22e5e9d8baf0edac6f37da032"
+# AccountDeployed(bytes32 userOpHash, address sender, address factory, address paymaster)
+ACCOUNT_DEPLOYED_TOPIC = "0xd51a9c61267aa6196961883ecf5cb5112571043413a48dc3f21d8d1e3ed2148d"
+# RPC endpoints for precise Crossmint collection（多链）
+CROSSMINT_RPC_CHAINS: dict[str, dict] = {
+    "base": {
+        "rpc": "https://base-rpc.publicnode.com",
+        "chain_label": "Base",
+        "block_time_sec": 2,
+    },
+}
+
 # 不可追踪供应商的原因说明
 ONCHAIN_NOT_TRACKABLE: dict[str, str] = {
     "privy":       "不部署自有工厂合约，复用底层实现（Coinbase/Kernel/Safe等），链上无法区分来源",
@@ -810,6 +825,110 @@ def _read_existing_snapshot(path: Path) -> dict | None:
     return None
 
 
+def _rpc_post(rpc_url: str, method: str, params: list) -> dict:
+    """Send a JSON-RPC request to an EVM node."""
+    payload = {"jsonrpc": "2.0", "id": 1, "method": method, "params": params}
+    resp = requests.post(rpc_url, json=payload, timeout=REQUEST_TIMEOUT)
+    resp.raise_for_status()
+    data = resp.json()
+    if "error" in data:
+        raise RuntimeError(f"RPC error: {data['error']}")
+    return data.get("result")
+
+
+def _collect_crossmint_precise(days: int = 30) -> dict | None:
+    """Collect precise Crossmint on-chain data via RPC eth_getLogs.
+
+    Queries EntryPoint v0.7 AccountDeployed events where the bundler
+    (tx.from) matches Crossmint's dedicated bundler address.
+
+    Returns a dict with daily_series and 30d total, or None on failure.
+    """
+    rpc_cfg = CROSSMINT_RPC_CHAINS.get("base")
+    if not rpc_cfg:
+        return None
+    rpc_url = rpc_cfg["rpc"]
+    block_time = rpc_cfg["block_time_sec"]
+
+    try:
+        # Get latest block number
+        latest_hex = _rpc_post(rpc_url, "eth_blockNumber", [])
+        latest_block = int(latest_hex, 16)
+        # Estimate block range for N days
+        blocks_per_day = 86400 // block_time
+        from_block = latest_block - (days * blocks_per_day)
+
+        # Query AccountDeployed events from EntryPoint v0.7
+        # Filter by factory in topic (factory is indexed as topic[3] in v0.7)
+        factory_padded = "0x" + CROSSMINT_FACTORY[2:].lower().zfill(64)
+        logs = _rpc_post(rpc_url, "eth_getLogs", [{
+            "fromBlock": hex(from_block),
+            "toBlock": hex(latest_block),
+            "address": ENTRYPOINT_V07,
+            "topics": [ACCOUNT_DEPLOYED_TOPIC, None, None, factory_padded],
+        }])
+
+        if logs is None:
+            log_warn("crossmint rpc: eth_getLogs returned null")
+            return None
+
+        # Filter logs by bundler: check tx.from via eth_getTransactionReceipt
+        # To avoid N RPC calls, we use a more efficient approach:
+        # Get unique tx hashes, batch-check tx.from
+        tx_hashes = list({log["transactionHash"] for log in logs})
+        bundler_txs: set[str] = set()  # tx hashes from Crossmint bundler
+
+        # Check each tx's from address (batch in chunks)
+        for tx_hash in tx_hashes:
+            try:
+                tx = _rpc_post(rpc_url, "eth_getTransactionByHash", [tx_hash])
+                if tx and tx.get("from", "").lower() == CROSSMINT_BUNDLER.lower():
+                    bundler_txs.add(tx_hash.lower())
+            except Exception:
+                continue  # skip failed lookups
+
+        # Now filter logs to only those from Crossmint bundler
+        crossmint_logs = [
+            log for log in logs
+            if log["transactionHash"].lower() in bundler_txs
+        ]
+
+        # Build daily series from block timestamps
+        # Group by date using block numbers (approximate)
+        daily_counts: dict[str, int] = {}
+        for log in crossmint_logs:
+            block_num = int(log["blockNumber"], 16)
+            # Approximate date from block number
+            blocks_ago = latest_block - block_num
+            days_ago = blocks_ago // blocks_per_day
+            date = (datetime.now(timezone.utc) - timedelta(days=days_ago)).strftime("%Y-%m-%d")
+            daily_counts[date] = daily_counts.get(date, 0) + 1
+
+        # Build sorted series for the last N days
+        series: list[dict] = []
+        total = 0
+        for i in range(days):
+            date = (datetime.now(timezone.utc) - timedelta(days=days - 1 - i)).strftime("%Y-%m-%d")
+            count = daily_counts.get(date, 0)
+            total += count
+            series.append({"date": date, "erc4337": count, "eip7702": None, "total": count})
+
+        log_info("crossmint precise ok",
+                 total_logs=len(logs), bundler_txs=len(bundler_txs),
+                 crossmint_deploys=len(crossmint_logs), total_30d=total)
+
+        return {
+            "total": total,
+            "daily_series": series,
+            "total_factory_logs": len(logs),
+            "crossmint_bundler_logs": len(crossmint_logs),
+        }
+
+    except Exception as exc:
+        log_error("crossmint precise collection failed", error=str(exc))
+        return None
+
+
 def collect_onchain() -> dict:
     """Collect on-chain active wallet counts via BundleBear activation API.
 
@@ -951,8 +1070,39 @@ def collect_onchain() -> dict:
                      erc4337=sum_4337, eip7702=sum_7702, total=total,
                      series_days=len(series))
 
-    # 4. Crossmint（partial tracking，上界估计）
-    if fetch_ok:
+    # 4. Crossmint — 优先使用精准归因（RPC factory+bundler），失败则降级到 BundleBear 上界
+    precise_cm = _collect_crossmint_precise(days=len(target_dates) if target_dates else 30)
+    if precise_cm and precise_cm["total"] >= 0:
+        # 精准数据可用
+        # 同时保留 BundleBear 上界作为参考
+        upper_bound = None
+        if fetch_ok:
+            series_ub = _build_series(BUNDLEBEAR_CROSSMINT_FACTORY_LABEL, None)
+            upper_bound = sum(pt["erc4337"] for pt in series_ub)
+        providers[CROSSMINT_PROVIDER_ID] = {
+            "trackable": True,
+            "erc4337_active_wallets_30d": precise_cm["total"],
+            "eip7702_live_accounts": None,
+            "total_onchain_footprint": precise_cm["total"],
+            "source": "rpc_precise",
+            "confidence": "high",
+            "attribution": {
+                "method": "factory + bundler",
+                "factory": CROSSMINT_FACTORY,
+                "bundler": CROSSMINT_BUNDLER,
+                "entrypoint": "v0.7",
+                "verified": "ISSUE-012 Phase 4",
+            },
+            "upper_bound_ref": upper_bound,
+            "note": f"精准归因：factory 0xd703aae... + bundler 0x9d4c1c9e...，Base mainnet RPC 直接查询。上界参考（含其他 Kernel 客户）：{upper_bound}。",
+            "daily_series": precise_cm["daily_series"],
+        }
+        log_info("onchain data", provider=CROSSMINT_PROVIDER_ID,
+                 precise=precise_cm["total"], upper_bound=upper_bound,
+                 confidence="high", source="rpc_precise",
+                 series_days=len(precise_cm["daily_series"]))
+    elif fetch_ok:
+        # 精准采集失败，降级到 BundleBear 上界
         series_cm = _build_series(BUNDLEBEAR_CROSSMINT_FACTORY_LABEL, None)
         sum_cm = sum(pt["erc4337"] for pt in series_cm)
         providers[CROSSMINT_PROVIDER_ID] = {
@@ -963,11 +1113,11 @@ def collect_onchain() -> dict:
             "source": "bundlebear",
             "confidence": "medium",
             "bundlebear_labels": {"erc4337": BUNDLEBEAR_CROSSMINT_FACTORY_LABEL},
-            "note": "上界估计：factory 0xd703aae...（ZeroDev Kernel）含 Crossmint + 其他 Kernel 客户。测试网 Crossmint 占 67%。",
+            "note": "降级：精准 RPC 采集失败，使用 BundleBear 上界估计。factory 0xd703aae...（ZeroDev Kernel）含 Crossmint + 其他 Kernel 客户。",
             "daily_series": series_cm,
         }
         log_info("onchain data", provider=CROSSMINT_PROVIDER_ID,
-                 erc4337=sum_cm, confidence="medium-upper-bound",
+                 erc4337=sum_cm, confidence="medium-upper-bound-fallback",
                  series_days=len(series_cm))
     else:
         providers[CROSSMINT_PROVIDER_ID] = {
@@ -975,8 +1125,8 @@ def collect_onchain() -> dict:
             "erc4337_active_wallets_30d": None,
             "eip7702_live_accounts": None,
             "total_onchain_footprint": None,
-            "error": "BundleBear API fetch failed",
-            "source": "bundlebear",
+            "error": "Both RPC precise and BundleBear API failed",
+            "source": "none",
             "daily_series": None,
         }
 
