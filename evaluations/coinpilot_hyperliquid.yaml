@@ -1,0 +1,31 @@
+provider: coinpilot_hyperliquid
+evaluator: gpt-5.3-codex (AI agent)
+date: "2026-03-07"
+
+summary: |
+  Coinpilot Hyperliquid 属于 intent/copy-trade 路径，钱包由 Privy 预创建并由平台管理执行。
+  create_wallet 可返回主钱包地址，但签名和通用交易原语均不开放。
+  与 benchmark 的通用 wallet_core 测项存在天然错位，适合 perps 订阅执行而非通用钱包能力评测。
+
+scores:
+  onboarding_ease: 3
+  doc_quality: 2
+  api_consistency: 2
+  error_message_quality: 3
+  agent_autonomy: 3
+  time_to_first_success_min: 20
+  governance_completeness: 1
+  network_environment: 2
+  sdk_doc_quality: 2
+  app_tool_coverage: 2
+  app_execution_quality: 3
+  cost_transparency: 2
+  kyc_requirement_clarity: 2
+
+human_interventions: []
+
+integration_bugs: []
+
+doc_gaps:
+  - "CLI 返回结构与 wallet 字段来源未形成稳定公开 schema"
+  - "copy-trade 生命周期与通用交易接口能力边界需补充说明"

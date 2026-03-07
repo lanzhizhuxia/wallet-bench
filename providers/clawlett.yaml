@@ -1,0 +1,36 @@
+name: Clawlett
+class: smart_account
+custody_model: Gnosis-Safe+Zodiac
+signing_modes: [raw_tx]
+submission_mode: provider_submit
+chains: [base]
+required_secrets: [BASE_RPC_URL]
+network_modes:
+  testnet: null
+  mainnet: base
+viability: ready
+viability_note: |
+  Node.js 脚本集（initialize.js, swap.js, balance.js, cow.js, trenches.js）。
+  基于 Gnosis Safe + Zodiac Roles 的智能合约钱包。
+  仅支持 Base 主网（chain ID 8453）。无 personal_sign 或 sign_typed_data。
+  内置 KyberSwap/CoW Protocol Swap。Config 需要 wallet.json。
+
+skill:
+  package: null
+  package_registry: null
+  integration_type: cli_subprocess
+  docs_url: null
+  description: "Clawlett — Gnosis Safe + Zodiac Roles 智能账户，内置 KyberSwap/CoW Swap"
+  license: null
+  last_verified: "2026-03-07"
+
+governance:
+  policy_engine: true
+  spend_limit: false
+  address_allowlist: false
+  human_in_loop: false
+  notes: "Zodiac Roles 模块提供链上策略执行，限制 Agent 可调用的合约和方法"
+
+takeaways:
+  learn: "基于 Gnosis Safe 的链上策略执行（Zodiac Roles），内置 KyberSwap/CoW Protocol Swap 能力"
+  avoid: "仅支持 Base 主网（无测试网），无 personal_sign / sign_typed_data 签名原语"

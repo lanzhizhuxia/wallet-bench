@@ -1,0 +1,35 @@
+name: Universal Trading (Particle Network)
+class: local
+custody_model: Local
+signing_modes: [raw_tx]
+submission_mode: client_submit
+chains: [ethereum, bsc, polygon, arbitrum, optimism, solana]
+required_secrets: [PRIVATE_KEY]
+network_modes:
+  testnet: bsc-testnet
+  mainnet: bsc
+viability: candidate
+viability_note: |
+  ISSUE-018: 通过 universal-account-example 的 TypeScript 脚本集成。
+  私钥由本地 .env 管理，支持 EVM + Solana 示例脚本。
+
+skill:
+  github: https://github.com/particle-network/universal-account-example
+  package: universal-account-example
+  package_registry: github
+  integration_type: cli_subprocess
+  docs_url: https://developers.particle.network/
+  description: "Particle Universal Accounts 示例脚本（buy/sell/evm/solana）"
+  license: MIT
+  last_verified: "2026-03-07"
+
+governance:
+  policy_engine: false
+  spend_limit: false
+  address_allowlist: false
+  human_in_loop: false
+  notes: "脚本级集成，不含平台治理引擎"
+
+takeaways:
+  learn: "本地私钥 + 多链脚本，适合快速验证 swap/交易自动化流程"
+  avoid: "不暴露 sign_message / sign_typed_data 原语，通用 send_transaction 能力受脚本覆盖范围限制"

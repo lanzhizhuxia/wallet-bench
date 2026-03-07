@@ -1,0 +1,53 @@
+provider: clawlett
+evaluator: claude-opus-4.6 (AI agent)
+date: "2026-03-07"
+
+summary: |
+  Clawlett 基于 Gnosis Safe + Zodiac Roles，是唯一采用智能合约账户的供应商。
+  链上策略执行（Zodiac Roles 限制 Agent 可调用的合约和方法）是独有亮点。
+  内置 KyberSwap/CoW Protocol Swap。仅支持 Base 主网。
+  无 personal_sign 或 sign_typed_data——Zodiac Roles 仅允许交易级操作。
+  适合需要链上治理约束的 Base 生态 Agent。
+
+scores:
+  onboarding_ease: 2
+  doc_quality: 2
+  api_consistency: 3
+  error_message_quality: 3
+  agent_autonomy: 3
+  time_to_first_success_min: 30
+  governance_completeness: 4
+  network_environment: 1
+  sdk_doc_quality: 2
+  app_tool_coverage: 2
+  app_execution_quality: 3
+  cost_transparency: 2
+  kyc_requirement_clarity: 2
+
+human_interventions:
+  - type: safe_deployment
+    reason: "需要预部署 Gnosis Safe 和配置 Zodiac Roles 模块"
+    blocker: true
+
+integration_bugs: []
+
+doc_gaps:
+  - "无正式文档，需阅读源码理解脚本参数"
+  - "Zodiac Roles 权限配置未有文档说明"
+  - "仅 Base 主网，无测试网支持"
+
+agent_experience: |
+  ## 作为 AI Agent 的集成体验
+
+  ### 优点
+  - 链上策略执行（Zodiac Roles），Agent 行为受合约约束
+  - 内置 KyberSwap/CoW Protocol Swap 脚本
+  - Gnosis Safe 多签架构提供安全保障
+
+  ### 痛点
+  - 无签名原语（personal_sign/sign_typed_data）
+  - 仅 Base 主网，无测试网环境
+  - 需要预部署 Safe 和配置 Zodiac Roles
+
+  ### 总体评价
+  适合需要链上治理约束的 Base 生态 Agent。独特的 Zodiac Roles 策略执行是差异化优势。

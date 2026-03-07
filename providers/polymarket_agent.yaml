@@ -1,0 +1,34 @@
+name: Polymarket Agent
+class: local
+custody_model: Local
+signing_modes: []
+submission_mode: provider_submit
+chains: [polygon]
+required_secrets: []
+network_modes:
+  testnet: null
+  mainnet: polygon
+viability: candidate
+viability_note: |
+  ISSUE-019: 通过 poly Python CLI 集成（setup/markets/balance/buy/sell/doctor）。
+  钱包由 poly 管理，面向预测市场交易，不提供通用签名和原始交易接口。
+
+skill:
+  package: polymarket-agent
+  package_registry: pypi
+  integration_type: cli_subprocess
+  docs_url: https://github.com/Polymarket/poly-agent
+  description: "Polymarket 预测市场 Agent CLI（Polygon USDC）"
+  license: MIT
+  last_verified: "2026-03-07"
+
+governance:
+  policy_engine: false
+  spend_limit: false
+  address_allowlist: false
+  human_in_loop: false
+  notes: "交易能力聚焦 prediction market，不提供通用 DeFi 治理层"
+
+takeaways:
+  learn: "预测市场 buy/sell 路径直接可用，适合交易型 agent 快速接入"
+  avoid: "无 sign_message/sign_typed_data/send_transaction，无法覆盖通用钱包基准能力"

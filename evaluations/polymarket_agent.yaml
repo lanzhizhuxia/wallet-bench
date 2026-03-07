@@ -1,0 +1,32 @@
+provider: polymarket_agent
+evaluator: gpt-5.3-codex (AI agent)
+date: "2026-03-07"
+
+summary: |
+  Polymarket Agent 通过 poly CLI 提供预测市场交易能力，链路聚焦 Polygon + USDC。
+  钱包创建可通过 poly setup 与 balance/doctor 输出解析地址完成。
+  不暴露通用签名能力，也不支持 generic send_transaction。
+  适合 prediction market 场景，不适合作为通用钱包 provider。
+
+scores:
+  onboarding_ease: 3
+  doc_quality: 3
+  api_consistency: 3
+  error_message_quality: 3
+  agent_autonomy: 3
+  time_to_first_success_min: 15
+  governance_completeness: 1
+  network_environment: 2
+  sdk_doc_quality: 3
+  app_tool_coverage: 2
+  app_execution_quality: 3
+  cost_transparency: 2
+  kyc_requirement_clarity: 3
+
+human_interventions: []
+
+integration_bugs: []
+
+doc_gaps:
+  - "CLI 输出结构与地址字段命名可能变动，缺少稳定 JSON contract"
+  - "buy/sell 支持明确但 generic transaction 未提供"

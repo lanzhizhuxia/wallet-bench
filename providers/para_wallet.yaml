@@ -1,0 +1,36 @@
+name: Para Wallet
+class: mpc
+custody_model: MPC-Cloud
+signing_modes: [raw_sign]
+submission_mode: client_submit
+chains: [ethereum, solana, cosmos]
+required_secrets: [PARA_API_KEY]
+network_modes:
+  testnet: null
+  mainnet: ethereum
+viability: ready
+viability_note: |
+  纯 REST API，3 个端点。MPC 云签名（sign-raw）。
+  Beta: https://api.beta.getpara.com, Prod: https://api.getpara.com。
+  Auth: X-API-Key header。支持 EVM/Solana/Cosmos 同一 API。
+  409 Conflict 返回已有 walletId。sign-raw 接受 0x hex，返回无 0x 前缀签名。
+
+skill:
+  package: null
+  package_registry: null
+  integration_type: rest_api
+  docs_url: "https://docs.getpara.com"
+  description: "Para Wallet — MPC 云签名 REST API，支持 EVM/Solana/Cosmos"
+  license: null
+  last_verified: "2026-03-07"
+
+governance:
+  policy_engine: false
+  spend_limit: false
+  address_allowlist: false
+  human_in_loop: false
+  notes: "无链下策略引擎，纯签名服务"
+
+takeaways:
+  learn: "极简 REST API（3 端点），MPC 签名，多链（EVM/Solana/Cosmos）统一接口"
+  avoid: "无 sign_typed_data，无内置 DeFi 工具，send_transaction 需客户端自行组装和广播"

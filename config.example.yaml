@@ -61,6 +61,40 @@ providers:
     address: ""          # Your Ethereum address (OnchainOS does not create wallets)
     chain: ethereum      # Chain name: ethereum, bsc, polygon, base, arbitrum, solana, etc.
 
+  # ── Clawlett (Gnosis Safe + Zodiac Roles) ─────────────────────
+  # Requires: cloned clawlett repo with configured wallet.json.
+  # Base Mainnet ONLY (chain ID 8453). No signing primitives.
+  clawlett:
+    safe_address: "0xYOUR_SAFE_ADDRESS"
+    agent_key: "0xYOUR_AGENT_PRIVATE_KEY"
+    owner_address: "0xYOUR_OWNER_ADDRESS"
+    clawlett_repo_path: "./clawlett"
+
+  # ── Para Wallet (MPC Cloud Signing) ───────────────────────────
+  # Requires: Para API key from https://dashboard.getpara.com
+  para_wallet:
+    api_key: "YOUR_PARA_API_KEY"
+    base_url: "https://api.beta.getpara.com"
+    user_identifier: "wallet-bench@test.com"
+    chain: ethereum
+
+  # ── Universal Trading (Particle Network) ─────────────────────
+  # Requires: cloned universal-account-example repo with .env configured.
+  universal_trading:
+    repo_path: "./universal-account-example"
+    chain: bsc
+
+  # ── Polymarket Agent ─────────────────────────────────────────
+  # Requires: pip install polymarket-agents && poly setup
+  polymarket_agent:
+    chain: polygon
+
+  # ── Coinpilot Hyperliquid ────────────────────────────────────
+  # Requires: coinpilot.json with API key, userId, wallet keys.
+  coinpilot_hyperliquid:
+    config_path: "./coinpilot.json"
+    api_base_url: ""
+
 safety:
   allowed_networks: [bsc-testnet, opbnb-testnet, base-sepolia, ethereum-sepolia]
   blocked_chain_ids: [56, 204, 8453, 1]  # Block mainnet chain IDs

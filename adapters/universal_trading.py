@@ -1,0 +1,168 @@
+from __future__ import annotations
+
+import asyncio
+import os
+import re
+import time
+from pathlib import Path
+from typing import Any
+
+from adapters.base import SignResult, TxParams, TxResult, WalletAdapter, WalletInfo
+
+
+class UniversalTradingAdapter(WalletAdapter):
+    name = "Universal Trading (Particle Network)"
+    arch_class = "local"
+    chains = ["ethereum", "bsc", "polygon", "arbitrum", "optimism", "solana"]
+    custody_model = "Local"
+    signing_modes = ["raw_tx"]
+    submission_mode = "client_submit"
+
+    def __init__(self, repo_path: str = "", chain: str = "bsc", **kwargs: Any) -> None:
+        self._chain = chain
+        self._repo_path = Path(repo_path).expanduser() if repo_path else Path.cwd() / "universal-account-example"
+        self._examples_path = self._repo_path / "examples"
+        self._address: str = ""
+
+    async def _run_cmd(self, *cmd: str, cwd: Path | None = None, timeout: float = 45) -> str:
+        proc = await asyncio.create_subprocess_exec(
+            *cmd,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE,
+            stdin=asyncio.subprocess.DEVNULL,
+            cwd=str(cwd or self._repo_path),
+            env={**os.environ},
+        )
+        try:
+            stdout, stderr = await asyncio.wait_for(proc.communicate(), timeout=timeout)
+        except asyncio.TimeoutError:
+            proc.kill()
+            raise TimeoutError(f"Command timed out: {' '.join(cmd)}")
+
+        out = stdout.decode().strip()
+        err = stderr.decode().strip()
+        if proc.returncode != 0:
+            raise RuntimeError(f"Command exited {proc.returncode}: {(err or out)[:400]}")
+        return out
+
+    def _extract_address(self, text: str) -> str:
+        if self._chain == "solana":
+            m = re.search(r"\b([1-9A-HJ-NP-Za-km-z]{32,44})\b", text)
+            return m.group(1) if m else ""
+        m = re.search(r"\b(0x[0-9a-fA-F]{40})\b", text)
+        return m.group(1) if m else ""
+
+    def _extract_tx_hash(self, text: str) -> str:
+        m = re.search(r"\b(0x[0-9a-fA-F]{64})\b", text)
+        return m.group(1) if m else ""
+
+    def _read_env_address(self) -> str:
+        env_candidates = [
+            os.environ.get("UNIVERSAL_ACCOUNT_ADDRESS", ""),
+            os.environ.get("WALLET_ADDRESS", ""),
+            os.environ.get("ADDRESS", ""),
+        ]
+        for value in env_candidates:
+            addr = self._extract_address(value)
+            if addr:
+                return addr
+
+        env_file = self._repo_path / ".env"
+        if env_file.exists():
+            text = env_file.read_text(encoding="utf-8", errors="ignore")
+            addr = self._extract_address(text)
+            if addr:
+                return addr
+        return ""
+
+    async def setup(self) -> None:
+        if self._examples_path.exists():
+            self._address = self._read_env_address()
+        # If examples dir missing, tests will fail individually but runner won't crash
+
+    async def teardown(self) -> None:
+        pass
+
+    async def create_wallet(self) -> WalletInfo:
+        t0 = time.perf_counter()
+        if self._address:
+            elapsed = (time.perf_counter() - t0) * 1000
+            return WalletInfo(address=self._address, chain=self._chain, meta={"elapsed_ms": elapsed, "source": "env"})
+
+        init_script = self._repo_path / "init.sh"
+        if init_script.exists():
+            try:
+                out = await self._run_cmd("bash", str(init_script), cwd=self._repo_path, timeout=120)
+                self._address = self._extract_address(out) or self._read_env_address()
+            except Exception:
+                self._address = self._read_env_address()
+
+        elapsed = (time.perf_counter() - t0) * 1000
+        return WalletInfo(
+            address=self._address,
+            chain=self._chain,
+            meta={"elapsed_ms": elapsed, "repo_path": str(self._repo_path)},
+        )
+
+    async def sign_message(self, message: str) -> SignResult:
+        raise NotImplementedError("Universal Trading does not expose message signing")
+
+    async def sign_typed_data(self, data: dict) -> SignResult:
+        raise NotImplementedError("Universal Trading does not expose typed data signing")
+
+    async def send_transaction(self, tx: TxParams) -> TxResult:
+        t0 = time.perf_counter()
+
+        script_candidates = [
+            "transfer-evm.ts",
+            "send-evm.ts",
+            "buy-evm.ts",
+            "sell-evm.ts",
+        ]
+        if self._chain == "solana":
+            script_candidates = ["transfer-solana.ts", "send-solana.ts", "buy-solana.ts", "sell-solana.ts"]
+
+        script = ""
+        for cand in script_candidates:
+            p = self._examples_path / cand
+            if p.exists():
+                script = cand
+                break
+
+        if not script:
+            elapsed = (time.perf_counter() - t0) * 1000
+            return TxResult(
+                tx_hash="",
+                status=0,
+                elapsed_ms=elapsed,
+                meta={"revert": True, "error": "No suitable script found in examples/"},
+            )
+
+        try:
+            out = await self._run_cmd("npx", "tsx", script, cwd=self._examples_path, timeout=120)
+            tx_hash = self._extract_tx_hash(out)
+            elapsed = (time.perf_counter() - t0) * 1000
+            return TxResult(tx_hash=tx_hash, status=1 if tx_hash else None, elapsed_ms=elapsed, meta={"script": script, "raw": out[:500]})
+        except Exception as exc:
+            elapsed = (time.perf_counter() - t0) * 1000
+            return TxResult(
+                tx_hash="",
+                status=0,
+                elapsed_ms=elapsed,
+                meta={"script": script, "error": str(exc)[:300], "revert": True},
+            )
+
+    def capabilities(self) -> dict[str, bool]:
+        return {
+            "create_wallet": True,
+            "sign_message": False,
+            "sign_typed_data": False,
+            "send_transaction": True,
+            "multi_chain": True,
+            "policy_enforcement": False,
+            "session_delegation": False,
+            "estimate_gas": self._chain != "solana",
+        }
+
+    def provider_unsupported(self) -> set[str]:
+        return {"sign_message", "sign_typed_data"}

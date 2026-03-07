@@ -131,7 +131,7 @@ TEST_CATEGORY: dict[str, str] = {
 # Providers without built-in app-layer actions (swap/DeFi/bridge etc.).
 # They CAN support DeFi via raw send_transaction + calldata — see DeFi matrix.
 # Marked N/A here because the *benchmark test* checks for built-in high-level APIs.
-NO_BUILTIN_APP_PROVIDERS: set[str] = {'bnbchain_mcp', 'crossmint', 'privy'}
+NO_BUILTIN_APP_PROVIDERS: set[str] = {'bnbchain_mcp', 'crossmint', 'privy', 'para_wallet'}
 
 # Backward compat alias
 INFRA_PROVIDERS = NO_BUILTIN_APP_PROVIDERS
@@ -250,7 +250,7 @@ def _load_adapter(provider_name: str, config: dict):
 
     # Find the adapter class (first subclass of WalletAdapter in the module)
     from adapters.base import WalletAdapter
-    adapter_cls = None
+    adapter_cls: Any = None
     for attr_name in dir(mod):
         attr = getattr(mod, attr_name)
         if isinstance(attr, type) and issubclass(attr, WalletAdapter) and attr is not WalletAdapter:
@@ -303,10 +303,52 @@ def _load_adapter(provider_name: str, config: dict):
         adapter = adapter_cls(
             chain=provider_cfg.get("chain", "base"),
         )
+    elif provider_name == "universal_trading":
+        adapter = adapter_cls(
+            repo_path=provider_cfg.get("repo_path", "universal-account-example"),
+            chain=provider_cfg.get("chain", "bsc"),
+        )
+    elif provider_name == "polymarket_agent":
+        adapter = adapter_cls(
+            chain=provider_cfg.get("chain", "polygon"),
+        )
+    elif provider_name == "coinpilot_hyperliquid":
+        adapter = adapter_cls(
+            config_path=provider_cfg.get("config_path", "coinpilot.json"),
+            api_base_url=provider_cfg.get("api_base_url", ""),
+        )
     elif provider_name == "okx_onchainos":
         adapter = adapter_cls(
             address=provider_cfg.get("address", ""),
             chain=provider_cfg.get("chain", "ethereum"),
+        )
+    elif provider_name == "clawlett":
+        adapter = adapter_cls(
+            safe_address=provider_cfg.get("safe_address", ""),
+            agent_key=provider_cfg.get("agent_key", ""),
+            owner_address=provider_cfg.get("owner_address", ""),
+            clawlett_repo_path=provider_cfg.get("clawlett_repo_path", ""),
+        )
+    elif provider_name == "para_wallet":
+        adapter = adapter_cls(
+            api_key=provider_cfg.get("api_key", ""),
+            base_url=provider_cfg.get("base_url", "https://api.beta.getpara.com"),
+            user_identifier=provider_cfg.get("user_identifier", "wallet-bench@test.com"),
+            chain=provider_cfg.get("chain", "ethereum"),
+        )
+    elif provider_name == "universal_trading":
+        adapter = adapter_cls(
+            repo_path=provider_cfg.get("repo_path", ""),
+            chain=provider_cfg.get("chain", "bsc"),
+        )
+    elif provider_name == "polymarket_agent":
+        adapter = adapter_cls(
+            chain=provider_cfg.get("chain", "polygon"),
+        )
+    elif provider_name == "coinpilot_hyperliquid":
+        adapter = adapter_cls(
+            config_path=provider_cfg.get("config_path", ""),
+            api_base_url=provider_cfg.get("api_base_url", ""),
         )
     else:
         adapter = adapter_cls(**provider_cfg)

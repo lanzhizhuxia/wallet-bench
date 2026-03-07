@@ -1,0 +1,32 @@
+provider: universal_trading
+evaluator: gpt-5.3-codex (AI agent)
+date: "2026-03-07"
+
+summary: |
+  Universal Trading (Particle Network) 通过本地 TypeScript 脚本执行交易流程，适合快速接入多链买卖样例。
+  架构为本地私钥模式，create_wallet 可复用 .env 既有地址或执行初始化脚本。
+  目前不暴露 sign_message / sign_typed_data，通用 send_transaction 仅能 best-effort 映射到示例脚本。
+  适合脚本化交易与 PoC，不适合需要完整签名原语或通用交易构造的场景。
+
+scores:
+  onboarding_ease: 3
+  doc_quality: 3
+  api_consistency: 2
+  error_message_quality: 3
+  agent_autonomy: 3
+  time_to_first_success_min: 20
+  governance_completeness: 1
+  network_environment: 3
+  sdk_doc_quality: 3
+  app_tool_coverage: 3
+  app_execution_quality: 3
+  cost_transparency: 2
+  kyc_requirement_clarity: 3
+
+human_interventions: []
+
+integration_bugs: []
+
+doc_gaps:
+  - "示例脚本缺少统一能力矩阵，send/transfer 与 buy/sell 对应关系需人工确认"
+  - "钱包创建与地址来源依赖仓库脚本和 .env，文档未统一说明"

@@ -1,0 +1,53 @@
+provider: para_wallet
+evaluator: claude-opus-4.6 (AI agent)
+date: "2026-03-07"
+
+summary: |
+  Para Wallet 提供极简 MPC 签名 REST API（仅 3 个端点）。
+  支持 EVM/Solana/Cosmos 多链统一接口。sign-raw 接受 hex 数据。
+  无 sign_typed_data 支持（需客户端自行哈希）。
+  无内置 DeFi 工具——纯签名服务，send_transaction 需客户端自行组装和广播。
+  适合需要轻量级 MPC 签名服务的集成方案。
+
+scores:
+  onboarding_ease: 3
+  doc_quality: 3
+  api_consistency: 4
+  error_message_quality: 3
+  agent_autonomy: 3
+  time_to_first_success_min: 15
+  governance_completeness: 1
+  network_environment: 2
+  sdk_doc_quality: 3
+  app_tool_coverage: 1
+  app_execution_quality: 2
+  cost_transparency: 2
+  kyc_requirement_clarity: 2
+
+human_interventions:
+  - type: api_key_registration
+    reason: "需要在 Para Dashboard 注册获取 API Key"
+    blocker: true
+
+integration_bugs: []
+
+doc_gaps:
+  - "send_transaction 需客户端自行组装 raw tx 和广播，文档未提供示例"
+  - "sign-raw 返回签名无 0x 前缀，需客户端自行添加"
+  - "409 Conflict 返回格式与正常响应不一致"
+
+agent_experience: |
+  ## 作为 AI Agent 的集成体验
+
+  ### 优点
+  - 极简 API（3 个端点），易于理解和集成
+  - 多链统一接口（EVM/Solana/Cosmos），代码复用度高
+  - MPC 签名安全性高
+
+  ### 痛点
+  - 无 sign_typed_data（EIP-712 需客户端哈希）
+  - 纯签名服务，send_transaction 需额外实现 RPC 广播
+  - 无内置 DeFi 工具
+
+  ### 总体评价
+  适合需要轻量级多链签名服务的场景。API 设计简洁但功能有限。

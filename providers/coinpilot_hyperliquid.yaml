@@ -1,0 +1,34 @@
+name: Coinpilot Hyperliquid
+class: intent
+custody_model: Privy-Managed
+signing_modes: []
+submission_mode: provider_submit
+chains: [hyperliquid]
+required_secrets: []
+network_modes:
+  testnet: null
+  mainnet: hyperliquid
+viability: candidate
+viability_note: |
+  ISSUE-020: 通过 scripts/coinpilot_cli.mjs 子进程集成。
+  钱包由 Coinpilot + Privy 预创建，适配器仅回传主钱包地址。
+
+skill:
+  package: coinpilot
+  package_registry: npm
+  integration_type: cli_subprocess
+  docs_url: https://docs.coinpilot.ai/
+  description: "Coinpilot Hyperliquid copy-trade CLI"
+  license: Proprietary
+  last_verified: "2026-03-07"
+
+governance:
+  policy_engine: false
+  spend_limit: false
+  address_allowlist: false
+  human_in_loop: false
+  notes: "交易通过订阅执行，不暴露通用签名/交易原语"
+
+takeaways:
+  learn: "perps copy-trade 场景明确，钱包生命周期由平台托管"
+  avoid: "无法用于通用签名或通用 send_transaction 测试"

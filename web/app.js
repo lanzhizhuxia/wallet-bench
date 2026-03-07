@@ -36,6 +36,11 @@ const PROVIDER_COLORS = {
   minara: '#28A473',
   moonpay: '#60A5FA',
   okx_onchainos: '#000000',
+  clawlett: '#FF8C00',
+  para_wallet: '#8B5CF6',
+  universal_trading: '#7C3AED',
+  polymarket_agent: '#E040FB',
+  coinpilot_hyperliquid: '#00E5FF',
 };
 
 const STATUS_ICONS = { pass: "✅", fail: "❌", skip: "⚠️", error: "❗️", not_applicable: "—", unsupported: "🚫", inconclusive: "❓" };
@@ -184,6 +189,26 @@ const AI_INSIGHTS = {
     okx_onchainos: {
         title: '覆盖面最广的链上操作网关（60+ 链），内置 DEX 聚合 + Swap 报价，但无签名原语',
         body: '本地 Rust CLI 工具，5 skill / 34 命令，覆盖 Portfolio 查询、DEX 行情、Swap 报价、代币搜索、链上网关。60+ 链支持是七家中最广。内置 swap quote 命令提供 DEX 聚合级别报价，gateway 模块支持 gas 预估和交易模拟。但不暴露 sign_message / sign_typed_data 签名原语，也不做密钥托管——定位为"查询+报价+网关"而非"签名+提交"。需要 OKX API 凭证（API Key + Secret + Passphrase）。适合 Agent 需要跨链查询、比价、获取 Swap 报价但使用自己签名方案的场景。',
+    },
+    clawlett: {
+        title: '唯一的链上策略执行方案（Gnosis Safe + Zodiac Roles），内置 KyberSwap/CoW Swap',
+        body: '基于 Gnosis Safe + Zodiac Roles 的智能合约账户，仅支持 Base 主网。链上策略执行是独有差异化能力——Zodiac Roles 模块在合约层面限制 Agent 可调用的合约和方法。内置 KyberSwap/CoW Protocol Swap 脚本。但不暴露 personal_sign 或 sign_typed_data 签名原语（Zodiac Roles 仅允许交易级操作）。无测试网环境，主网操作受安全配置限制。适合需要链上治理约束的 Base 生态 Agent 场景。',
+    },
+    para_wallet: {
+        title: '极简 MPC 签名 REST API（3 端点），多链统一接口（EVM/Solana/Cosmos）',
+        body: '纯 REST API 的 MPC 云签名服务，仅 3 个端点（创建钱包/查询/签名）。支持 EVM、Solana、Cosmos 多链统一 API。sign-raw 接受 hex 数据并通过 MPC 签名。无 sign_typed_data（EIP-712 需客户端自行哈希）。无内置 DeFi 工具，send_transaction 需客户端自行组装和广播。API 设计极简，适合需要轻量级多链签名服务的集成方案。',
+    },
+    universal_trading: {
+        title: 'Particle Network 多链统一账户，内置买卖/转账/兑换脚本',
+        body: '基于 Particle Network Universal Account SDK 的本地交易脚本。支持 Solana + EVM 多链（BSC/Polygon/Arbitrum/Optimism/Ethereum）。内置 buy/sell/transfer/convert 脚本，有滑点控制和 Solana MEV tip (Jito)。但不暴露 sign_message/sign_typed_data 签名原语，Particle SDK 内部处理签名。适合需要多链交易脚本化和 PoC 验证的场景。',
+    },
+    polymarket_agent: {
+        title: '专注 Polymarket 预测市场的自动化交易 CLI',
+        body: 'Python CLI 工具（poly 命令），专注 Polymarket 预测市场交易。仅 Polygon 链，USDC 结算。poly buy/sell 命令即可下单，poly markets 查询市场。无签名原语（personal_sign/sign_typed_data），无通用交易能力。功能高度垂直——仅 Polymarket 场景可用。适合纯预测市场自动化交易的 Agent。',
+    },
+    coinpilot_hyperliquid: {
+        title: 'Hyperliquid L1 永续合约跟单交易，Privy 托管钱包',
+        body: 'Node.js 脚本工具，专注 Hyperliquid L1 永续合约跟单交易。Privy 托管钱包，无签名原语暴露。通过 start/stop 命令管理跟单订阅，hl-account/hl-portfolio 查询账户状态。5 req/s 速率限制。功能最垂直——仅 Hyperliquid 跟单场景。适合永续合约自动跟单的 Agent。',
     },
 };
 
