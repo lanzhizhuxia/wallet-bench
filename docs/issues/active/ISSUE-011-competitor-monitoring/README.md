@@ -8,7 +8,7 @@ concepts:
 # ISSUE-011: 竞品活跃度代理指标监控 — SDK 下载量 + GitHub 活跃度 + 状态页 + 文档密度 + 链上数据
 
 ## Meta
-- **Status**: PHASE_0-2_COMPLETE (Phase 3 = Backlog)
+- **Status**: COMPLETE (Phase 0-2 已交付，Phase 3 废弃——季度人工流程不纳入工程任务)
 - **Priority**: P2
 - **Component**: scripts/, web/, .github/workflows/
 - **Owner**: —
@@ -89,7 +89,7 @@ GitHub Actions (cron: 每日 UTC 06:00)
 
 ### Phase 0: 调研（前置依赖，阻塞 Phase 1/2 开发）
 
-#### Task 0-1: 验证 npm/PyPI 包名清单
+#### Task 0-1: 验证 npm/PyPI 包名清单 ✅
 
 **目的**：确认每家供应商可追踪的 npm/PyPI 包名，验证 API 可返回有效数据，并通过准入规则过滤不稳定包名。
 
@@ -117,7 +117,7 @@ GitHub Actions (cron: 每日 UTC 06:00)
 
 ---
 
-#### Task 0-2: 整理 GitHub 仓库清单
+#### Task 0-2: 整理 GitHub 仓库清单 ✅
 
 **目的**：确认每家供应商的核心开源仓库，用于追踪 Stars/Commits/活跃度。
 
@@ -141,7 +141,7 @@ GitHub Actions (cron: 每日 UTC 06:00)
 
 ---
 
-#### Task 0-3: 调研链上工厂合约地址
+#### Task 0-3: 调研链上工厂合约地址 ✅
 
 **目的**：找到各供应商在链上创建钱包的工厂合约地址，用于追踪钱包创建量和活跃度。
 
@@ -176,7 +176,7 @@ GitHub Actions (cron: 每日 UTC 06:00)
 
 ---
 
-#### Task 0-4: Dune Analytics 免费额度实测
+#### Task 0-4: Dune Analytics 免费额度实测 ✅
 
 **目的**：验证 Dune 免费 API 能否满足"每日一次轻量查询"的需求。
 
@@ -195,7 +195,7 @@ GitHub Actions (cron: 每日 UTC 06:00)
 
 ---
 
-#### Task 0-5: 指标口径定义文档（新增）
+#### Task 0-5: 指标口径定义文档（新增） ✅
 
 **目的**：在开发前确定所有指标的含义、聚合方式和展示规则，避免后续数据"假波动"和误读。
 
@@ -207,7 +207,7 @@ GitHub Actions (cron: 每日 UTC 06:00)
 
 **交付物**：`docs/issues/active/ISSUE-011-competitor-monitoring/metric-definitions.md`
 
-- [ ] **Task 0-6**: 整理各供应商 Status Page 地址 + changelog 路径
+- [x] **Task 0-6**: 整理各供应商 Status Page 地址 + changelog 路径 ✅
   - 确认各供应商是否有公开 Status Page（优先 Statuspage.io，Privy/Coinbase/Crossmint 均使用此平台）
   - 记录 incidents JSON 端点（通常为 `https://{subdomain}.statuspage.io/api/v2/incidents.json`）
   - 确认 BNB Chain MCP / MoonPay / Minara 是否有对应页面
@@ -218,7 +218,7 @@ GitHub Actions (cron: 每日 UTC 06:00)
 
 ### Phase 1: npm/PyPI + GitHub + 状态页 + 文档密度（依赖 Task 0-1, 0-2, 0-5, 0-6）
 
-- [ ] **Task 1-1**: 编写 `scripts/collect_market_data.py`
+- [x] **Task 1-1**: 编写 `scripts/collect_market_data.py`
   - 从 npm API 采集各包周下载量（逐包请求，重试 3 次，超时 10s）
   - 从 pypistats API 采集 PyPI 下载量
   - 从 GitHub API 采集 stars / 近 30d commits / 近 30d open issues / 最近提交日期
@@ -228,13 +228,13 @@ GitHub Actions (cron: 每日 UTC 06:00)
   - 上次成功快照回退：如全量失败，保留上次 JSON 不覆盖
   - 输出 `web/data/market_npm.json`、`web/data/market_pypi.json`、`web/data/market_github.json`（含 schema 版本号）
 
-- [ ] **Task 1-2**: 编写 GitHub Actions workflow `.github/workflows/collect-market-data.yml`
+- [x] **Task 1-2**: 编写 GitHub Actions workflow `.github/workflows/collect-market-data.yml`
   - cron: `0 6 * * *`（每日 UTC 06:00）
   - 权限：`contents: write`（显式声明）
   - commit message 格式：`[skip ci] chore: update market data YYYY-MM-DD`（防循环触发）
   - 采集失败时：workflow 标记为失败，不 commit 空数据
 
-- [ ] **Task 1-3**: Dashboard 新增“市场活跃度”Tab
+- [x] **Task 1-3**: Dashboard 新增"市场活跃度"Tab
   - **分层展示**（独立卡片，禁止合并为单一“用户数”）：
     - 开发者兴趣层：npm/PyPI 下载量趋势
     - 研发健康层：GitHub commits / issues / stars
@@ -245,7 +245,7 @@ GitHub Actions (cron: 每日 UTC 06:00)
   - Tab 内加数据口径免责声明（参考 Task 0-5 定义）
   - 数据缺失时展示"暂无数据"而非显示 0
 
-- [ ] **Task 1-4**: 数据质量与失败治理（新增）
+- [x] **Task 1-4**: 数据质量与失败治理（新增）
   - 采集脚本输出结构化日志（JSON lines 格式），记录每个 API 调用的状态
   - 定义数据新鲜度检查：Dashboard 显示"最后更新时间"，超过 48h 未更新时展示警告
   - 历史数据存档策略：JSON 只保留最新快照，历史趋势通过 git log 可追溯
@@ -256,24 +256,24 @@ GitHub Actions (cron: 每日 UTC 06:00)
 
 > Phase 2 不阻塞 Phase 1 交付。仅在 Task 0-3 找到稳定 factory 地址且 Task 0-4 确认 Dune 成本可控后启动。
 
-- [ ] **Task 2-1**: 搞定链上归因口径规则文档（版本化配置：链范围、ERC-4337 工厂合约白名单 + EIP-7702 impl 白名单、机器人过滤规则）
-- [ ] **Task 2-2**: 搞定 Dune query 追踪钱包创建趋势（含 ERC-4337 factory + EIP-7702 authorized contract 归属验证）
-- [ ] **Task 2-3**: 采集脚本增加链上数据调用（BundleBear ERC-4337 + EIP-7702 双维度，Dune 异步轮询 + RPC 降级），输出 `web/data/market_onchain.json`
+- [x] **Task 2-1**: 搞定链上归因口径规则文档（版本化配置：链范围、ERC-4337 工厂合约白名单 + EIP-7702 impl 白名单、机器人过滤规则）
+- [x] **Task 2-2**: 搞定 Dune query 追踪钱包创建趋势（含 ERC-4337 factory + EIP-7702 authorized contract 归属验证）
+- [x] **Task 2-3**: 采集脚本增加链上数据调用（BundleBear ERC-4337 + EIP-7702 双维度，Dune 异步轮询 + RPC 降级），输出 `web/data/market_onchain.json`
   - 含 `erc4337_active_wallets_30d` + `eip7702_live_accounts` + `total_onchain_footprint` 派生字段
   - Coinbase 示例：~53万 (4337) + ~20万 (7702) = ~73万 总链上足迹
-- [ ] **Task 2-4**: Dashboard 终端活跃层卡片上线（展示 ERC-4337 + EIP-7702 双维度，仅可归因供应商，其余标注“架构不可追踪”）
+- [x] **Task 2-4**: Dashboard 终端活跃层卡片上线（展示 ERC-4337 + EIP-7702 双维度，仅可归因供应商，其余标注"架构不可追踪"）
 
-### Phase 3: Backlog（商业化信号，半自动）
+### Phase 3: ~~Backlog（商业化信号，半自动）~~ — 已废弃
 
-> 自动化成本高、信号噪声大，暂不纳入主线。
+> 自动化成本高、信号噪声大，且本质为季度人工 review 流程而非工程任务，不纳入 ISSUE 跟踪。
 
-- [ ] **Task 3-1**: 新增生产级集成数（季度）
-  - 自动抓取 GitHub Releases、官方 changelog、生态目录页候选事件
-  - 人工审核确认“生产级”判定后写入已确认事件表
-  - 工作量：2–4d + 持续人工校验
-- [ ] **Task 3-2**: 招聘结构雷达（季度人工抄样）
-  - 不做全自动采集（ATS 页面随时改版，维护成本过高）
-  - 每季度人工观察各供应商招聘页 SA/BD/客户成功占比变化，记录到 `docs/market-snapshots/`
+- [~] **Task 3-1**: 新增生产级集成数（季度） — 废弃
+  - ~~自动抓取 GitHub Releases、官方 changelog、生态目录页候选事件~~
+  - ~~人工审核确认“生产级”判定后写入已确认事件表~~
+  - ~~工作量：2–4d + 持续人工校验~~
+- [~] **Task 3-2**: 招聘结构雷达（季度人工抄样） — 废弃
+  - ~~不做全自动采集（ATS 页面随时改版，维护成本过高）~~
+  - ~~每季度人工观察各供应商招聘页 SA/BD/客户成功占比变化，记录到 `docs/market-snapshots/`~~
 
 ---
 

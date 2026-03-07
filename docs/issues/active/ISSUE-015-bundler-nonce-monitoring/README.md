@@ -8,14 +8,16 @@ concepts:
 # ISSUE-015: Bundler Nonce 实时健康监控
 
 ## Meta
-- **Status**: OPEN
-- **Priority**: P3
+- **Status**: DEPRECATED
+- **Priority**: ~~P3~~ N/A
 - **Component**: scripts/, web/app.js
 - **Owner**: TBD
 - **Date**: 2026-03-07
 - **Effort**: Medium (~4-8h)
 - **Blocked By**: 无
 - **Blocks**: 无
+- **Deprecated Date**: 2026-03-07
+- **Deprecation Reason**: Oracle 审核判定为 P3 运维健康信号，非用户牵引力指标；不符合 a.y 核心需求（竞品商业牵引力雷达）。经确认废弃。
 
 ## Background
 
