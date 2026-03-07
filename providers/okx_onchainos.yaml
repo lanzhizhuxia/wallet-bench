@@ -1,0 +1,79 @@
+name: OKX OnchainOS
+class: local
+custody_model: Local
+signing_modes: [raw_tx]
+submission_mode: client_submit
+chains:
+  - ethereum
+  - bsc
+  - polygon
+  - arbitrum
+  - optimism
+  - base
+  - avalanche
+  - fantom
+  - cronos
+  - gnosis
+  - celo
+  - moonbeam
+  - moonriver
+  - harmony
+  - klaytn
+  - solana
+  - tron
+  - aptos
+  - sui
+  - near
+  - cosmos
+  - osmosis
+  - starknet
+  - zksync
+  - linea
+  - scroll
+  - mantle
+  - manta
+  - blast
+  - mode
+  - merlin
+  - bob
+  - core
+  - kava
+  - metis
+  - boba
+  - aurora
+  - zkfair
+  - x-layer
+  - taiko
+  - sei
+  - berachain
+  - monad
+required_secrets: [OKX_API_KEY, OKX_SECRET_KEY, OKX_PASSPHRASE]
+network_modes:
+  testnet: null
+  mainnet: ethereum
+viability: ready
+viability_note: |
+  onchainos CLI (Rust)。本地 CLI 工具，5 skill / 34 命令。
+  Portfolio 查询、DEX 行情、Swap 报价、代币搜索、链上网关（Gas/模拟/广播）。
+  60+ 链支持。无签名原语暴露（sign_message/sign_typed_data 不可用）。
+
+skill:
+  github: https://github.com/okx/onchainos-skills
+  package: "onchainos"
+  package_registry: cargo
+  integration_type: cli_subprocess
+  docs_url: https://github.com/okx/onchainos-skills#readme
+  description: "OKX OnchainOS — Rust CLI，5 skill（Portfolio/DEX/Swap/Token/Gateway），60+ 链，DEX 聚合行情 + Swap 报价 + 链上网关"
+  license: MIT
+  last_verified: "2026-03-07"
+
+governance:
+  policy_engine: false
+  spend_limit: false
+  address_allowlist: false
+  human_in_loop: false
+  notes: "本地 CLI 工具，API Key 用户自持，无治理层"
+
+takeaways:
+  learn: "覆盖面最广（60+ 链、DEX 聚合、行情数据），Rust 编写性能好，5 skill 统一 CLI 入口，JSON 输出结构化"
+  avoid: "无签名原语（sign_message/sign_typed_data），需 OKX API 凭证（API Key + Secret + Passphrase），CLI 尚处早期阶段"

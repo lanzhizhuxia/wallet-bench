@@ -20,7 +20,7 @@ async def run(adapter: WalletAdapter, config: dict) -> TestResult:
 
     has_cap = any(caps.get(k, False) for k in ("token_swap", "swap"))
     has_method = any(callable(getattr(adapter, k, None)) for k in ("token_swap", "swap"))
-    has_hint = any(k in provider for k in ("moonpay", "minara", "coinbase"))
+    has_hint = any(k in provider for k in ("moonpay", "minara", "coinbase", "okx"))
 
     if not (has_cap or has_method or has_hint):
         return TestResult(
@@ -75,6 +75,21 @@ async def run(adapter: WalletAdapter, config: dict) -> TestResult:
                     "-a", "0.01",
                     "-y",
                     timeout=30,
+                ),
+                timeout=30,
+            )
+
+        elif "okx" in provider and callable(getattr(adapter, "_run_onchainos", None)):
+            chain_index = getattr(adapter, "_chain_index", "1")
+            detail["path"] = "okx_onchainos_cli"
+            detail["chain_index"] = chain_index
+            result = await asyncio.wait_for(
+                adapter._run_onchainos(  # type: ignore[attr-defined]
+                    "swap", "quote",
+                    "--from", "USDC",
+                    "--to", "USDT",
+                    "--amount", "0.01",
+                    "--chain-index", chain_index,
                 ),
                 timeout=30,
             )

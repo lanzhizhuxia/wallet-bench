@@ -52,6 +52,15 @@ providers:
   minara:
     chain: base
 
+  # ── OKX OnchainOS ──────────────────────────────────────────
+  # Requires: onchainos CLI (Rust) installed + OKX API credentials.
+  # Install: curl -sSL https://raw.githubusercontent.com/okx/onchainos-skills/main/install.sh | sh
+  # Credentials: https://www.okx.com/account/my-api → Create API Key
+  # Set env vars: OKX_API_KEY, OKX_SECRET_KEY, OKX_PASSPHRASE
+  okx_onchainos:
+    address: ""          # Your Ethereum address (OnchainOS does not create wallets)
+    chain_index: "1"     # 1=Ethereum, 56=BSC, 137=Polygon, 8453=Base, 501=Solana
+
 safety:
   allowed_networks: [bsc-testnet, opbnb-testnet, base-sepolia, ethereum-sepolia]
   blocked_chain_ids: [56, 204, 8453, 1]  # Block mainnet chain IDs

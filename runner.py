@@ -271,6 +271,11 @@ def _load_adapter(provider_name: str, config: dict):
         adapter = adapter_cls(
             chain=provider_cfg.get("chain", "base"),
         )
+    elif provider_name == "okx_onchainos":
+        adapter = adapter_cls(
+            address=provider_cfg.get("address", ""),
+            chain_index=provider_cfg.get("chain_index", "1"),
+        )
     else:
         adapter = adapter_cls(**provider_cfg)
 
