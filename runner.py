@@ -73,6 +73,8 @@ TEST_CATEGORY: dict[str, str] = {
     'preflight_fee': 'wallet_core',
     'nonce_management': 'wallet_core',
     'tx_confirmation': 'wallet_core',
+    'erc20_transfer': 'wallet_core',
+    'contract_write': 'wallet_core',
     # 权限治理 (governance)
     # 'policy_enforcement': 'governance',  # Removed: enterprise-grade feature, see Privy evaluation notes
     'session_delegation': 'governance',
@@ -85,6 +87,7 @@ TEST_CATEGORY: dict[str, str] = {
     'rate_limit_resilience': 'reliability',
     'idempotent_submit': 'reliability',
     'retry_backoff': 'reliability',
+    'tx_finality': 'reliability',
     # 运维能力 (ops)
     'portability_recovery': 'ops',
     'derivation_path': 'ops',
@@ -105,6 +108,12 @@ TEST_CATEGORY: dict[str, str] = {
     'cross_chain_bridge': 'app',
     'prediction_market': 'app',
     'perps_trading': 'app',
+    # 安全性 (security)
+    'sig_verify': 'security',
+    # Agent 可用性 (agent)
+    'schema_quality': 'agent',
+    'machine_errors': 'agent',
+    'deterministic_response': 'agent',
 }
 
 # Providers without built-in app-layer actions (swap/DeFi/bridge etc.).
@@ -132,6 +141,10 @@ TEST_SOURCE: dict[str, str] = {
     # hybrid: runner + human evaluation
     'token_swap': 'hybrid', 'defi_interaction': 'hybrid',
     'cross_chain_bridge': 'hybrid', 'prediction_market': 'hybrid', 'perps_trading': 'hybrid',
+    # Phase 1 P0: new automated tests (ISSUE-021)
+    'erc20_transfer': 'auto', 'contract_write': 'auto', 'sig_verify': 'auto',
+    'tx_finality': 'auto',
+    'schema_quality': 'auto', 'machine_errors': 'auto', 'deterministic_response': 'auto',
 }
 
 

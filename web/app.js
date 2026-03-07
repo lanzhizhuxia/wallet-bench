@@ -58,6 +58,10 @@ const TEST_NAME_ZH = {
     token_swap: "Uniswap 兑换", defi_interaction: "Aave/Morpho 借贷",
     cross_chain_bridge: "跨链桥接",
     prediction_market: "Polymarket 预测", perps_trading: "Hyperliquid 永续",
+    // Phase 1 P0 (ISSUE-021)
+    erc20_transfer: "ERC-20 代币转账", contract_write: "合约写入交互",
+    sig_verify: "签名验证", tx_finality: "交易最终确认",
+    schema_quality: "返回结构质量", machine_errors: "错误可机读性", deterministic_response: "响应确定性",
 };
 
 const TEST_DESCRIPTIONS = {
@@ -96,6 +100,14 @@ const TEST_DESCRIPTIONS = {
     cross_chain_bridge: "验证能否通过内置工具完成跨链资产转移",
     prediction_market: "验证能否在预测市场（如 Polymarket）下注或交易",
     perps_trading: "验证能否在永续合约平台（如 Hyperliquid）开仓/平仓",
+    // Phase 1 P0 (ISSUE-021)
+    erc20_transfer: "验证能否构造并提交 ERC-20 transfer calldata 交易",
+    contract_write: "验证能否处理带 data 字段的合约写入交易",
+    sig_verify: "验证签名后 ecrecover 恢复的地址与钱包地址一致",
+    tx_finality: "验证交易提交后能否获取 receipt 并达到确认深度",
+    schema_quality: "验证成功/失败路径返回的数据结构是否完整可机读",
+    machine_errors: "验证错误信息是否可捕获、非空、且同类错误稳定一致",
+    deterministic_response: "验证相同输入多次调用返回的结构字段是否一致",
 };
 
 
@@ -159,6 +171,7 @@ const TEST_CATEGORY = {
     key_generate: 'wallet_core', sign_message: 'wallet_core', sign_typed_data: 'wallet_core',
     send_tx: 'wallet_core', multi_chain: 'wallet_core', preflight_fee: 'wallet_core',
     nonce_management: 'wallet_core', tx_confirmation: 'wallet_core',
+    erc20_transfer: 'wallet_core', contract_write: 'wallet_core',
     // 权限治理 (governance)
     policy_enforcement: 'governance', session_delegation: 'governance',
     authorization_audit_trace: 'governance',
@@ -167,6 +180,7 @@ const TEST_CATEGORY = {
     concurrent_ops: 'reliability', failure_recovery: 'reliability',
     rate_limit_resilience: 'reliability',
     idempotent_submit: 'reliability', retry_backoff: 'reliability',
+    tx_finality: 'reliability',
     // 运维能力 (ops)
     portability_recovery: 'ops', webhook_delivery: 'ops', quota_disclosure: 'ops',
     derivation_path: 'ops', keychain_lock: 'ops', backup_recovery: 'ops',
@@ -175,6 +189,10 @@ const TEST_CATEGORY = {
     // 应用能力 (app)
     token_swap: 'app', defi_interaction: 'app', cross_chain_bridge: 'app',
     prediction_market: 'app', perps_trading: 'app',
+    // 安全性 (security) — ISSUE-021
+    sig_verify: 'security',
+    // Agent 可用性 (agent) — ISSUE-021
+    schema_quality: 'agent', machine_errors: 'agent', deterministic_response: 'agent',
 };
 
 const TEST_SOURCE = {
@@ -194,6 +212,10 @@ const TEST_SOURCE = {
   // HYBRID tests
   'token_swap': 'hybrid', 'defi_interaction': 'hybrid', 'cross_chain_bridge': 'hybrid',
   'prediction_market': 'hybrid', 'perps_trading': 'hybrid',
+  // Phase 1 P0 (ISSUE-021)
+  'erc20_transfer': 'auto', 'contract_write': 'auto', 'sig_verify': 'auto',
+  'tx_finality': 'auto',
+  'schema_quality': 'auto', 'machine_errors': 'auto', 'deterministic_response': 'auto',
 };
 // YAML-only scores are rendered separately via EVAL_SCORE_META, not in TEST_SOURCE
 
@@ -204,6 +226,8 @@ const CATEGORY_META = [
     { key: 'reliability', label: '稳定性' },
     { key: 'ops', label: '运维能力' },
     { key: 'app', label: '应用能力' },
+    { key: 'security', label: '安全性' },
+    { key: 'agent', label: 'Agent 可用性' },
 ];
 
 // DeFi scenario display mappings (shared by matrix + heatmap)

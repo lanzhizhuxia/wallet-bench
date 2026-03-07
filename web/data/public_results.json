@@ -55,13 +55,152 @@
         "session_delegation": false,
         "estimate_gas": true
       },
-      "timestamp": "2026-03-07T08:29:37.453681+00:00",
+      "timestamp": "2026-03-07T09:02:00.574586+00:00",
       "results": [
+        {
+          "test_id": "a01",
+          "test_name": "schema_quality",
+          "status": "fail",
+          "elapsed_ms": 22.911750013008714,
+          "message": "schema checks: 2/4 (50.00%); sign_message \u4e0d\u652f\u6301\uff0c\u6309\u89c4\u683c\u8df3\u8fc7\u7b7e\u540d\u5b57\u6bb5\u68c0\u67e5",
+          "detail": {
+            "checks": [
+              {
+                "name": "wallet.address_non_empty",
+                "ok": true
+              },
+              {
+                "name": "wallet.address_0x_prefix",
+                "ok": true
+              },
+              {
+                "name": "tx.nominal_hash_or_error_meta",
+                "ok": false
+              },
+              {
+                "name": "tx.invalid_hash_or_error_meta",
+                "ok": false
+              }
+            ],
+            "operations": {
+              "create_wallet": {
+                "address": "[REDACTED]",
+                "chain": "bsc-testnet",
+                "meta": {
+                  "elapsed_ms": 20.51762503106147,
+                  "raw": {
+                    "address": "[REDACTED]"
+                  }
+                }
+              },
+              "send_transaction_nominal": {
+                "tx_hash": "",
+                "status": null,
+                "meta": {
+                  "raw": "Error transferring native token: Number `1E-18` is not a valid decimal number.\n\nVersion: viem@2.27.2"
+                }
+              },
+              "send_transaction_invalid": {
+                "tx_hash": "",
+                "status": null,
+                "meta": {
+                  "raw": "Error transferring native token: Invalid address or ENS name: 0xinvalid"
+                }
+              }
+            },
+            "checks_passed": 2,
+            "total_checks": 4,
+            "score": 0.5
+          },
+          "owner": "provider",
+          "source": "auto"
+        },
+        {
+          "test_id": "a02",
+          "test_name": "machine_errors",
+          "status": "fail",
+          "elapsed_ms": 1.1699999449774623,
+          "message": "\u9519\u8bef\u673a\u8bfb\u6027\u4e0d\u8db3\uff1a\u5b58\u5728\u4e0d\u53ef\u6355\u83b7/\u7a7a\u4fe1\u606f/\u540c\u7c7b\u4e0d\u7a33\u5b9a",
+          "detail": {
+            "trigger_for_a_and_c": "send_invalid_param",
+            "checks": {
+              "a_caught": false,
+              "a_message_non_empty": false,
+              "b_caught": false,
+              "b_message_non_empty": false,
+              "c_caught": false,
+              "c_message_non_empty": false,
+              "same_class_stable": false
+            },
+            "messages": {
+              "a": "",
+              "b": "",
+              "c": ""
+            },
+            "subjects": {
+              "a": "",
+              "c": ""
+            },
+            "raw": {
+              "a": {
+                "kind": "result",
+                "tx_hash": "",
+                "meta": {
+                  "raw": "Error transferring native token: Invalid address or ENS name: 0xinvalid"
+                }
+              },
+              "b": {
+                "kind": "result",
+                "tx_hash": "",
+                "meta": {
+                  "raw": "Error transferring native token: Invalid address or ENS name: 0xinvalid"
+                }
+              },
+              "c": {
+                "kind": "result",
+                "tx_hash": "",
+                "meta": {
+                  "raw": "Error transferring native token: Invalid address or ENS name: 0xinvalid"
+                }
+              }
+            }
+          },
+          "owner": "provider",
+          "source": "auto"
+        },
+        {
+          "test_id": "a03",
+          "test_name": "deterministic_response",
+          "status": "pass",
+          "elapsed_ms": 1.8061250448226929,
+          "message": "sign_message \u4e0d\u53ef\u7528\uff0ccreate_wallet \u4e09\u6b21\u7ed3\u6784\u4e00\u81f4",
+          "detail": {
+            "mode": "create_wallet_fallback",
+            "checks": {
+              "address_non_empty_all": true,
+              "address_prefix_consistent": true,
+              "chain_presence_consistent": true,
+              "meta_type_consistent": true
+            },
+            "addresses": [
+              "[REDACTED]",
+              "[REDACTED]",
+              "[REDACTED]"
+            ],
+            "chains": [
+              "bsc-testnet",
+              "bsc-testnet",
+              "bsc-testnet"
+            ]
+          },
+          "owner": "industry",
+          "source": "auto"
+        },
         {
           "test_id": "t01",
           "test_name": "key_generate",
           "status": "pass",
-          "elapsed_ms": 26.963292038999498,
+          "elapsed_ms": 0.5057919770479202,
           "message": "\u94b1\u5305\u5df2\u521b\u5efa [REDACTED]",
           "detail": {
             "address": "[REDACTED]",
@@ -94,11 +233,11 @@
           "test_id": "t04",
           "test_name": "send_tx",
           "status": "pass",
-          "elapsed_ms": 716.6894589900039,
+          "elapsed_ms": 718.8540840288624,
           "message": "\u4ea4\u6613\u5df2\u63d0\u4ea4: [REDACTED]",
           "detail": {
             "tx_hash": "[REDACTED]",
-            "elapsed_ms": 716.6894589900039
+            "elapsed_ms": 718.8540840288624
           },
           "owner": "",
           "source": "auto"
@@ -107,7 +246,7 @@
           "test_id": "t05",
           "test_name": "multi_chain",
           "status": "pass",
-          "elapsed_ms": 1.2089579831808805,
+          "elapsed_ms": 1.2420829152688384,
           "message": "Adapter \u58f0\u660e 2 \u6761\u94fe: bsc, opbnb",
           "detail": {
             "chains": [
@@ -143,7 +282,7 @@
           "test_id": "t09",
           "test_name": "failure_recovery",
           "status": "pass",
-          "elapsed_ms": 333.401917014271,
+          "elapsed_ms": 325.3605409990996,
           "message": "\u6240\u6709\u6545\u969c\u573a\u666f\u5747\u6b63\u5e38\u5904\u7406",
           "detail": {
             "checks": [
@@ -166,7 +305,7 @@
           "test_id": "t10",
           "test_name": "preflight_fee",
           "status": "pass",
-          "elapsed_ms": 85.55274998070672,
+          "elapsed_ms": 81.30504097789526,
           "message": "Gas \u9884\u4f30\u8fd4\u56de\u6210\u529f",
           "detail": {
             "estimation": {
@@ -181,7 +320,7 @@
           "test_id": "t11",
           "test_name": "rate_limit_resilience",
           "status": "pass",
-          "elapsed_ms": 2.269290969707072,
+          "elapsed_ms": 3.024832927621901,
           "message": "\u9650\u6d41\u6062\u590d: \u6240\u6709\u68c0\u67e5\u901a\u8fc7",
           "detail": {
             "checks": [
@@ -205,7 +344,7 @@
           "test_id": "t12",
           "test_name": "portability_recovery",
           "status": "pass",
-          "elapsed_ms": 972.8862090269104,
+          "elapsed_ms": 968.8530419953167,
           "message": "Portability: \u786e\u5b9a\u6027 identity, \u6240\u6709\u68c0\u67e5\u901a\u8fc7",
           "detail": {
             "checks": [
@@ -239,7 +378,7 @@
           "test_id": "t13",
           "test_name": "authorization_audit_trace",
           "status": "pass",
-          "elapsed_ms": 673.9798339549452,
+          "elapsed_ms": 669.9722079792991,
           "message": "\u5ba1\u8ba1\u94fe: 5/5 \u9879\u68c0\u67e5\u901a\u8fc7",
           "detail": {
             "checks": [
@@ -332,7 +471,7 @@
           "test_id": "t19",
           "test_name": "nonce_management",
           "status": "pass",
-          "elapsed_ms": 878.3474169904366,
+          "elapsed_ms": 818.6467499472201,
           "message": "\u4e24\u7b14\u4ea4\u6613\u5747\u6210\u529f\uff0cnonce \u81ea\u52a8\u9012\u589e\u6b63\u5e38",
           "detail": {
             "tx1_hash": "[REDACTED]",
@@ -365,7 +504,7 @@
           "test_id": "t20",
           "test_name": "tx_confirmation",
           "status": "pass",
-          "elapsed_ms": 417.31887497007847,
+          "elapsed_ms": 423.7986250082031,
           "message": "tx_hash \u8fd4\u56de\u6709\u6548 (0x + 64\u4f4dhex)",
           "detail": {
             "tx_hash": "[REDACTED]",
@@ -389,7 +528,7 @@
           "test_id": "t22",
           "test_name": "denial_reason_quality",
           "status": "fail",
-          "elapsed_ms": 341.52433305280283,
+          "elapsed_ms": 331.4366250997409,
           "message": "\u62d2\u7edd\u4fe1\u606f\u8d28\u91cf\u4e0d\u8db3: \u7f3a\u5c11 error_code \u6216 message",
           "detail": {
             "meta": {
@@ -403,7 +542,7 @@
           "test_id": "t23",
           "test_name": "idempotent_submit",
           "status": "fail",
-          "elapsed_ms": 853.5903749871068,
+          "elapsed_ms": 859.5221659634262,
           "message": "\u91cd\u590d\u63d0\u4ea4\u4ea7\u751f\u4e24\u7b14\u4e0d\u540c\u6210\u529f\u4ea4\u6613\uff0c\u5b58\u5728\u975e\u5e42\u7b49\u98ce\u9669",
           "detail": {
             "first_tx_hash": "[REDACTED]",
@@ -461,10 +600,62 @@
           "source": "auto"
         },
         {
+          "test_id": "t27",
+          "test_name": "erc20_transfer",
+          "status": "pass",
+          "elapsed_ms": 429.083792027086,
+          "message": "ERC-20 transfer calldata \u5df2\u63d0\u4ea4: [REDACTED]",
+          "detail": {
+            "tx_hash": "[REDACTED]",
+            "calldata": "[REDACTED]0000dead0000000000000000000000000000000000000000000000000000000000000001",
+            "wallet": "[REDACTED]"
+          },
+          "owner": "provider",
+          "source": "auto"
+        },
+        {
+          "test_id": "t28",
+          "test_name": "contract_write",
+          "status": "pass",
+          "elapsed_ms": 434.39591699279845,
+          "message": "\u542b calldata \u7684\u4ea4\u6613\u53ef\u88ab\u9002\u914d\u5668\u5904\u7406\u5e76\u63d0\u4ea4\u3002",
+          "detail": {
+            "tx_hash": "[REDACTED]",
+            "revert": false,
+            "data": "0xd09de08a",
+            "to": "[REDACTED]"
+          },
+          "owner": "provider",
+          "source": "auto"
+        },
+        {
+          "test_id": "t29",
+          "test_name": "sig_verify",
+          "status": "unsupported",
+          "elapsed_ms": 0.0,
+          "message": "\u8be5\u4f9b\u5e94\u5546\u4e0d\u652f\u6301\u6d88\u606f\u7b7e\u540d\u80fd\u529b\u3002",
+          "detail": {},
+          "owner": "provider",
+          "source": "auto"
+        },
+        {
+          "test_id": "t30",
+          "test_name": "tx_finality",
+          "status": "fail",
+          "elapsed_ms": 60738.06458292529,
+          "message": "\u8d85\u65f6\u672a\u83b7\u53d6\u5230\u4ea4\u6613 receipt\u3002",
+          "detail": {
+            "tx_hash": "[REDACTED]",
+            "rpc_url": "https://ethereum-sepolia-rpc.publicnode.com"
+          },
+          "owner": "provider",
+          "source": "auto"
+        },
+        {
           "test_id": "tc01",
           "test_name": "derivation_path",
           "status": "pass",
-          "elapsed_ms": 1.5665419632568955,
+          "elapsed_ms": 5.3963749669492245,
           "message": "\u786e\u5b9a\u6027\u6d3e\u751f\u5df2\u786e\u8ba4: [REDACTED]",
           "detail": {
             "address": "[REDACTED]"
@@ -476,7 +667,7 @@
           "test_id": "tc02",
           "test_name": "keychain_lock",
           "status": "pass",
-          "elapsed_ms": 1001.7745000077412,
+          "elapsed_ms": 1479.5699580572546,
           "message": "\u7a7a\u5bc6\u94a5\u4ea7\u751f\u4e86\u4e0d\u540c\u5730\u5740 error deriving address from private key: invalid private key, expected hex or 32 bytes, got string\uff08\u65e0\u5bc6\u94a5\u6cc4\u9732\uff09",
           "detail": {
             "bad_address": "error deriving address from private key: invalid private key, expected hex or 32 bytes, got string",
@@ -489,7 +680,7 @@
           "test_id": "tc03",
           "test_name": "backup_recovery",
           "status": "pass",
-          "elapsed_ms": 958.2110840128735,
+          "elapsed_ms": 1008.1626659957692,
           "message": "\u6062\u590d\u5df2\u9a8c\u8bc1: [REDACTED]",
           "detail": {
             "address": "[REDACTED]"
@@ -626,13 +817,148 @@
         "session_delegation": false,
         "estimate_gas": true
       },
-      "timestamp": "2026-03-07T08:32:40.156210+00:00",
+      "timestamp": "2026-03-07T09:18:31.275615+00:00",
       "results": [
+        {
+          "test_id": "a01",
+          "test_name": "schema_quality",
+          "status": "pass",
+          "elapsed_ms": 12599.451291956939,
+          "message": "schema checks: 5/5 (100.00%); send_transaction(\u975e\u6cd5\u5730\u5740\u8def\u5f84) \u5f02\u5e38: Transaction had invalid fields: {'to': '0xinvalid'}",
+          "detail": {
+            "checks": [
+              {
+                "name": "wallet.address_non_empty",
+                "ok": true
+              },
+              {
+                "name": "wallet.address_0x_prefix",
+                "ok": true
+              },
+              {
+                "name": "sign.signature_non_empty",
+                "ok": true
+              },
+              {
+                "name": "tx.nominal_hash_or_error_meta",
+                "ok": true
+              },
+              {
+                "name": "tx.invalid_hash_or_error_meta",
+                "ok": true
+              }
+            ],
+            "operations": {
+              "create_wallet": {
+                "address": "[REDACTED]",
+                "chain": "base-sepolia",
+                "meta": {
+                  "elapsed_ms": 863.5675839614123
+                }
+              },
+              "sign_message": {
+                "signature": "[REDACTED]75dbff76112fb47e79dbd3951b2f5ce78cd92a5802e8dc03afbe9b8f14bf39e61b",
+                "signer": "[REDACTED]",
+                "message_hash": "",
+                "meta": {}
+              },
+              "send_transaction_nominal": {
+                "tx_hash": "[REDACTED]",
+                "status": 1,
+                "meta": {}
+              },
+              "send_transaction_invalid_error": "Transaction had invalid fields: {'to': '0xinvalid'}"
+            },
+            "checks_passed": 5,
+            "total_checks": 5,
+            "score": 1.0
+          },
+          "owner": "industry",
+          "source": "auto"
+        },
+        {
+          "test_id": "a02",
+          "test_name": "machine_errors",
+          "status": "fail",
+          "elapsed_ms": 1165.752499946393,
+          "message": "\u9519\u8bef\u673a\u8bfb\u6027\u4e0d\u8db3\uff1a\u5b58\u5728\u4e0d\u53ef\u6355\u83b7/\u7a7a\u4fe1\u606f/\u540c\u7c7b\u4e0d\u7a33\u5b9a",
+          "detail": {
+            "trigger_for_a_and_c": "sign_message_empty",
+            "checks": {
+              "a_caught": false,
+              "a_message_non_empty": false,
+              "b_caught": true,
+              "b_message_non_empty": true,
+              "c_caught": false,
+              "c_message_non_empty": false,
+              "same_class_stable": false
+            },
+            "messages": {
+              "a": "",
+              "b": "Transaction had invalid fields: {'to': '0xinvalid'}",
+              "c": ""
+            },
+            "subjects": {
+              "a": "",
+              "c": ""
+            },
+            "raw": {
+              "a": {
+                "kind": "result",
+                "signature": "[REDACTED]70306f7b89ec3391cd5ec9710ff3cd69b4320bc8eeac2138f75590ec2800f4b51b",
+                "meta": {}
+              },
+              "b": {
+                "kind": "exception",
+                "error": "Transaction had invalid fields: {'to': '0xinvalid'}"
+              },
+              "c": {
+                "kind": "result",
+                "signature": "[REDACTED]70306f7b89ec3391cd5ec9710ff3cd69b4320bc8eeac2138f75590ec2800f4b51b",
+                "meta": {}
+              }
+            }
+          },
+          "owner": "provider",
+          "source": "auto"
+        },
+        {
+          "test_id": "a03",
+          "test_name": "deterministic_response",
+          "status": "pass",
+          "elapsed_ms": 12273.461458971724,
+          "message": "\u91cd\u590d\u7b7e\u540d\u8fd4\u56de\u7ed3\u6784\u4e00\u81f4",
+          "detail": {
+            "mode": "sign_message",
+            "checks": {
+              "signature_non_empty_all": true,
+              "signature_length_consistent": true,
+              "signer_presence_consistent": true,
+              "signer_value_consistent_if_present": true
+            },
+            "signature_lengths": [
+              132,
+              132,
+              132
+            ],
+            "signer_values": [
+              "[REDACTED]",
+              "[REDACTED]",
+              "[REDACTED]"
+            ],
+            "create_wallet_preview": {
+              "address": "[REDACTED]",
+              "chain": "base-sepolia"
+            }
+          },
+          "owner": "industry",
+          "source": "auto"
+        },
         {
           "test_id": "t01",
           "test_name": "key_generate",
           "status": "pass",
-          "elapsed_ms": 10428.316667035688,
+          "elapsed_ms": 9491.708458052017,
           "message": "\u94b1\u5305\u5df2\u521b\u5efa [REDACTED]",
           "detail": {
             "address": "[REDACTED]",
@@ -645,10 +971,10 @@
           "test_id": "t02",
           "test_name": "sign_message",
           "status": "pass",
-          "elapsed_ms": 429.20016701100394,
+          "elapsed_ms": 414.3533749738708,
           "message": "\u6d88\u606f\u7b7e\u540d\u6210\u529f",
           "detail": {
-            "signature": "[REDACTED]6eab1c1265ac9c6f66ceb43e1a07faaf088d6a1db071233fa1279580a0fd678a1c",
+            "signature": "[REDACTED]2a2559986bf6ff7d2e1a943462a50c557737c99198369ce17c06b69cf1b52bb01c",
             "signer": "[REDACTED]"
           },
           "owner": "",
@@ -658,10 +984,10 @@
           "test_id": "t03",
           "test_name": "sign_typed_data",
           "status": "pass",
-          "elapsed_ms": 449.9085000134073,
+          "elapsed_ms": 422.29966702871025,
           "message": "EIP-712 \u7b7e\u540d\u6210\u529f",
           "detail": {
-            "signature": "[REDACTED]748458e3b0f146754d56b6a6fbab4530b6cff1295fc377a504c76238b2c78c7a1c",
+            "signature": "[REDACTED]13023e6274b61feadfa0f3019408e5a25b429933019d1561dc77b544afb8ff461c",
             "signer": "[REDACTED]"
           },
           "owner": "",
@@ -671,11 +997,11 @@
           "test_id": "t04",
           "test_name": "send_tx",
           "status": "pass",
-          "elapsed_ms": 546.3965000235476,
+          "elapsed_ms": 556.7580420756713,
           "message": "\u4ea4\u6613\u5df2\u63d0\u4ea4: [REDACTED]",
           "detail": {
             "tx_hash": "[REDACTED]",
-            "elapsed_ms": 546.3965000235476
+            "elapsed_ms": 556.7580420756713
           },
           "owner": "",
           "source": "auto"
@@ -684,7 +1010,7 @@
           "test_id": "t05",
           "test_name": "multi_chain",
           "status": "pass",
-          "elapsed_ms": 11467.373041959945,
+          "elapsed_ms": 9890.970709035173,
           "message": "Adapter \u58f0\u660e 5 \u6761\u94fe: base, ethereum, polygon, arbitrum, optimism",
           "detail": {
             "chains": [
@@ -713,7 +1039,7 @@
           "test_id": "t08",
           "test_name": "concurrent_ops",
           "status": "pass",
-          "elapsed_ms": 21130.362875002902,
+          "elapsed_ms": 23400.526624987833,
           "message": "\u5e76\u53d1\u6df7\u5408\u8d1f\u8f7d\u6267\u884c\u6210\u529f",
           "detail": {
             "addresses": [
@@ -721,8 +1047,8 @@
               "[REDACTED]"
             ],
             "signatures": [
-              "[REDACTED]773728173d8f3a6ca241dcc215940a5db607a31b508233afee07dbc676ca29bc1c",
-              "[REDACTED]5549d331c3f27e70c72bcd155d5dc85f80b815923e271601191389ea047bb8db1b"
+              "[REDACTED]082d7c98c50752aeebbe44addbde4b47d0505117cdaee4ce2d19f99f3fbc748b1c",
+              "[REDACTED]3a2f1c82ab4d969008f1573a16113de3c87e01f7f0b12e51baff98371ff1816a1c"
             ],
             "tx_hashes": [
               "[REDACTED]"
@@ -735,7 +1061,7 @@
           "test_id": "t09",
           "test_name": "failure_recovery",
           "status": "pass",
-          "elapsed_ms": 713.2050839718431,
+          "elapsed_ms": 904.2024579830468,
           "message": "\u6240\u6709\u6545\u969c\u573a\u666f\u5747\u6b63\u5e38\u5904\u7406",
           "detail": {
             "checks": [
@@ -758,7 +1084,7 @@
           "test_id": "t10",
           "test_name": "preflight_fee",
           "status": "pass",
-          "elapsed_ms": 298.23074996238574,
+          "elapsed_ms": 435.09325000923127,
           "message": "Gas \u9884\u4f30\u8fd4\u56de\u6210\u529f",
           "detail": {
             "estimation": {
@@ -773,7 +1099,7 @@
           "test_id": "t11",
           "test_name": "rate_limit_resilience",
           "status": "pass",
-          "elapsed_ms": 49843.588042014744,
+          "elapsed_ms": 48677.80312499963,
           "message": "\u9650\u6d41\u6062\u590d: \u6240\u6709\u68c0\u67e5\u901a\u8fc7",
           "detail": {
             "checks": [
@@ -802,14 +1128,14 @@
           "test_id": "t12",
           "test_name": "portability_recovery",
           "status": "pass",
-          "elapsed_ms": 30857.392249978147,
+          "elapsed_ms": 32208.418083027937,
           "message": "Portability: \u975e\u786e\u5b9a\u6027 identity, \u6240\u6709\u68c0\u67e5\u901a\u8fc7",
           "detail": {
             "checks": [
               {
                 "test": "initial_create",
                 "ok": true,
-                "msg": "Created wallet: 0x52f5ddce..."
+                "msg": "Created wallet: 0x0061791b..."
               },
               {
                 "test": "session_restart",
@@ -819,7 +1145,7 @@
               {
                 "test": "identity_persistence",
                 "ok": true,
-                "msg": "New address (non-deterministic): 0x31dcfeac..."
+                "msg": "New address (non-deterministic): 0xf90206d7..."
               },
               {
                 "test": "sign_after_recovery",
@@ -841,7 +1167,7 @@
           "test_id": "t13",
           "test_name": "authorization_audit_trace",
           "status": "pass",
-          "elapsed_ms": 11435.698000015691,
+          "elapsed_ms": 11391.010500025004,
           "message": "\u5ba1\u8ba1\u94fe: 5/5 \u9879\u68c0\u67e5\u901a\u8fc7",
           "detail": {
             "checks": [
@@ -879,7 +1205,7 @@
           "test_id": "t14",
           "test_name": "token_swap",
           "status": "unsupported",
-          "elapsed_ms": 0.006375019438564777,
+          "elapsed_ms": 0.0034159747883677483,
           "message": "\u8be5\u4f9b\u5e94\u5546\u5f53\u524d\u4e0d\u63d0\u4f9b\u4ee3\u5e01\u5151\u6362\u529f\u80fd\u3002\u5982\u9700 Agent \u81ea\u52a8\u6267\u884c Swap \u4ea4\u6613\uff0c\u9700\u8bc4\u4f30\u5176\u4ed6\u65b9\u6848\u3002",
           "detail": {
             "provider": "coinbaseagentkitadapter coinbase agentkit",
@@ -901,7 +1227,7 @@
           "test_id": "t15",
           "test_name": "defi_interaction",
           "status": "unsupported",
-          "elapsed_ms": 0.00400003045797348,
+          "elapsed_ms": 0.0016669509932398796,
           "message": "\u8be5\u4f9b\u5e94\u5546\u5f53\u524d\u4e0d\u63d0\u4f9b DeFi \u4ea4\u4e92\u529f\u80fd\u3002\u5982\u9700 Agent \u53c2\u4e0e DeFi \u534f\u8bae\uff0c\u9700\u8bc4\u4f30\u5176\u4ed6\u65b9\u6848\u3002",
           "detail": {
             "provider": "coinbaseagentkitadapter coinbase agentkit",
@@ -957,7 +1283,7 @@
           "test_id": "t19",
           "test_name": "nonce_management",
           "status": "pass",
-          "elapsed_ms": 1064.0609169495292,
+          "elapsed_ms": 1041.3707500556484,
           "message": "\u4e24\u7b14\u4ea4\u6613\u5747\u6210\u529f\uff0cnonce \u81ea\u52a8\u9012\u589e\u6b63\u5e38",
           "detail": {
             "tx1_hash": "[REDACTED]",
@@ -974,7 +1300,7 @@
           "test_id": "t20",
           "test_name": "tx_confirmation",
           "status": "pass",
-          "elapsed_ms": 529.2868330143392,
+          "elapsed_ms": 583.7588749127463,
           "message": "tx_hash \u8fd4\u56de\u6709\u6548 (0x + 64\u4f4dhex)",
           "detail": {
             "tx_hash": "[REDACTED]",
@@ -990,11 +1316,11 @@
           "test_id": "t22",
           "test_name": "denial_reason_quality",
           "status": "fail",
-          "elapsed_ms": 396.1919159628451,
+          "elapsed_ms": 391.47637505084276,
           "message": "\u62d2\u7edd\u4fe1\u606f\u8d28\u91cf\u4e0d\u8db3: \u7f3a\u5c11 error_code \u6216 message",
           "detail": {
             "meta": {
-              "error": "ApiError(http_code=400, error_type=invalid_request, error_message=Insufficient balance to execute the transaction., correlation_id=9d883f47192655d8-IAD, error_link=https://docs.cdp.coinbase.com/api-reference/v2/errors#invalid-request)",
+              "error": "ApiError(http_code=400, error_type=invalid_request, error_message=Insufficient balance to execute the transaction., correlation_id=9d88806efdd51d47-IAD, error_link=https://docs.cdp.coinbase.com/api-reference/v2/errors#invalid-request)",
               "revert": true
             }
           },
@@ -1005,7 +1331,7 @@
           "test_id": "t23",
           "test_name": "idempotent_submit",
           "status": "fail",
-          "elapsed_ms": 1799.247250019107,
+          "elapsed_ms": 1038.016666076146,
           "message": "\u91cd\u590d\u63d0\u4ea4\u4ea7\u751f\u4e24\u7b14\u4e0d\u540c\u6210\u529f\u4ea4\u6613\uff0c\u5b58\u5728\u975e\u5e42\u7b49\u98ce\u9669",
           "detail": {
             "first_tx_hash": "[REDACTED]",
@@ -1020,7 +1346,7 @@
           "test_id": "t24",
           "test_name": "retry_backoff",
           "status": "pass",
-          "elapsed_ms": 4477.265749999788,
+          "elapsed_ms": 4229.708084021695,
           "message": "\u672a\u68c0\u6d4b\u5230\u9650\u6d41\uff0c\u8fde\u7eed\u8c03\u7528\u7a33\u5b9a",
           "detail": {
             "burst": 10,
@@ -1052,17 +1378,76 @@
           "source": "auto"
         },
         {
+          "test_id": "t27",
+          "test_name": "erc20_transfer",
+          "status": "pass",
+          "elapsed_ms": 10861.439166008495,
+          "message": "ERC-20 transfer calldata \u5df2\u63d0\u4ea4: [REDACTED]",
+          "detail": {
+            "tx_hash": "[REDACTED]",
+            "calldata": "[REDACTED]0000dead0000000000000000000000000000000000000000000000000000000000000001",
+            "wallet": "[REDACTED]"
+          },
+          "owner": "provider",
+          "source": "auto"
+        },
+        {
+          "test_id": "t28",
+          "test_name": "contract_write",
+          "status": "pass",
+          "elapsed_ms": 529.3254590360448,
+          "message": "\u542b calldata \u7684\u4ea4\u6613\u53ef\u88ab\u9002\u914d\u5668\u5904\u7406\u5e76\u63d0\u4ea4\u3002",
+          "detail": {
+            "tx_hash": "[REDACTED]",
+            "revert": false,
+            "data": "0xd09de08a",
+            "to": "[REDACTED]"
+          },
+          "owner": "provider",
+          "source": "auto"
+        },
+        {
+          "test_id": "t29",
+          "test_name": "sig_verify",
+          "status": "pass",
+          "elapsed_ms": 10568.4108750429,
+          "message": "\u7b7e\u540d\u6062\u590d\u5730\u5740\u4e0e\u94b1\u5305\u5730\u5740\u4e00\u81f4\u3002",
+          "detail": {
+            "wallet": "[REDACTED]",
+            "message_recovered": "[REDACTED]",
+            "message_signer": "[REDACTED]",
+            "typed_data_checked": true,
+            "typed_recovered": "[REDACTED]",
+            "typed_signer": "[REDACTED]"
+          },
+          "owner": "provider",
+          "source": "auto"
+        },
+        {
+          "test_id": "t30",
+          "test_name": "tx_finality",
+          "status": "fail",
+          "elapsed_ms": 60742.40916699637,
+          "message": "\u8d85\u65f6\u672a\u83b7\u53d6\u5230\u4ea4\u6613 receipt\u3002",
+          "detail": {
+            "tx_hash": "[REDACTED]",
+            "rpc_url": "https://ethereum-sepolia-rpc.publicnode.com"
+          },
+          "owner": "provider",
+          "source": "auto"
+        },
+        {
           "test_id": "tc01",
           "test_name": "attestation",
           "status": "pass",
-          "elapsed_ms": 11552.56962502608,
+          "elapsed_ms": 11573.29279195983,
           "message": "TEE \u8bc1\u660e\u68c0\u67e5\u901a\u8fc7",
           "detail": {
             "checks": [
               {
                 "test": "valid_address",
                 "ok": true,
-                "msg": "Address: 0xecf0C62E..."
+                "msg": "Address: 0x642E0340..."
               },
               {
                 "test": "custody_model",
@@ -1083,7 +1468,7 @@
           "test_id": "tc02",
           "test_name": "failover_continuity",
           "status": "pass",
-          "elapsed_ms": 20991.028791002464,
+          "elapsed_ms": 21636.96825003717,
           "message": "\u94b1\u5305\u8eab\u4efd\u5728\u4f1a\u8bdd\u91cd\u542f\u540e\u4fdd\u6301\u4e00\u81f4",
           "detail": {},
           "owner": "",
@@ -1234,13 +1619,256 @@
         "session_delegation": false,
         "estimate_gas": true
       },
-      "timestamp": "2026-03-07T08:30:52.493651+00:00",
+      "timestamp": "2026-03-07T09:06:01.806968+00:00",
       "results": [
+        {
+          "test_id": "a01",
+          "test_name": "schema_quality",
+          "status": "pass",
+          "elapsed_ms": 6670.4832080286,
+          "message": "schema checks: 5/5 (100.00%); send_transaction(\u975e\u6cd5\u5730\u5740\u8def\u5f84) \u5f02\u5e38: Crossmint API 400: {\"error\":true,\"message\":\"params.calls.0.to: Invalid EVM address: 0xinvalid\"}",
+          "detail": {
+            "checks": [
+              {
+                "name": "wallet.address_non_empty",
+                "ok": true
+              },
+              {
+                "name": "wallet.address_0x_prefix",
+                "ok": true
+              },
+              {
+                "name": "sign.signature_non_empty",
+                "ok": true
+              },
+              {
+                "name": "tx.nominal_hash_or_error_meta",
+                "ok": true
+              },
+              {
+                "name": "tx.invalid_hash_or_error_meta",
+                "ok": true
+              }
+            ],
+            "operations": {
+              "create_wallet": {
+                "address": "[REDACTED]",
+                "chain": "base-sepolia",
+                "meta": {
+                  "elapsed_ms": 3070.274541969411,
+                  "raw": {
+                    "chainType": "evm",
+                    "type": "smart",
+                    "config": {
+                      "adminSigner": {
+                        "type": "external-wallet",
+                        "address": "[REDACTED]",
+                        "locator": "external-wallet:[REDACTED]"
+                      },
+                      "delegatedSigners": []
+                    },
+                    "address": "[REDACTED]",
+                    "owner": "email:wallet-bench-1772874193@example.com",
+                    "createdAt": "2026-03-07T09:03:16.009Z"
+                  }
+                }
+              },
+              "sign_message": {
+                "signature": "[REDACTED]0000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000026000000000000000000000000000000000000000000000000000000000000001c4c5265d5d0000000000000000000000002577507b78c2008ff367261cb6285d44ba5ef2e9000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000fd7594a6f65c401c96e90a7b2700db2100000000000000000000000000000000000000000000000000000000000001243c3b752b01845ADb2C711129d4f3966735eD98a9F09fC4cE570000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000e000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000014D248Fb43447A385b93F63DD5F7c6C8b3353EcD13000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005601845ADb2C711129d4f3966735eD98a9F09fC4cE577b115c226f74b2de4c11806d77ce7640c214c1e3d1de7107d35c7e26a4b4990a065918294ef0165b43c651249fbc8e88dd10ce7836b7b278a443f9aa973d11611c000000000000000000006492649264926492649264926492649264926492649264926492649264926492",
+                "signer": "[REDACTED]",
+                "message_hash": "",
+                "meta": {
+                  "raw": {
+                    "id": "0f12de6c-f125-497d-9dfa-85fe5cadb297",
+                    "type": "message",
+                    "chainType": "evm",
+                    "walletType": "smart",
+                    "status": "success",
+                    "params": {
+                      "message": "schema-quality",
+                      "chain": "base-sepolia"
+                    },
+                    "approvals": {
+                      "pending": [],
+                      "submitted": [
+                        {
+                          "signature": "[REDACTED]065918294ef0165b43c651249fbc8e88dd10ce7836b7b278a443f9aa973d11611c",
+                          "submittedAt": "2026-03-07T09:03:17.888Z",
+                          "signer": {
+                            "type": "external-wallet",
+                            "address": "[REDACTED]",
+                            "locator": "external-wallet:[REDACTED]"
+                          },
+                          "message": "[REDACTED]"
+                        }
+                      ]
+                    },
+                    "createdAt": "2026-03-07T09:03:17.471Z",
+                    "completedAt": "2026-03-07T09:03:18.040Z",
+                    "outputSignature": "[REDACTED]0000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000026000000000000000000000000000000000000000000000000000000000000001c4c5265d5d0000000000000000000000002577507b78c2008ff367261cb6285d44ba5ef2e9000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000fd7594a6f65c401c96e90a7b2700db2100000000000000000000000000000000000000000000000000000000000001243c3b752b01845ADb2C711129d4f3966735eD98a9F09fC4cE570000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000e000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000014D248Fb43447A385b93F63DD5F7c6C8b3353EcD13000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005601845ADb2C711129d4f3966735eD98a9F09fC4cE577b115c226f74b2de4c11806d77ce7640c214c1e3d1de7107d35c7e26a4b4990a065918294ef0165b43c651249fbc8e88dd10ce7836b7b278a443f9aa973d11611c000000000000000000006492649264926492649264926492649264926492649264926492649264926492"
+                  }
+                }
+              },
+              "send_transaction_nominal": {
+                "tx_hash": "",
+                "status": 0,
+                "meta": {
+                  "error": "Crossmint API 422: {\"error\":{\"reason\":\"execution_reverted\",\"message\":\"Execution reverted, see 'revert' for details\",\"revert\":{\"type\":\"contract_call\",\"reason\":\"Couldn't parse revert reason from calldata (0x). The contract associated with this call is not verified\",\"reasonData\":\"0x\",\"simulationLink\":\"https://www.tdly.co/shared/simulation/52c2f281-14a4-460c-960a-ed50c9778c1c\"}},\"message\":\"Transaction reverted during execution. Please check 'error' for more information.\"}",
+                  "revert": true
+                }
+              },
+              "send_transaction_invalid_error": "Crossmint API 400: {\"error\":true,\"message\":\"params.calls.0.to: Invalid EVM address: 0xinvalid\"}"
+            },
+            "checks_passed": 5,
+            "total_checks": 5,
+            "score": 1.0
+          },
+          "owner": "industry",
+          "source": "auto"
+        },
+        {
+          "test_id": "a02",
+          "test_name": "machine_errors",
+          "status": "fail",
+          "elapsed_ms": 6611.961540998891,
+          "message": "\u9519\u8bef\u673a\u8bfb\u6027\u4e0d\u8db3\uff1a\u5b58\u5728\u4e0d\u53ef\u6355\u83b7/\u7a7a\u4fe1\u606f/\u540c\u7c7b\u4e0d\u7a33\u5b9a",
+          "detail": {
+            "trigger_for_a_and_c": "sign_message_empty",
+            "checks": {
+              "a_caught": false,
+              "a_message_non_empty": false,
+              "b_caught": true,
+              "b_message_non_empty": true,
+              "c_caught": false,
+              "c_message_non_empty": false,
+              "same_class_stable": false
+            },
+            "messages": {
+              "a": "",
+              "b": "Crossmint API 400: {\"error\":true,\"message\":\"params.calls.0.to: Invalid EVM address: 0xinvalid\"}",
+              "c": ""
+            },
+            "subjects": {
+              "a": "",
+              "c": ""
+            },
+            "raw": {
+              "a": {
+                "kind": "result",
+                "signature": "[REDACTED]0000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000026000000000000000000000000000000000000000000000000000000000000001c4c5265d5d0000000000000000000000002577507b78c2008ff367261cb6285d44ba5ef2e9000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000fd7594a6f65c401c96e90a7b2700db2100000000000000000000000000000000000000000000000000000000000001243c3b752b01845ADb2C711129d4f3966735eD98a9F09fC4cE570000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000e000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000014D248Fb43447A385b93F63DD5F7c6C8b3353EcD13000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005601845ADb2C711129d4f3966735eD98a9F09fC4cE575cfc0eb4b84e77c3e4b54bc6d6a81d97f583b461c32bf5cbee8daa2427a950547fcabea28b0cee46cbc25a0d3e2a7f7a4f71972ecd04c67914a56a8f085421271c000000000000000000006492649264926492649264926492649264926492649264926492649264926492",
+                "meta": {
+                  "raw": {
+                    "id": "f46f3225-e61f-4231-8dab-7ea29185688b",
+                    "type": "message",
+                    "chainType": "evm",
+                    "walletType": "smart",
+                    "status": "success",
+                    "params": {
+                      "message": "",
+                      "chain": "base-sepolia"
+                    },
+                    "approvals": {
+                      "pending": [],
+                      "submitted": [
+                        {
+                          "signature": "[REDACTED]7fcabea28b0cee46cbc25a0d3e2a7f7a4f71972ecd04c67914a56a8f085421271c",
+                          "submittedAt": "2026-03-07T09:03:23.107Z",
+                          "signer": {
+                            "type": "external-wallet",
+                            "address": "[REDACTED]",
+                            "locator": "external-wallet:[REDACTED]"
+                          },
+                          "message": "[REDACTED]"
+                        }
+                      ]
+                    },
+                    "createdAt": "2026-03-07T09:03:22.004Z",
+                    "completedAt": "2026-03-07T09:03:23.182Z",
+                    "outputSignature": "[REDACTED]0000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000026000000000000000000000000000000000000000000000000000000000000001c4c5265d5d0000000000000000000000002577507b78c2008ff367261cb6285d44ba5ef2e9000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000fd7594a6f65c401c96e90a7b2700db2100000000000000000000000000000000000000000000000000000000000001243c3b752b01845ADb2C711129d4f3966735eD98a9F09fC4cE570000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000e000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000014D248Fb43447A385b93F63DD5F7c6C8b3353EcD13000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005601845ADb2C711129d4f3966735eD98a9F09fC4cE575cfc0eb4b84e77c3e4b54bc6d6a81d97f583b461c32bf5cbee8daa2427a950547fcabea28b0cee46cbc25a0d3e2a7f7a4f71972ecd04c67914a56a8f085421271c000000000000000000006492649264926492649264926492649264926492649264926492649264926492"
+                  }
+                }
+              },
+              "b": {
+                "kind": "exception",
+                "error": "Crossmint API 400: {\"error\":true,\"message\":\"params.calls.0.to: Invalid EVM address: 0xinvalid\"}"
+              },
+              "c": {
+                "kind": "result",
+                "signature": "[REDACTED]0000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000026000000000000000000000000000000000000000000000000000000000000001c4c5265d5d0000000000000000000000002577507b78c2008ff367261cb6285d44ba5ef2e9000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000fd7594a6f65c401c96e90a7b2700db2100000000000000000000000000000000000000000000000000000000000001243c3b752b01845ADb2C711129d4f3966735eD98a9F09fC4cE570000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000e000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000014D248Fb43447A385b93F63DD5F7c6C8b3353EcD13000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005601845ADb2C711129d4f3966735eD98a9F09fC4cE575cfc0eb4b84e77c3e4b54bc6d6a81d97f583b461c32bf5cbee8daa2427a950547fcabea28b0cee46cbc25a0d3e2a7f7a4f71972ecd04c67914a56a8f085421271c000000000000000000006492649264926492649264926492649264926492649264926492649264926492",
+                "meta": {
+                  "raw": {
+                    "id": "f5ae72f6-8f08-4c09-b572-c68156d92f6e",
+                    "type": "message",
+                    "chainType": "evm",
+                    "walletType": "smart",
+                    "status": "success",
+                    "params": {
+                      "message": "",
+                      "chain": "base-sepolia"
+                    },
+                    "approvals": {
+                      "pending": [],
+                      "submitted": [
+                        {
+                          "signature": "[REDACTED]7fcabea28b0cee46cbc25a0d3e2a7f7a4f71972ecd04c67914a56a8f085421271c",
+                          "submittedAt": "2026-03-07T09:03:25.352Z",
+                          "signer": {
+                            "type": "external-wallet",
+                            "address": "[REDACTED]",
+                            "locator": "external-wallet:[REDACTED]"
+                          },
+                          "message": "[REDACTED]"
+                        }
+                      ]
+                    },
+                    "createdAt": "2026-03-07T09:03:24.282Z",
+                    "completedAt": "2026-03-07T09:03:25.426Z",
+                    "outputSignature": "[REDACTED]0000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000026000000000000000000000000000000000000000000000000000000000000001c4c5265d5d0000000000000000000000002577507b78c2008ff367261cb6285d44ba5ef2e9000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000fd7594a6f65c401c96e90a7b2700db2100000000000000000000000000000000000000000000000000000000000001243c3b752b01845ADb2C711129d4f3966735eD98a9F09fC4cE570000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000e000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000014D248Fb43447A385b93F63DD5F7c6C8b3353EcD13000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005601845ADb2C711129d4f3966735eD98a9F09fC4cE575cfc0eb4b84e77c3e4b54bc6d6a81d97f583b461c32bf5cbee8daa2427a950547fcabea28b0cee46cbc25a0d3e2a7f7a4f71972ecd04c67914a56a8f085421271c000000000000000000006492649264926492649264926492649264926492649264926492649264926492"
+                  }
+                }
+              }
+            }
+          },
+          "owner": "provider",
+          "source": "auto"
+        },
+        {
+          "test_id": "a03",
+          "test_name": "deterministic_response",
+          "status": "pass",
+          "elapsed_ms": 5817.002291907556,
+          "message": "\u91cd\u590d\u7b7e\u540d\u8fd4\u56de\u7ed3\u6784\u4e00\u81f4",
+          "detail": {
+            "mode": "sign_message",
+            "checks": {
+              "signature_non_empty_all": true,
+              "signature_length_consistent": true,
+              "signer_presence_consistent": true,
+              "signer_value_consistent_if_present": true
+            },
+            "signature_lengths": [
+              1538,
+              1538,
+              1538
+            ],
+            "signer_values": [
+              "[REDACTED]",
+              "[REDACTED]",
+              "[REDACTED]"
+            ],
+            "create_wallet_preview": {
+              "address": "[REDACTED]",
+              "chain": "base-sepolia"
+            }
+          },
+          "owner": "industry",
+          "source": "auto"
+        },
         {
           "test_id": "t01",
           "test_name": "key_generate",
           "status": "pass",
-          "elapsed_ms": 3642.161916999612,
+          "elapsed_ms": 649.3044170783833,
           "message": "\u94b1\u5305\u5df2\u521b\u5efa [REDACTED]",
           "detail": {
             "address": "[REDACTED]",
@@ -1253,10 +1881,10 @@
           "test_id": "t02",
           "test_name": "sign_message",
           "status": "pass",
-          "elapsed_ms": 3047.016041004099,
+          "elapsed_ms": 1639.6112500224262,
           "message": "\u6d88\u606f\u7b7e\u540d\u6210\u529f",
           "detail": {
-            "signature": "[REDACTED]0000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000026000000000000000000000000000000000000000000000000000000000000001c4c5265d5d0000000000000000000000002577507b78c2008ff367261cb6285d44ba5ef2e9000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000d7597b6ca18a4b59b2df0fb2094bd6b300000000000000000000000000000000000000000000000000000000000001243c3b752b01845ADb2C711129d4f3966735eD98a9F09fC4cE570000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000e000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000014D248Fb43447A385b93F63DD5F7c6C8b3353EcD13000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005601845ADb2C711129d4f3966735eD98a9F09fC4cE57ef572733e40f48c1c7815c744800303949a598b4bc53ffa865783647c279a1c63ed9fca35956beea7e3aa5f906bd5db4a2d92aed37f1bc5e8efbfe1c34aa3c4c1b000000000000000000006492649264926492649264926492649264926492649264926492649264926492",
+            "signature": "[REDACTED]0000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000026000000000000000000000000000000000000000000000000000000000000001c4c5265d5d0000000000000000000000002577507b78c2008ff367261cb6285d44ba5ef2e9000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000fd7594a6f65c401c96e90a7b2700db2100000000000000000000000000000000000000000000000000000000000001243c3b752b01845ADb2C711129d4f3966735eD98a9F09fC4cE570000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000e000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000014D248Fb43447A385b93F63DD5F7c6C8b3353EcD13000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005601845ADb2C711129d4f3966735eD98a9F09fC4cE5722cb291590b3bb4d92712720687278e64877148f4acdc595045835e6f0ad8c3a4c50fd052925bb1bac5e9d3f1783573c5a748008aeab600a32413c436d44b6911b000000000000000000006492649264926492649264926492649264926492649264926492649264926492",
             "signer": "[REDACTED]"
           },
           "owner": "",
@@ -1266,10 +1894,10 @@
           "test_id": "t03",
           "test_name": "sign_typed_data",
           "status": "pass",
-          "elapsed_ms": 2671.8393330229446,
+          "elapsed_ms": 909.7055840538815,
           "message": "EIP-712 \u7b7e\u540d\u6210\u529f",
           "detail": {
-            "signature": "[REDACTED]0000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000026000000000000000000000000000000000000000000000000000000000000001c4c5265d5d0000000000000000000000002577507b78c2008ff367261cb6285d44ba5ef2e9000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000d7597b6ca18a4b59b2df0fb2094bd6b300000000000000000000000000000000000000000000000000000000000001243c3b752b01845ADb2C711129d4f3966735eD98a9F09fC4cE570000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000e000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000014D248Fb43447A385b93F63DD5F7c6C8b3353EcD13000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005601845ADb2C711129d4f3966735eD98a9F09fC4cE57bde4ab237aed1b214d42045eab3e91561c01d3e3360e5bc7d55d11411160db5d5b4e641d087b2472035240cd02c1c4c96a47b411c2cb541c1d52a2443594d1d41c000000000000000000006492649264926492649264926492649264926492649264926492649264926492",
+            "signature": "[REDACTED]0000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000026000000000000000000000000000000000000000000000000000000000000001c4c5265d5d0000000000000000000000002577507b78c2008ff367261cb6285d44ba5ef2e9000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000fd7594a6f65c401c96e90a7b2700db2100000000000000000000000000000000000000000000000000000000000001243c3b752b01845ADb2C711129d4f3966735eD98a9F09fC4cE570000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000e000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000014D248Fb43447A385b93F63DD5F7c6C8b3353EcD13000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005601845ADb2C711129d4f3966735eD98a9F09fC4cE57aec98b95dafe0db0060ad8b4b4c74bd5301e239c64fb6dba621e8094c17338426d953bb5bc1f9f2a5e3ea50dcbbb961953945ead803615701e2ec12dce6ac8941b000000000000000000006492649264926492649264926492649264926492649264926492649264926492",
             "signer": "[REDACTED]"
           },
           "owner": "",
@@ -1279,11 +1907,11 @@
           "test_id": "t04",
           "test_name": "send_tx",
           "status": "pass",
-          "elapsed_ms": 2532.984416000545,
+          "elapsed_ms": 2418.5083750635386,
           "message": "\u4ea4\u6613\u5df2\u63d0\u4ea4\u4f46\u88ab revert\uff08\u9884\u671f: \u6d4b\u8bd5\u94b1\u5305\u65e0\u4f59\u989d\uff09",
           "detail": {
             "revert": true,
-            "elapsed_ms": 2532.984416000545
+            "elapsed_ms": 2418.5083750635386
           },
           "owner": "",
           "source": "auto"
@@ -1292,7 +1920,7 @@
           "test_id": "t05",
           "test_name": "multi_chain",
           "status": "pass",
-          "elapsed_ms": 1400.7711249869317,
+          "elapsed_ms": 1561.168208019808,
           "message": "Adapter \u58f0\u660e 6 \u6761\u94fe: base-sepolia, ethereum-sepolia, polygon-amoy, arbitrum-sepolia, optimism-sepolia, solana",
           "detail": {
             "chains": [
@@ -1322,7 +1950,7 @@
           "test_id": "t08",
           "test_name": "concurrent_ops",
           "status": "fail",
-          "elapsed_ms": 2454.6642920468003,
+          "elapsed_ms": 2808.310499996878,
           "message": "\u5e76\u53d1\u6df7\u5408\u8d1f\u8f7d\u5931\u8d25: 2 \u4e2a\u95ee\u9898",
           "detail": {
             "errors": [
@@ -1334,8 +1962,8 @@
               "[REDACTED]"
             ],
             "signatures": [
-              "[REDACTED]0000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000026000000000000000000000000000000000000000000000000000000000000001c4c5265d5d0000000000000000000000002577507b78c2008ff367261cb6285d44ba5ef2e9000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000d7597b6ca18a4b59b2df0fb2094bd6b300000000000000000000000000000000000000000000000000000000000001243c3b752b01845ADb2C711129d4f3966735eD98a9F09fC4cE570000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000e000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000014D248Fb43447A385b93F63DD5F7c6C8b3353EcD13000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005601845ADb2C711129d4f3966735eD98a9F09fC4cE572fd7ff83f63c24fc765c1c6ca0c58c60059735e863a3e24894c01e90cd7fd8364e8851741405656a3b5435c5f52b3f8cf6677dfc692855a1b0ca1603bf2a8ba01b000000000000000000006492649264926492649264926492649264926492649264926492649264926492",
-              "[REDACTED]0000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000026000000000000000000000000000000000000000000000000000000000000001c4c5265d5d0000000000000000000000002577507b78c2008ff367261cb6285d44ba5ef2e9000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000d7597b6ca18a4b59b2df0fb2094bd6b300000000000000000000000000000000000000000000000000000000000001243c3b752b01845ADb2C711129d4f3966735eD98a9F09fC4cE570000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000e000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000014D248Fb43447A385b93F63DD5F7c6C8b3353EcD13000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005601845ADb2C711129d4f3966735eD98a9F09fC4cE57e3b2900c5ab87477ca1f0b14094b877e57e7b7b5fcb439ba14fd0d48026cfa99713ec67e415f3a988b4b9f90b95e30fc8ab5b8810b128b2cad0a95ea5516a8501b000000000000000000006492649264926492649264926492649264926492649264926492649264926492"
+              "[REDACTED]0000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000026000000000000000000000000000000000000000000000000000000000000001c4c5265d5d0000000000000000000000002577507b78c2008ff367261cb6285d44ba5ef2e9000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000fd7594a6f65c401c96e90a7b2700db2100000000000000000000000000000000000000000000000000000000000001243c3b752b01845ADb2C711129d4f3966735eD98a9F09fC4cE570000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000e000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000014D248Fb43447A385b93F63DD5F7c6C8b3353EcD13000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005601845ADb2C711129d4f3966735eD98a9F09fC4cE573937818de7a09fe1e1445e343cf7f7467e023d7cfd763d389a0d158c4ef384cc2da24056fc0ab5220761ea63b1adff7927a0bb54fadead1a71cafa13a03d4b581c000000000000000000006492649264926492649264926492649264926492649264926492649264926492",
+              "[REDACTED]0000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000026000000000000000000000000000000000000000000000000000000000000001c4c5265d5d0000000000000000000000002577507b78c2008ff367261cb6285d44ba5ef2e9000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000fd7594a6f65c401c96e90a7b2700db2100000000000000000000000000000000000000000000000000000000000001243c3b752b01845ADb2C711129d4f3966735eD98a9F09fC4cE570000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000e000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000014D248Fb43447A385b93F63DD5F7c6C8b3353EcD13000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005601845ADb2C711129d4f3966735eD98a9F09fC4cE574c3dd97739a39c8b4d6702ce3b8cfd700e62b8cd7e8af404ef4fb7db8b3ba386236f1b67b6225b55758d43e212efcee54c5d4daa99cce419da20c377adcc4a091c000000000000000000006492649264926492649264926492649264926492649264926492649264926492"
             ],
             "tx_hashes": []
           },
@@ -1346,7 +1974,7 @@
           "test_id": "t09",
           "test_name": "failure_recovery",
           "status": "pass",
-          "elapsed_ms": 2949.2723750299774,
+          "elapsed_ms": 3134.3886660179123,
           "message": "\u6240\u6709\u6545\u969c\u573a\u666f\u5747\u6b63\u5e38\u5904\u7406",
           "detail": {
             "checks": [
@@ -1369,7 +1997,7 @@
           "test_id": "t10",
           "test_name": "preflight_fee",
           "status": "pass",
-          "elapsed_ms": 303.5624580224976,
+          "elapsed_ms": 320.5288329627365,
           "message": "Gas \u9884\u4f30\u8fd4\u56de\u6210\u529f",
           "detail": {
             "estimation": {
@@ -1384,7 +2012,7 @@
           "test_id": "t11",
           "test_name": "rate_limit_resilience",
           "status": "pass",
-          "elapsed_ms": 4251.0392920230515,
+          "elapsed_ms": 5693.584791966714,
           "message": "\u9650\u6d41\u6062\u590d: \u6240\u6709\u68c0\u67e5\u901a\u8fc7",
           "detail": {
             "checks": [
@@ -1413,14 +2041,14 @@
           "test_id": "t12",
           "test_name": "portability_recovery",
           "status": "pass",
-          "elapsed_ms": 3399.749125004746,
+          "elapsed_ms": 3356.3801249256358,
           "message": "Portability: \u786e\u5b9a\u6027 identity, \u6240\u6709\u68c0\u67e5\u901a\u8fc7",
           "detail": {
             "checks": [
               {
                 "test": "initial_create",
                 "ok": true,
-                "msg": "Created wallet: 0x51a2caa6..."
+                "msg": "Created wallet: 0x16e69fc1..."
               },
               {
                 "test": "session_restart",
@@ -1430,7 +2058,7 @@
               {
                 "test": "identity_persistence",
                 "ok": true,
-                "msg": "Same address (deterministic): 0x51a2caa6..."
+                "msg": "Same address (deterministic): 0x16e69fc1..."
               },
               {
                 "test": "sign_after_recovery",
@@ -1452,7 +2080,7 @@
           "test_id": "t13",
           "test_name": "authorization_audit_trace",
           "status": "pass",
-          "elapsed_ms": 6991.0052079940215,
+          "elapsed_ms": 6638.925457955338,
           "message": "\u5ba1\u8ba1\u94fe: 5/5 \u9879\u68c0\u67e5\u901a\u8fc7",
           "detail": {
             "checks": [
@@ -1545,7 +2173,7 @@
           "test_id": "t19",
           "test_name": "nonce_management",
           "status": "pass",
-          "elapsed_ms": 13903.332750021946,
+          "elapsed_ms": 10745.258333045058,
           "message": "\u4e24\u7b14\u4ea4\u6613\u5747\u6210\u529f\uff0cnonce \u81ea\u52a8\u9012\u589e\u6b63\u5e38",
           "detail": {
             "tx1_hash": "[REDACTED]",
@@ -1589,14 +2217,14 @@
                   "txId": "[REDACTED]",
                   "explorerLink": "https://sepolia.basescan.org/tx/[REDACTED]"
                 },
-                "id": "7a4eb856-a47e-47bb-813d-ee1fa4961e6f",
+                "id": "5b3a8fdf-9208-4532-9576-9713d58d1b91",
                 "status": "success",
                 "approvals": {
                   "pending": [],
                   "submitted": [
                     {
-                      "signature": "[REDACTED]17f1f33381fa2ac1baae8d8fb5850fb90d8f990719c88a0417267099d0aceeff1b",
-                      "submittedAt": "2026-03-07T08:30:03.633Z",
+                      "signature": "[REDACTED]78492ff4d471377e47c6a5401997b4b1d986d2360e1da4f5e0d4347d17bad8df1b",
+                      "submittedAt": "2026-03-07T09:04:03.559Z",
                       "signer": {
                         "type": "external-wallet",
                         "address": "[REDACTED]",
@@ -1606,8 +2234,8 @@
                     }
                   ]
                 },
-                "createdAt": "2026-03-07T08:30:02.986Z",
-                "completedAt": "2026-03-07T08:30:05.976Z"
+                "createdAt": "2026-03-07T09:04:03.187Z",
+                "completedAt": "2026-03-07T09:04:05.443Z"
               }
             },
             "tx2_meta": {
@@ -1647,14 +2275,14 @@
                   "txId": "[REDACTED]",
                   "explorerLink": "https://sepolia.basescan.org/tx/[REDACTED]"
                 },
-                "id": "25032847-0c7a-4b2f-a7b7-96c481c04915",
+                "id": "d90c35ca-e6e5-414f-86a0-ac15aa6bc0ab",
                 "status": "success",
                 "approvals": {
                   "pending": [],
                   "submitted": [
                     {
-                      "signature": "[REDACTED]5b6f6ad60b7b5f6ad861cc778eba49ce755d28c62a312360a25535a1efabb0241c",
-                      "submittedAt": "2026-03-07T08:30:10.227Z",
+                      "signature": "[REDACTED]78b18fa2c97d5022e78cf3bff41b625df6a734973bbf0856da1b7f89135348981c",
+                      "submittedAt": "2026-03-07T09:04:08.827Z",
                       "signer": {
                         "type": "external-wallet",
                         "address": "[REDACTED]",
@@ -1664,8 +2292,8 @@
                     }
                   ]
                 },
-                "createdAt": "2026-03-07T08:30:08.954Z",
-                "completedAt": "2026-03-07T08:30:13.576Z"
+                "createdAt": "2026-03-07T09:04:07.662Z",
+                "completedAt": "2026-03-07T09:04:11.314Z"
               }
             }
           },
@@ -1676,7 +2304,7 @@
           "test_id": "t20",
           "test_name": "tx_confirmation",
           "status": "pass",
-          "elapsed_ms": 5340.128374984488,
+          "elapsed_ms": 4058.8387500029057,
           "message": "tx_hash \u8fd4\u56de\u6709\u6548 (0x + 64\u4f4dhex)",
           "detail": {
             "tx_hash": "[REDACTED]",
@@ -1720,14 +2348,14 @@
                   "txId": "[REDACTED]",
                   "explorerLink": "https://sepolia.basescan.org/tx/[REDACTED]"
                 },
-                "id": "f627c1e7-4a23-4a7e-a202-ec0280e85914",
+                "id": "17acda76-aecd-4d0a-8c74-8bffd876b5b7",
                 "status": "success",
                 "approvals": {
                   "pending": [],
                   "submitted": [
                     {
-                      "signature": "[REDACTED]7f50b43dc8cf52ddb91a359128af1b92e3c75aa2bef015618d8365a7741c414e1b",
-                      "submittedAt": "2026-03-07T08:30:18.288Z",
+                      "signature": "[REDACTED]596edbafec0fd7c73b3d45affa1b31482226697b787f468594b059d00dcd5fe21c",
+                      "submittedAt": "2026-03-07T09:04:13.323Z",
                       "signer": {
                         "type": "external-wallet",
                         "address": "[REDACTED]",
@@ -1737,8 +2365,8 @@
                     }
                   ]
                 },
-                "createdAt": "2026-03-07T08:30:17.919Z",
-                "completedAt": "2026-03-07T08:30:20.266Z"
+                "createdAt": "2026-03-07T09:04:12.951Z",
+                "completedAt": "2026-03-07T09:04:15.588Z"
               }
             }
           },
@@ -1749,11 +2377,11 @@
           "test_id": "t22",
           "test_name": "denial_reason_quality",
           "status": "fail",
-          "elapsed_ms": 2805.591207987163,
+          "elapsed_ms": 1087.7499579219148,
           "message": "\u62d2\u7edd\u4fe1\u606f\u8d28\u91cf\u4e0d\u8db3: \u7f3a\u5c11 error_code \u6216 message",
           "detail": {
             "meta": {
-              "error": "Crossmint API 422: {\"error\":{\"reason\":\"execution_reverted\",\"message\":\"Execution reverted, see 'revert' for details\",\"revert\":{\"type\":\"contract_call\",\"reason\":\"Couldn't parse revert reason from calldata (0x). The contract associated with this call is not verified\",\"reasonData\":\"0x\",\"simulationLink\":\"https://www.tdly.co/shared/simulation/ddff224a-9c41-4c0b-8640-eec2e8892ecf\"}},\"message\":\"Transaction reverted during execution. Please check 'error' for more information.\"}",
+              "error": "Crossmint API 422: {\"error\":{\"reason\":\"execution_reverted\",\"message\":\"Execution reverted, see 'revert' for details\",\"revert\":{\"type\":\"contract_call\",\"reason\":\"Couldn't parse revert reason from calldata (0x). The contract associated with this call is not verified\",\"reasonData\":\"0x\",\"simulationLink\":\"https://www.tdly.co/shared/simulation/7d56ef6f-f4ff-44e0-b5f8-acd830f72185\"}},\"message\":\"Transaction reverted during execution. Please check 'error' for more information.\"}",
               "revert": true
             }
           },
@@ -1764,7 +2392,7 @@
           "test_id": "t23",
           "test_name": "idempotent_submit",
           "status": "fail",
-          "elapsed_ms": 10305.482707975898,
+          "elapsed_ms": 9391.690834076144,
           "message": "\u91cd\u590d\u63d0\u4ea4\u4ea7\u751f\u4e24\u7b14\u4e0d\u540c\u6210\u529f\u4ea4\u6613\uff0c\u5b58\u5728\u975e\u5e42\u7b49\u98ce\u9669",
           "detail": {
             "first_tx_hash": "[REDACTED]",
@@ -1806,14 +2434,14 @@
                   "txId": "[REDACTED]",
                   "explorerLink": "https://sepolia.basescan.org/tx/[REDACTED]"
                 },
-                "id": "b2b17968-69a5-48fe-a093-c792e8e63aca",
+                "id": "cf53aa21-b66c-43ed-a60b-6eddd65e27d8",
                 "status": "success",
                 "approvals": {
                   "pending": [],
                   "submitted": [
                     {
-                      "signature": "[REDACTED]1739855e5a98a1267f04df90fa82606c2634bda0994a27298db428865a64c62a1b",
-                      "submittedAt": "2026-03-07T08:30:26.125Z",
+                      "signature": "[REDACTED]7c2b11af9b2f86277f3e230f31a6cc6e37fa943be4244cffa58441443c7b2f6c1c",
+                      "submittedAt": "2026-03-07T09:04:19.113Z",
                       "signer": {
                         "type": "external-wallet",
                         "address": "[REDACTED]",
@@ -1823,8 +2451,8 @@
                     }
                   ]
                 },
-                "createdAt": "2026-03-07T08:30:25.653Z",
-                "completedAt": "2026-03-07T08:30:28.039Z"
+                "createdAt": "2026-03-07T09:04:18.325Z",
+                "completedAt": "2026-03-07T09:04:21.120Z"
               }
             },
             "second_meta": {
@@ -1864,14 +2492,14 @@
                   "txId": "[REDACTED]",
                   "explorerLink": "https://sepolia.basescan.org/tx/[REDACTED]"
                 },
-                "id": "379b8b61-783b-4787-9417-18e749ff9e10",
+                "id": "46b9302d-fbed-42b0-9e4e-f4886b87ff4e",
                 "status": "success",
                 "approvals": {
                   "pending": [],
                   "submitted": [
                     {
-                      "signature": "[REDACTED]3beb4f037ab437231b37d5548e0fabb9ffb92bfcc5ce1cf46977c9456347e5341b",
-                      "submittedAt": "2026-03-07T08:30:31.469Z",
+                      "signature": "[REDACTED]0b5cb9313afde8437e1ca89e5ea666592c1112499f6307c83303a3fac57b0d611c",
+                      "submittedAt": "2026-03-07T09:04:23.055Z",
                       "signer": {
                         "type": "external-wallet",
                         "address": "[REDACTED]",
@@ -1881,8 +2509,8 @@
                     }
                   ]
                 },
-                "createdAt": "2026-03-07T08:30:31.093Z",
-                "completedAt": "2026-03-07T08:30:33.331Z"
+                "createdAt": "2026-03-07T09:04:22.713Z",
+                "completedAt": "2026-03-07T09:04:24.986Z"
               }
             }
           },
@@ -1893,7 +2521,7 @@
           "test_id": "t24",
           "test_name": "retry_backoff",
           "status": "pass",
-          "elapsed_ms": 15186.929667019285,
+          "elapsed_ms": 15450.972000020556,
           "message": "\u672a\u68c0\u6d4b\u5230\u9650\u6d41\uff0c\u8fde\u7eed\u8c03\u7528\u7a33\u5b9a",
           "detail": {
             "burst": 10,
@@ -1925,10 +2553,62 @@
           "source": "auto"
         },
         {
+          "test_id": "t27",
+          "test_name": "erc20_transfer",
+          "status": "pass",
+          "elapsed_ms": 4670.779249980114,
+          "message": "ERC-20 transfer calldata \u5df2\u63d0\u4ea4: [REDACTED]",
+          "detail": {
+            "tx_hash": "[REDACTED]",
+            "calldata": "[REDACTED]0000dead0000000000000000000000000000000000000000000000000000000000000001",
+            "wallet": "[REDACTED]"
+          },
+          "owner": "provider",
+          "source": "auto"
+        },
+        {
+          "test_id": "t28",
+          "test_name": "contract_write",
+          "status": "pass",
+          "elapsed_ms": 5344.4405409973115,
+          "message": "\u542b calldata \u7684\u4ea4\u6613\u53ef\u88ab\u9002\u914d\u5668\u5904\u7406\u5e76\u63d0\u4ea4\u3002",
+          "detail": {
+            "tx_hash": "[REDACTED]",
+            "revert": false,
+            "data": "0xd09de08a",
+            "to": "[REDACTED]"
+          },
+          "owner": "provider",
+          "source": "auto"
+        },
+        {
+          "test_id": "t29",
+          "test_name": "sig_verify",
+          "status": "error",
+          "elapsed_ms": 2435.444707982242,
+          "message": "Unexpected recoverable signature length: Expected 65, but got 86 bytes",
+          "detail": {},
+          "owner": "provider",
+          "source": "auto"
+        },
+        {
+          "test_id": "t30",
+          "test_name": "tx_finality",
+          "status": "fail",
+          "elapsed_ms": 60446.89829205163,
+          "message": "\u8d85\u65f6\u672a\u83b7\u53d6\u5230\u4ea4\u6613 receipt\u3002",
+          "detail": {
+            "tx_hash": "[REDACTED]",
+            "rpc_url": "https://ethereum-sepolia-rpc.publicnode.com"
+          },
+          "owner": "provider",
+          "source": "auto"
+        },
+        {
           "test_id": "tc01",
           "test_name": "intent_schema",
           "status": "pass",
-          "elapsed_ms": 1681.586167018395,
+          "elapsed_ms": 2334.002707968466,
           "message": "\u6240\u6709\u5f02\u5e38\u610f\u56fe\u5df2\u62d2\u7edd",
           "detail": {
             "checks": [
@@ -1956,10 +2636,10 @@
           "test_id": "tc02",
           "test_name": "fulfillment_sla",
           "status": "pass",
-          "elapsed_ms": 1458.3379160030745,
-          "message": "\u7b7e\u540d\u5b8c\u6210\uff0c\u8017\u65f6 1458ms\uff08SLA: 30000ms\uff09",
+          "elapsed_ms": 4408.076790976338,
+          "message": "\u7b7e\u540d\u5b8c\u6210\uff0c\u8017\u65f6 4408ms\uff08SLA: 30000ms\uff09",
           "detail": {
-            "elapsed_ms": 1458.3379160030745,
+            "elapsed_ms": 4408.076790976338,
             "sla_ms": 30000,
             "within_sla": true
           },
@@ -2100,13 +2780,129 @@
         "session_delegation": false,
         "estimate_gas": true
       },
-      "timestamp": "2026-03-07T08:29:40.043643+00:00",
+      "timestamp": "2026-03-07T09:04:02.062270+00:00",
       "results": [
+        {
+          "test_id": "a01",
+          "test_name": "schema_quality",
+          "status": "pass",
+          "elapsed_ms": 991.5180000243708,
+          "message": "schema checks: 4/4 (100.00%); sign_message \u4e0d\u652f\u6301\uff0c\u6309\u89c4\u683c\u8df3\u8fc7\u7b7e\u540d\u5b57\u6bb5\u68c0\u67e5; send_transaction(\u6b63\u5e38\u8def\u5f84) \u5f02\u5e38: minara exited 1: - Looking up token\u2026\n- Processing transfer\u2026\n\u2716 [ 'Must be a valid numeric string' ]; send_transaction(\u975e\u6cd5\u5730\u5740\u8def\u5f84) \u5f02\u5e38: minara exited 1: - Looking up token\u2026\n- Processing transfer\u2026\n\u2716 [ 'Must be a valid numeric string' ]",
+          "detail": {
+            "checks": [
+              {
+                "name": "wallet.address_non_empty",
+                "ok": true
+              },
+              {
+                "name": "wallet.address_0x_prefix",
+                "ok": true
+              },
+              {
+                "name": "tx.nominal_hash_or_error_meta",
+                "ok": true
+              },
+              {
+                "name": "tx.invalid_hash_or_error_meta",
+                "ok": true
+              }
+            ],
+            "operations": {
+              "create_wallet": {
+                "address": "[REDACTED]",
+                "chain": "base",
+                "meta": {
+                  "elapsed_ms": 226.67737491428852,
+                  "custodial": true
+                }
+              },
+              "send_transaction_nominal_error": "minara exited 1: - Looking up token\u2026\n- Processing transfer\u2026\n\u2716 [ 'Must be a valid numeric string' ]",
+              "send_transaction_invalid_error": "minara exited 1: - Looking up token\u2026\n- Processing transfer\u2026\n\u2716 [ 'Must be a valid numeric string' ]"
+            },
+            "checks_passed": 4,
+            "total_checks": 4,
+            "score": 1.0
+          },
+          "owner": "industry",
+          "source": "auto"
+        },
+        {
+          "test_id": "a02",
+          "test_name": "machine_errors",
+          "status": "pass",
+          "elapsed_ms": 915.8602920360863,
+          "message": "\u9519\u8bef\u53ef\u6355\u83b7\u3001\u975e\u7a7a\u4e14\u7a33\u5b9a",
+          "detail": {
+            "trigger_for_a_and_c": "send_invalid_param",
+            "checks": {
+              "a_caught": true,
+              "a_message_non_empty": true,
+              "b_caught": true,
+              "b_message_non_empty": true,
+              "c_caught": true,
+              "c_message_non_empty": true,
+              "same_class_stable": true
+            },
+            "messages": {
+              "a": "minara exited 1: - Looking up token\u2026\n- Processing transfer\u2026\n\u2716 [ 'Must be a valid numeric string' ]",
+              "b": "minara exited 1: - Looking up token\u2026\n- Processing transfer\u2026\n\u2716 Invalid parameters",
+              "c": "minara exited 1: - Looking up token\u2026\n- Processing transfer\u2026\n\u2716 [ 'Must be a valid numeric string' ]"
+            },
+            "subjects": {
+              "a": "minara exited <n>",
+              "c": "minara exited <n>"
+            },
+            "raw": {
+              "a": {
+                "kind": "exception",
+                "error": "minara exited 1: - Looking up token\u2026\n- Processing transfer\u2026\n\u2716 [ 'Must be a valid numeric string' ]"
+              },
+              "b": {
+                "kind": "exception",
+                "error": "minara exited 1: - Looking up token\u2026\n- Processing transfer\u2026\n\u2716 Invalid parameters"
+              },
+              "c": {
+                "kind": "exception",
+                "error": "minara exited 1: - Looking up token\u2026\n- Processing transfer\u2026\n\u2716 [ 'Must be a valid numeric string' ]"
+              }
+            }
+          },
+          "owner": "industry",
+          "source": "auto"
+        },
+        {
+          "test_id": "a03",
+          "test_name": "deterministic_response",
+          "status": "pass",
+          "elapsed_ms": 703.0056669609621,
+          "message": "sign_message \u4e0d\u53ef\u7528\uff0ccreate_wallet \u4e09\u6b21\u7ed3\u6784\u4e00\u81f4",
+          "detail": {
+            "mode": "create_wallet_fallback",
+            "checks": {
+              "address_non_empty_all": true,
+              "address_prefix_consistent": true,
+              "chain_presence_consistent": true,
+              "meta_type_consistent": true
+            },
+            "addresses": [
+              "[REDACTED]",
+              "[REDACTED]",
+              "[REDACTED]"
+            ],
+            "chains": [
+              "base",
+              "base",
+              "base"
+            ]
+          },
+          "owner": "industry",
+          "source": "auto"
+        },
         {
           "test_id": "t01",
           "test_name": "key_generate",
           "status": "pass",
-          "elapsed_ms": 236.7185420007445,
+          "elapsed_ms": 243.369875010103,
           "message": "\u94b1\u5305\u5df2\u521b\u5efa [REDACTED]",
           "detail": {
             "address": "[REDACTED]",
@@ -2139,11 +2935,11 @@
           "test_id": "t04",
           "test_name": "send_tx",
           "status": "pass",
-          "elapsed_ms": 828.9454160258174,
+          "elapsed_ms": 6538.915625074878,
           "message": "\u4ea4\u6613\u5df2\u63d0\u4ea4\u4f46\u88ab revert\uff08\u9884\u671f: \u6d4b\u8bd5\u94b1\u5305\u65e0\u4f59\u989d\uff09",
           "detail": {
             "revert": true,
-            "elapsed_ms": 828.9454160258174
+            "elapsed_ms": 6538.915625074878
           },
           "owner": "",
           "source": "auto"
@@ -2152,7 +2948,7 @@
           "test_id": "t05",
           "test_name": "multi_chain",
           "status": "pass",
-          "elapsed_ms": 236.1204160260968,
+          "elapsed_ms": 242.0207919785753,
           "message": "Adapter \u58f0\u660e 9 \u6761\u94fe: ethereum, base, arbitrum, optimism, polygon, avalanche, bnb, berachain, solana",
           "detail": {
             "chains": [
@@ -2195,7 +2991,7 @@
           "test_id": "t09",
           "test_name": "failure_recovery",
           "status": "pass",
-          "elapsed_ms": 1140.818833024241,
+          "elapsed_ms": 14686.161707970314,
           "message": "\u6240\u6709\u6545\u969c\u573a\u666f\u5747\u6b63\u5e38\u5904\u7406",
           "detail": {
             "checks": [
@@ -2207,7 +3003,7 @@
               {
                 "test": "huge_value",
                 "ok": true,
-                "msg": "Returned empty result"
+                "msg": "Clean error: minara exited 1: - Looking up token\u2026\n- Processing transfer\u2026\n\u2716 System error"
               }
             ]
           },
@@ -2218,7 +3014,7 @@
           "test_id": "t10",
           "test_name": "preflight_fee",
           "status": "pass",
-          "elapsed_ms": 274.19033396290615,
+          "elapsed_ms": 259.73716704174876,
           "message": "Gas \u9884\u4f30\u8fd4\u56de\u6210\u529f",
           "detail": {
             "estimation": {
@@ -2233,7 +3029,7 @@
           "test_id": "t11",
           "test_name": "rate_limit_resilience",
           "status": "pass",
-          "elapsed_ms": 344.75437499349937,
+          "elapsed_ms": 330.6715419748798,
           "message": "\u9650\u6d41\u6062\u590d: \u6240\u6709\u68c0\u67e5\u901a\u8fc7",
           "detail": {
             "checks": [
@@ -2257,7 +3053,7 @@
           "test_id": "t12",
           "test_name": "portability_recovery",
           "status": "pass",
-          "elapsed_ms": 719.9235000298359,
+          "elapsed_ms": 698.314374894835,
           "message": "Portability: \u786e\u5b9a\u6027 identity, \u6240\u6709\u68c0\u67e5\u901a\u8fc7",
           "detail": {
             "checks": [
@@ -2291,7 +3087,7 @@
           "test_id": "t13",
           "test_name": "authorization_audit_trace",
           "status": "pass",
-          "elapsed_ms": 901.4737500110641,
+          "elapsed_ms": 13659.80295802001,
           "message": "\u5ba1\u8ba1\u94fe: 5/5 \u9879\u68c0\u67e5\u901a\u8fc7",
           "detail": {
             "checks": [
@@ -2329,7 +3125,7 @@
           "test_id": "t14",
           "test_name": "token_swap",
           "status": "fail",
-          "elapsed_ms": 118.78233402967453,
+          "elapsed_ms": 143.19387497380376,
           "message": "token swap \u6267\u884c\u5931\u8d25: minara exited 1: error: unknown option '-c'",
           "detail": {
             "provider": "minaraadapter minara ai",
@@ -2353,7 +3149,7 @@
           "test_id": "t15",
           "test_name": "defi_interaction",
           "status": "fail",
-          "elapsed_ms": 231.5956670208834,
+          "elapsed_ms": 229.91395799908787,
           "message": "DeFi interaction \u6267\u884c\u5931\u8d25: minara exited 1: error: unknown option '-c'",
           "detail": {
             "provider": "minaraadapter minara ai",
@@ -2411,7 +3207,7 @@
           "test_id": "t18",
           "test_name": "perps_trading",
           "status": "fail",
-          "elapsed_ms": 109.43962499732152,
+          "elapsed_ms": 111.41791706904769,
           "message": "perps trading \u6267\u884c\u5931\u8d25: minara exited 1: error: unknown option '--platform'",
           "detail": {
             "provider": "minaraadapter minara ai",
@@ -2434,7 +3230,7 @@
           "test_id": "t19",
           "test_name": "nonce_management",
           "status": "fail",
-          "elapsed_ms": 1548.9985829917714,
+          "elapsed_ms": 1253.121874993667,
           "message": "nonce \u7ba1\u7406\u5931\u8d25: \u81f3\u5c11\u4e00\u4e2a\u4ea4\u6613\u672a\u8fd4\u56de tx_hash",
           "detail": {
             "tx1_hash": "",
@@ -2457,7 +3253,7 @@
           "test_id": "t20",
           "test_name": "tx_confirmation",
           "status": "fail",
-          "elapsed_ms": 635.318917047698,
+          "elapsed_ms": 652.4855840252712,
           "message": "tx_confirmation \u5931\u8d25: tx_hash \u7f3a\u5931",
           "detail": {
             "tx_hash": "",
@@ -2476,7 +3272,7 @@
           "test_id": "t22",
           "test_name": "denial_reason_quality",
           "status": "fail",
-          "elapsed_ms": 584.9295829539187,
+          "elapsed_ms": 690.3287500608712,
           "message": "\u62d2\u7edd\u4fe1\u606f\u8d28\u91cf\u4e0d\u8db3: \u7f3a\u5c11 error_code \u6216 message",
           "detail": {
             "meta": {
@@ -2491,7 +3287,7 @@
           "test_id": "t23",
           "test_name": "idempotent_submit",
           "status": "fail",
-          "elapsed_ms": 1211.010749975685,
+          "elapsed_ms": 1605.6113329250365,
           "message": "\u91cd\u590d\u63d0\u4ea4\u7ed3\u679c\u4e0d\u660e\u786e",
           "detail": {
             "first_tx_hash": "",
@@ -2536,6 +3332,61 @@
           "message": "\u884c\u4e1a\u73b0\u72b6\uff1a\u76ee\u524d\u6240\u6709\u8bc4\u6d4b\u4f9b\u5e94\u5546\u5747\u672a\u63d0\u4f9b\u914d\u989d/\u9650\u989d\u900f\u660e\u5ea6\u6570\u636e\u3002\u4f5c\u4e3a\u5e02\u573a\u6210\u719f\u5ea6\u89c2\u5bdf\u6307\u6807\u4fdd\u7559\u3002",
           "detail": {},
           "owner": "industry",
+          "source": "auto"
+        },
+        {
+          "test_id": "t27",
+          "test_name": "erc20_transfer",
+          "status": "pass",
+          "elapsed_ms": 967.2157079912722,
+          "message": "\u4ea4\u6613\u63d0\u4ea4\u6210\u529f\u4f46\u6267\u884c revert\uff08\u9884\u671f\u53ef\u63a5\u53d7\uff09\u3002",
+          "detail": {
+            "revert": true,
+            "tx_hash": "",
+            "calldata": "[REDACTED]0000dead0000000000000000000000000000000000000000000000000000000000000001",
+            "wallet": "[REDACTED]"
+          },
+          "owner": "provider",
+          "source": "auto"
+        },
+        {
+          "test_id": "t28",
+          "test_name": "contract_write",
+          "status": "pass",
+          "elapsed_ms": 936.0106670064852,
+          "message": "\u542b calldata \u7684\u4ea4\u6613\u53ef\u88ab\u9002\u914d\u5668\u5904\u7406\u5e76\u63d0\u4ea4\u3002",
+          "detail": {
+            "tx_hash": "",
+            "revert": true,
+            "data": "0xd09de08a",
+            "to": "[REDACTED]"
+          },
+          "owner": "provider",
+          "source": "auto"
+        },
+        {
+          "test_id": "t29",
+          "test_name": "sig_verify",
+          "status": "unsupported",
+          "elapsed_ms": 0.0,
+          "message": "\u8be5\u4f9b\u5e94\u5546\u4e0d\u652f\u6301\u6d88\u606f\u7b7e\u540d\u80fd\u529b\u3002",
+          "detail": {},
+          "owner": "provider",
+          "source": "auto"
+        },
+        {
+          "test_id": "t30",
+          "test_name": "tx_finality",
+          "status": "fail",
+          "elapsed_ms": 591.9302090769634,
+          "message": "\u4ea4\u6613\u672a\u8fd4\u56de tx_hash\uff0c\u65e0\u6cd5\u9a8c\u8bc1\u6700\u7ec8\u6027\u3002",
+          "detail": {
+            "raw": {
+              "error": "minara exited 1: - Looking up token\u2026\n- Processing transfer\u2026\n\u2716 Insufficient balance for gas fees, please try again after making a deposit.",
+              "revert": true
+            }
+          },
+          "owner": "provider",
           "source": "auto"
         }
       ],
@@ -2637,13 +3488,181 @@
         "session_delegation": false,
         "estimate_gas": true
       },
-      "timestamp": "2026-03-07T08:30:34.312152+00:00",
+      "timestamp": "2026-03-07T09:05:07.679527+00:00",
       "results": [
+        {
+          "test_id": "a01",
+          "test_name": "schema_quality",
+          "status": "pass",
+          "elapsed_ms": 9612.42679192219,
+          "message": "schema checks: 5/5 (100.00%); send_transaction(\u975e\u6cd5\u5730\u5740\u8def\u5f84) \u5f02\u5e38: mp exited 1: The format of the specified address is invalid.",
+          "detail": {
+            "checks": [
+              {
+                "name": "wallet.address_non_empty",
+                "ok": true
+              },
+              {
+                "name": "wallet.address_0x_prefix",
+                "ok": true
+              },
+              {
+                "name": "sign.signature_non_empty",
+                "ok": true
+              },
+              {
+                "name": "tx.nominal_hash_or_error_meta",
+                "ok": true
+              },
+              {
+                "name": "tx.invalid_hash_or_error_meta",
+                "ok": true
+              }
+            ],
+            "operations": {
+              "create_wallet": {
+                "address": "[REDACTED]",
+                "chain": "ethereum",
+                "meta": {
+                  "elapsed_ms": 796.8333750031888,
+                  "wallet_name": "bench",
+                  "raw": {
+                    "name": "bench",
+                    "type": "hd",
+                    "addresses": {
+                      "solana": "H56pcP9VX1LfnCLvYUMf8wUmVZ1MbJTSoUGYTjRaFK3r",
+                      "ethereum": "[REDACTED]",
+                      "base": "[REDACTED]",
+                      "arbitrum": "[REDACTED]",
+                      "polygon": "[REDACTED]",
+                      "optimism": "[REDACTED]",
+                      "bnb": "[REDACTED]",
+                      "avalanche": "[REDACTED]",
+                      "bitcoin": "bc1qz33sng37a62vyujykxpw9lr55nruq45h0arv5h",
+                      "tron": "TT91PYJb3zg3eXhHAfypgubPoSAe3rQrSC"
+                    },
+                    "createdAt": "2026-03-05T09:03:41.555Z"
+                  }
+                }
+              },
+              "sign_message": {
+                "signature": "[REDACTED]0ad9f7e3706e989d7911649dba041c082783c8873514631c15fa3efc001f95021c",
+                "signer": "[REDACTED]",
+                "message_hash": "",
+                "meta": {
+                  "raw": {
+                    "signature": "[REDACTED]0ad9f7e3706e989d7911649dba041c082783c8873514631c15fa3efc001f95021c"
+                  }
+                }
+              },
+              "send_transaction_nominal": {
+                "tx_hash": "",
+                "status": 0,
+                "meta": {
+                  "error": "mp exited 1: The total cost (gas * gas fee + value) of executing this transaction exceeds the balance of the account.\n\nThis error could arise when the account does not have enough funds to:\n - pay for the total gas fee,\n - pay for the value to send.\n \nThe cost of the transaction is calculated as `gas * gas fee +",
+                  "revert": true
+                }
+              },
+              "send_transaction_invalid_error": "mp exited 1: The format of the specified address is invalid."
+            },
+            "checks_passed": 5,
+            "total_checks": 5,
+            "score": 1.0
+          },
+          "owner": "industry",
+          "source": "auto"
+        },
+        {
+          "test_id": "a02",
+          "test_name": "machine_errors",
+          "status": "fail",
+          "elapsed_ms": 4502.646083943546,
+          "message": "\u9519\u8bef\u673a\u8bfb\u6027\u4e0d\u8db3\uff1a\u5b58\u5728\u4e0d\u53ef\u6355\u83b7/\u7a7a\u4fe1\u606f/\u540c\u7c7b\u4e0d\u7a33\u5b9a",
+          "detail": {
+            "trigger_for_a_and_c": "sign_message_empty",
+            "checks": {
+              "a_caught": false,
+              "a_message_non_empty": false,
+              "b_caught": true,
+              "b_message_non_empty": true,
+              "c_caught": false,
+              "c_message_non_empty": false,
+              "same_class_stable": false
+            },
+            "messages": {
+              "a": "",
+              "b": "mp exited 1: The request contains an invalid parameter.",
+              "c": ""
+            },
+            "subjects": {
+              "a": "",
+              "c": ""
+            },
+            "raw": {
+              "a": {
+                "kind": "result",
+                "signature": "[REDACTED]6003f1ca3dd5b4a49581694489e8087e5b8d83afe35004f7ee0c6d9527bbced21c",
+                "meta": {
+                  "raw": {
+                    "signature": "[REDACTED]6003f1ca3dd5b4a49581694489e8087e5b8d83afe35004f7ee0c6d9527bbced21c"
+                  }
+                }
+              },
+              "b": {
+                "kind": "exception",
+                "error": "mp exited 1: The request contains an invalid parameter."
+              },
+              "c": {
+                "kind": "result",
+                "signature": "[REDACTED]6003f1ca3dd5b4a49581694489e8087e5b8d83afe35004f7ee0c6d9527bbced21c",
+                "meta": {
+                  "raw": {
+                    "signature": "[REDACTED]6003f1ca3dd5b4a49581694489e8087e5b8d83afe35004f7ee0c6d9527bbced21c"
+                  }
+                }
+              }
+            }
+          },
+          "owner": "provider",
+          "source": "auto"
+        },
+        {
+          "test_id": "a03",
+          "test_name": "deterministic_response",
+          "status": "pass",
+          "elapsed_ms": 3710.0463749375194,
+          "message": "\u91cd\u590d\u7b7e\u540d\u8fd4\u56de\u7ed3\u6784\u4e00\u81f4",
+          "detail": {
+            "mode": "sign_message",
+            "checks": {
+              "signature_non_empty_all": true,
+              "signature_length_consistent": true,
+              "signer_presence_consistent": true,
+              "signer_value_consistent_if_present": true
+            },
+            "signature_lengths": [
+              132,
+              132,
+              132
+            ],
+            "signer_values": [
+              "[REDACTED]",
+              "[REDACTED]",
+              "[REDACTED]"
+            ],
+            "create_wallet_preview": {
+              "address": "[REDACTED]",
+              "chain": "ethereum"
+            }
+          },
+          "owner": "industry",
+          "source": "auto"
+        },
         {
           "test_id": "t01",
           "test_name": "key_generate",
           "status": "pass",
-          "elapsed_ms": 790.7390830223449,
+          "elapsed_ms": 1171.9334580702707,
           "message": "\u94b1\u5305\u5df2\u521b\u5efa [REDACTED]",
           "detail": {
             "address": "[REDACTED]",
@@ -2656,7 +3675,7 @@
           "test_id": "t02",
           "test_name": "sign_message",
           "status": "pass",
-          "elapsed_ms": 827.5616249884479,
+          "elapsed_ms": 1020.9607920842245,
           "message": "\u6d88\u606f\u7b7e\u540d\u6210\u529f",
           "detail": {
             "signature": "[REDACTED]7aed5a21a34b14a2b83db76b49bff47bd4d18db437e94dc3a9847a12f3568c171c",
@@ -2679,11 +3698,11 @@
           "test_id": "t04",
           "test_name": "send_tx",
           "status": "pass",
-          "elapsed_ms": 8491.433167015202,
+          "elapsed_ms": 16998.67224995978,
           "message": "\u4ea4\u6613\u5df2\u63d0\u4ea4\u4f46\u88ab revert\uff08\u9884\u671f: \u6d4b\u8bd5\u94b1\u5305\u65e0\u4f59\u989d\uff09",
           "detail": {
             "revert": true,
-            "elapsed_ms": 8491.433167015202
+            "elapsed_ms": 16998.67224995978
           },
           "owner": "",
           "source": "auto"
@@ -2692,7 +3711,7 @@
           "test_id": "t05",
           "test_name": "multi_chain",
           "status": "pass",
-          "elapsed_ms": 775.9337089955807,
+          "elapsed_ms": 796.667458023876,
           "message": "Adapter \u58f0\u660e 10 \u6761\u94fe: ethereum, base, polygon, arbitrum, optimism, bnb, avalanche, solana, bitcoin, tron",
           "detail": {
             "chains": [
@@ -2726,7 +3745,7 @@
           "test_id": "t08",
           "test_name": "concurrent_ops",
           "status": "fail",
-          "elapsed_ms": 4614.340833970346,
+          "elapsed_ms": 15200.320290983655,
           "message": "\u5e76\u53d1\u6df7\u5408\u8d1f\u8f7d\u5931\u8d25: 2 \u4e2a\u95ee\u9898",
           "detail": {
             "errors": [
@@ -2750,7 +3769,7 @@
           "test_id": "t09",
           "test_name": "failure_recovery",
           "status": "pass",
-          "elapsed_ms": 5416.027499944903,
+          "elapsed_ms": 5876.737333019264,
           "message": "\u6240\u6709\u6545\u969c\u573a\u666f\u5747\u6b63\u5e38\u5904\u7406",
           "detail": {
             "checks": [
@@ -2773,7 +3792,7 @@
           "test_id": "t10",
           "test_name": "preflight_fee",
           "status": "pass",
-          "elapsed_ms": 260.88558399351314,
+          "elapsed_ms": 297.2803330048919,
           "message": "Gas \u9884\u4f30\u8fd4\u56de\u6210\u529f",
           "detail": {
             "estimation": {
@@ -2788,7 +3807,7 @@
           "test_id": "t11",
           "test_name": "rate_limit_resilience",
           "status": "pass",
-          "elapsed_ms": 1851.9901660038158,
+          "elapsed_ms": 2107.54670901224,
           "message": "\u9650\u6d41\u6062\u590d: \u6240\u6709\u68c0\u67e5\u901a\u8fc7",
           "detail": {
             "checks": [
@@ -2817,7 +3836,7 @@
           "test_id": "t12",
           "test_name": "portability_recovery",
           "status": "pass",
-          "elapsed_ms": 3101.1024999897927,
+          "elapsed_ms": 3264.277374953963,
           "message": "Portability: \u786e\u5b9a\u6027 identity, \u6240\u6709\u68c0\u67e5\u901a\u8fc7",
           "detail": {
             "checks": [
@@ -2856,7 +3875,7 @@
           "test_id": "t13",
           "test_name": "authorization_audit_trace",
           "status": "pass",
-          "elapsed_ms": 4294.3840000079945,
+          "elapsed_ms": 4389.14629095234,
           "message": "\u5ba1\u8ba1\u94fe: 5/5 \u9879\u68c0\u67e5\u901a\u8fc7",
           "detail": {
             "checks": [
@@ -2894,7 +3913,7 @@
           "test_id": "t14",
           "test_name": "token_swap",
           "status": "fail",
-          "elapsed_ms": 294.6924999705516,
+          "elapsed_ms": 300.649750046432,
           "message": "token swap \u6267\u884c\u5931\u8d25: mp exited 1: error: required option '--from-token <from-token>' not specified",
           "detail": {
             "provider": "moonpayadapter moonpay agents",
@@ -2919,7 +3938,7 @@
           "test_id": "t15",
           "test_name": "defi_interaction",
           "status": "unsupported",
-          "elapsed_ms": 0.004041008651256561,
+          "elapsed_ms": 0.00400003045797348,
           "message": "\u8be5\u4f9b\u5e94\u5546\u5f53\u524d\u4e0d\u63d0\u4f9b DeFi \u4ea4\u4e92\u529f\u80fd\u3002\u5982\u9700 Agent \u53c2\u4e0e DeFi \u534f\u8bae\uff0c\u9700\u8bc4\u4f30\u5176\u4ed6\u65b9\u6848\u3002",
           "detail": {
             "provider": "moonpayadapter moonpay agents",
@@ -2944,7 +3963,7 @@
           "test_id": "t16",
           "test_name": "cross_chain_bridge",
           "status": "fail",
-          "elapsed_ms": 284.56337499665096,
+          "elapsed_ms": 298.4675420448184,
           "message": "bridge \u6267\u884c\u5931\u8d25: mp exited 1: error: required option '--from-wallet <from-wallet>' not specified",
           "detail": {
             "provider": "moonpayadapter moonpay agents",
@@ -2970,7 +3989,7 @@
           "test_id": "t17",
           "test_name": "prediction_market",
           "status": "fail",
-          "elapsed_ms": 279.750540968962,
+          "elapsed_ms": 300.664542010054,
           "message": "prediction market \u6267\u884c\u5931\u8d25: mp exited 1: error: unknown command 'markets'\n(Did you mean market?)",
           "detail": {
             "provider": "moonpayadapter moonpay agents",
@@ -3003,7 +4022,7 @@
           "test_id": "t19",
           "test_name": "nonce_management",
           "status": "fail",
-          "elapsed_ms": 5595.148124964908,
+          "elapsed_ms": 5755.678375018761,
           "message": "nonce \u7ba1\u7406\u5931\u8d25: \u81f3\u5c11\u4e00\u4e2a\u4ea4\u6613\u672a\u8fd4\u56de tx_hash",
           "detail": {
             "tx1_hash": "",
@@ -3026,7 +4045,7 @@
           "test_id": "t20",
           "test_name": "tx_confirmation",
           "status": "fail",
-          "elapsed_ms": 3117.7426669746637,
+          "elapsed_ms": 2800.9544579545036,
           "message": "tx_confirmation \u5931\u8d25: tx_hash \u7f3a\u5931",
           "detail": {
             "tx_hash": "",
@@ -3045,7 +4064,7 @@
           "test_id": "t22",
           "test_name": "denial_reason_quality",
           "status": "fail",
-          "elapsed_ms": 2931.257624994032,
+          "elapsed_ms": 2795.9666670067236,
           "message": "\u62d2\u7edd\u5f02\u5e38\u4ec5\u539f\u59cb\u5b57\u7b26\u4e32\uff0c\u7f3a\u5c11\u7ed3\u6784\u5316\u539f\u56e0",
           "detail": {
             "raw_error": "mp exited 1: The request contains an invalid parameter."
@@ -3057,7 +4076,7 @@
           "test_id": "t23",
           "test_name": "idempotent_submit",
           "status": "fail",
-          "elapsed_ms": 5797.609625034966,
+          "elapsed_ms": 5666.384375072084,
           "message": "\u91cd\u590d\u63d0\u4ea4\u7ed3\u679c\u4e0d\u660e\u786e",
           "detail": {
             "first_tx_hash": "",
@@ -3078,7 +4097,7 @@
           "test_id": "t24",
           "test_name": "retry_backoff",
           "status": "pass",
-          "elapsed_ms": 8439.761916990392,
+          "elapsed_ms": 8388.894833973609,
           "message": "\u672a\u68c0\u6d4b\u5230\u9650\u6d41\uff0c\u8fde\u7eed\u8c03\u7528\u7a33\u5b9a",
           "detail": {
             "burst": 10,
@@ -3110,10 +4129,70 @@
           "source": "auto"
         },
         {
+          "test_id": "t27",
+          "test_name": "erc20_transfer",
+          "status": "pass",
+          "elapsed_ms": 3585.7805830892175,
+          "message": "\u4ea4\u6613\u63d0\u4ea4\u6210\u529f\u4f46\u6267\u884c revert\uff08\u9884\u671f\u53ef\u63a5\u53d7\uff09\u3002",
+          "detail": {
+            "revert": true,
+            "tx_hash": "",
+            "calldata": "[REDACTED]0000dead0000000000000000000000000000000000000000000000000000000000000001",
+            "wallet": "[REDACTED]"
+          },
+          "owner": "provider",
+          "source": "auto"
+        },
+        {
+          "test_id": "t28",
+          "test_name": "contract_write",
+          "status": "pass",
+          "elapsed_ms": 2806.7141249775887,
+          "message": "\u542b calldata \u7684\u4ea4\u6613\u53ef\u88ab\u9002\u914d\u5668\u5904\u7406\u5e76\u63d0\u4ea4\u3002",
+          "detail": {
+            "tx_hash": "",
+            "revert": true,
+            "data": "0xd09de08a",
+            "to": "[REDACTED]"
+          },
+          "owner": "provider",
+          "source": "auto"
+        },
+        {
+          "test_id": "t29",
+          "test_name": "sig_verify",
+          "status": "pass",
+          "elapsed_ms": 1660.8230409910902,
+          "message": "\u7b7e\u540d\u6062\u590d\u5730\u5740\u4e0e\u94b1\u5305\u5730\u5740\u4e00\u81f4\u3002",
+          "detail": {
+            "wallet": "[REDACTED]",
+            "message_recovered": "[REDACTED]",
+            "message_signer": "[REDACTED]",
+            "typed_data_checked": false
+          },
+          "owner": "provider",
+          "source": "auto"
+        },
+        {
+          "test_id": "t30",
+          "test_name": "tx_finality",
+          "status": "fail",
+          "elapsed_ms": 2779.2424169601873,
+          "message": "\u4ea4\u6613\u672a\u8fd4\u56de tx_hash\uff0c\u65e0\u6cd5\u9a8c\u8bc1\u6700\u7ec8\u6027\u3002",
+          "detail": {
+            "raw": {
+              "error": "mp exited 1: Amount must be greater than zero.",
+              "revert": true
+            }
+          },
+          "owner": "provider",
+          "source": "auto"
+        },
+        {
           "test_id": "tc01",
           "test_name": "derivation_path",
           "status": "pass",
-          "elapsed_ms": 1589.8054579738528,
+          "elapsed_ms": 1595.9685000125319,
           "message": "\u786e\u5b9a\u6027\u6d3e\u751f\u5df2\u786e\u8ba4: [REDACTED]",
           "detail": {
             "address": "[REDACTED]"
@@ -3125,7 +4204,7 @@
           "test_id": "tc02",
           "test_name": "keychain_lock",
           "status": "pass",
-          "elapsed_ms": 1589.368832996115,
+          "elapsed_ms": 1576.3284170534462,
           "message": "\u7a7a\u5bc6\u94a5 setup \u6b63\u5e38\u62d2\u7edd: Wallet 'nonexistent-wallet-zzz' not found. Available: ['bench', 'bench2', 'bench-95c138b6', 'bench-a55f8a43', 'bench-bd8c13b3', 'bench-ca4a95a3', 'bench-b4c5e214', 'bench-27f593a1', 'bench-37140f75', 'bench-97591918', 'bench-c94cdbc4', 'bench-ea4a43f5', 'bench-382a8493', 'bench-f8a5e14b', 'bench-6cdea6c1']. Run: mp wallet create --name nonexistent-wallet-zzz",
           "detail": {},
           "owner": "",
@@ -3135,7 +4214,7 @@
           "test_id": "tc03",
           "test_name": "backup_recovery",
           "status": "pass",
-          "elapsed_ms": 2459.965083980933,
+          "elapsed_ms": 2344.0054589882493,
           "message": "\u6062\u590d\u5df2\u9a8c\u8bc1: [REDACTED]",
           "detail": {
             "address": "[REDACTED]"
@@ -3857,13 +4936,183 @@
         "session_delegation": false,
         "estimate_gas": true
       },
-      "timestamp": "2026-03-07T08:29:50.630267+00:00",
+      "timestamp": "2026-03-07T09:03:02.649366+00:00",
       "results": [
+        {
+          "test_id": "a01",
+          "test_name": "schema_quality",
+          "status": "pass",
+          "elapsed_ms": 2647.237665951252,
+          "message": "schema checks: 5/5 (100.00%); send_transaction(\u975e\u6cd5\u5730\u5740\u8def\u5f84) \u5f02\u5e38: Privy API 400: {\"error\":\"[Input error] `params.transaction.to`: Invalid Ethereum address\",\"code\":\"invalid_data\",\"cause\":\"[\\n  {\\n    \\\"code\\\": \\\"custom\\\",\\n    \\\"message\\\": \\\"Invalid Ethereum address\\\",\\n    \\\"path\\\": [\\n      \\\"params\\\",\\n      \\\"transaction\\\",\\n      \\\"to\\\"\\n    ]\\n  }\\n]\"}",
+          "detail": {
+            "checks": [
+              {
+                "name": "wallet.address_non_empty",
+                "ok": true
+              },
+              {
+                "name": "wallet.address_0x_prefix",
+                "ok": true
+              },
+              {
+                "name": "sign.signature_non_empty",
+                "ok": true
+              },
+              {
+                "name": "tx.nominal_hash_or_error_meta",
+                "ok": true
+              },
+              {
+                "name": "tx.invalid_hash_or_error_meta",
+                "ok": true
+              }
+            ],
+            "operations": {
+              "create_wallet": {
+                "address": "[REDACTED]",
+                "chain": "ethereum-sepolia",
+                "meta": {
+                  "elapsed_ms": 416.85183299705386,
+                  "wallet_id": "jgk5s0bwpolttmnhcwn0kxio",
+                  "chain_type": "ethereum"
+                }
+              },
+              "sign_message": {
+                "signature": "[REDACTED]0856df49d3287bcdaf1be1672622068de5fb54ab6136fbfed8dcab51c7ff04cf1b",
+                "signer": "[REDACTED]",
+                "message_hash": "",
+                "meta": {
+                  "raw": {
+                    "method": "personal_sign",
+                    "data": {
+                      "signature": "[REDACTED]0856df49d3287bcdaf1be1672622068de5fb54ab6136fbfed8dcab51c7ff04cf1b",
+                      "encoding": "hex"
+                    }
+                  }
+                }
+              },
+              "send_transaction_nominal": {
+                "tx_hash": "[REDACTED]",
+                "status": 1,
+                "meta": {
+                  "raw": {
+                    "method": "eth_sendTransaction",
+                    "data": {
+                      "hash": "[REDACTED]",
+                      "caip2": "eip155:11155111",
+                      "transaction_id": "743d67d5-312d-4980-b3e1-b3d3a1c12110"
+                    }
+                  }
+                }
+              },
+              "send_transaction_invalid_error": "Privy API 400: {\"error\":\"[Input error] `params.transaction.to`: Invalid Ethereum address\",\"code\":\"invalid_data\",\"cause\":\"[\\n  {\\n    \\\"code\\\": \\\"custom\\\",\\n    \\\"message\\\": \\\"Invalid Ethereum address\\\",\\n    \\\"path\\\": [\\n      \\\"params\\\",\\n      \\\"transaction\\\",\\n      \\\"to\\\"\\n    ]\\n  }\\n]\"}"
+            },
+            "checks_passed": 5,
+            "total_checks": 5,
+            "score": 1.0
+          },
+          "owner": "industry",
+          "source": "auto"
+        },
+        {
+          "test_id": "a02",
+          "test_name": "machine_errors",
+          "status": "fail",
+          "elapsed_ms": 468.54895795695484,
+          "message": "\u9519\u8bef\u673a\u8bfb\u6027\u4e0d\u8db3\uff1a\u5b58\u5728\u4e0d\u53ef\u6355\u83b7/\u7a7a\u4fe1\u606f/\u540c\u7c7b\u4e0d\u7a33\u5b9a",
+          "detail": {
+            "trigger_for_a_and_c": "sign_message_empty",
+            "checks": {
+              "a_caught": false,
+              "a_message_non_empty": false,
+              "b_caught": true,
+              "b_message_non_empty": true,
+              "c_caught": false,
+              "c_message_non_empty": false,
+              "same_class_stable": false
+            },
+            "messages": {
+              "a": "",
+              "b": "Privy API 400: {\"error\":\"[Input error] `params.transaction.to`: Invalid Ethereum address\",\"code\":\"invalid_data\",\"cause\":\"[\\n  {\\n    \\\"code\\\": \\\"custom\\\",\\n    \\\"message\\\": \\\"Invalid Ethereum address\\\",\\n    \\\"path\\\": [\\n      \\\"params\\\",\\n      \\\"transaction\\\",\\n      \\\"to\\\"\\n    ]\\n  }\\n]\"}",
+              "c": ""
+            },
+            "subjects": {
+              "a": "",
+              "c": ""
+            },
+            "raw": {
+              "a": {
+                "kind": "result",
+                "signature": "[REDACTED]01788468bfd25394ecaa34a6ae1f890c28ea2c0595ba84d925a91735d74bec091b",
+                "meta": {
+                  "raw": {
+                    "method": "personal_sign",
+                    "data": {
+                      "signature": "[REDACTED]01788468bfd25394ecaa34a6ae1f890c28ea2c0595ba84d925a91735d74bec091b",
+                      "encoding": "hex"
+                    }
+                  }
+                }
+              },
+              "b": {
+                "kind": "exception",
+                "error": "Privy API 400: {\"error\":\"[Input error] `params.transaction.to`: Invalid Ethereum address\",\"code\":\"invalid_data\",\"cause\":\"[\\n  {\\n    \\\"code\\\": \\\"custom\\\",\\n    \\\"message\\\": \\\"Invalid Ethereum address\\\",\\n    \\\"path\\\": [\\n      \\\"params\\\",\\n      \\\"transaction\\\",\\n      \\\"to\\\"\\n    ]\\n  }\\n]\"}"
+              },
+              "c": {
+                "kind": "result",
+                "signature": "[REDACTED]01788468bfd25394ecaa34a6ae1f890c28ea2c0595ba84d925a91735d74bec091b",
+                "meta": {
+                  "raw": {
+                    "method": "personal_sign",
+                    "data": {
+                      "signature": "[REDACTED]01788468bfd25394ecaa34a6ae1f890c28ea2c0595ba84d925a91735d74bec091b",
+                      "encoding": "hex"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "owner": "provider",
+          "source": "auto"
+        },
+        {
+          "test_id": "a03",
+          "test_name": "deterministic_response",
+          "status": "pass",
+          "elapsed_ms": 986.7698330199346,
+          "message": "\u91cd\u590d\u7b7e\u540d\u8fd4\u56de\u7ed3\u6784\u4e00\u81f4",
+          "detail": {
+            "mode": "sign_message",
+            "checks": {
+              "signature_non_empty_all": true,
+              "signature_length_consistent": true,
+              "signer_presence_consistent": true,
+              "signer_value_consistent_if_present": true
+            },
+            "signature_lengths": [
+              132,
+              132,
+              132
+            ],
+            "signer_values": [
+              "[REDACTED]",
+              "[REDACTED]",
+              "[REDACTED]"
+            ],
+            "create_wallet_preview": {
+              "address": "[REDACTED]",
+              "chain": "ethereum-sepolia"
+            }
+          },
+          "owner": "industry",
+          "source": "auto"
+        },
         {
           "test_id": "t01",
           "test_name": "key_generate",
           "status": "pass",
-          "elapsed_ms": 432.69858398707584,
+          "elapsed_ms": 456.8409160710871,
           "message": "\u94b1\u5305\u5df2\u521b\u5efa [REDACTED]",
           "detail": {
             "address": "[REDACTED]",
@@ -3876,7 +5125,7 @@
           "test_id": "t02",
           "test_name": "sign_message",
           "status": "pass",
-          "elapsed_ms": 187.08441697526723,
+          "elapsed_ms": 199.273084057495,
           "message": "\u6d88\u606f\u7b7e\u540d\u6210\u529f",
           "detail": {
             "signature": "[REDACTED]4480e9199bd94b6d50eb14b67d035abc243d836d9b8b321bb3c7126905b2bbd51c",
@@ -3889,7 +5138,7 @@
           "test_id": "t03",
           "test_name": "sign_typed_data",
           "status": "pass",
-          "elapsed_ms": 156.24379098881036,
+          "elapsed_ms": 188.60824999865144,
           "message": "EIP-712 \u7b7e\u540d\u6210\u529f",
           "detail": {
             "signature": "[REDACTED]12fabc6bcb9b9c0e78e909c0fcd655cf9dc09bc7e3a915d8d08c6f6c100238da1c",
@@ -3902,11 +5151,11 @@
           "test_id": "t04",
           "test_name": "send_tx",
           "status": "pass",
-          "elapsed_ms": 1874.9306669924408,
+          "elapsed_ms": 1546.7369579710066,
           "message": "\u4ea4\u6613\u5df2\u63d0\u4ea4: [REDACTED]",
           "detail": {
             "tx_hash": "[REDACTED]",
-            "elapsed_ms": 1874.9306669924408
+            "elapsed_ms": 1546.7369579710066
           },
           "owner": "",
           "source": "auto"
@@ -3915,7 +5164,7 @@
           "test_id": "t05",
           "test_name": "multi_chain",
           "status": "pass",
-          "elapsed_ms": 420.1559580396861,
+          "elapsed_ms": 465.46670794487,
           "message": "Adapter \u58f0\u660e 6 \u6761\u94fe: ethereum, base, polygon, arbitrum, optimism, solana",
           "detail": {
             "chains": [
@@ -3945,7 +5194,7 @@
           "test_id": "t08",
           "test_name": "concurrent_ops",
           "status": "pass",
-          "elapsed_ms": 1912.6952500082552,
+          "elapsed_ms": 1917.8037089295685,
           "message": "\u5e76\u53d1\u6df7\u5408\u8d1f\u8f7d\u6267\u884c\u6210\u529f",
           "detail": {
             "addresses": [
@@ -3967,7 +5216,7 @@
           "test_id": "t09",
           "test_name": "failure_recovery",
           "status": "pass",
-          "elapsed_ms": 539.9623750126921,
+          "elapsed_ms": 406.37212502770126,
           "message": "\u6240\u6709\u6545\u969c\u573a\u666f\u5747\u6b63\u5e38\u5904\u7406",
           "detail": {
             "checks": [
@@ -3990,7 +5239,7 @@
           "test_id": "t10",
           "test_name": "preflight_fee",
           "status": "pass",
-          "elapsed_ms": 233.96791698178276,
+          "elapsed_ms": 228.48983306903392,
           "message": "Gas \u9884\u4f30\u8fd4\u56de\u6210\u529f",
           "detail": {
             "estimation": {
@@ -4005,7 +5254,7 @@
           "test_id": "t11",
           "test_name": "rate_limit_resilience",
           "status": "pass",
-          "elapsed_ms": 688.944875029847,
+          "elapsed_ms": 800.300500006415,
           "message": "\u9650\u6d41\u6062\u590d: \u6240\u6709\u68c0\u67e5\u901a\u8fc7",
           "detail": {
             "checks": [
@@ -4034,14 +5283,14 @@
           "test_id": "t12",
           "test_name": "portability_recovery",
           "status": "pass",
-          "elapsed_ms": 1217.9190420429222,
+          "elapsed_ms": 1018.3442080160603,
           "message": "Portability: \u975e\u786e\u5b9a\u6027 identity, \u6240\u6709\u68c0\u67e5\u901a\u8fc7",
           "detail": {
             "checks": [
               {
                 "test": "initial_create",
                 "ok": true,
-                "msg": "Created wallet: 0x26b3b742..."
+                "msg": "Created wallet: 0x186197fd..."
               },
               {
                 "test": "session_restart",
@@ -4051,7 +5300,7 @@
               {
                 "test": "identity_persistence",
                 "ok": true,
-                "msg": "New address (non-deterministic): 0xbb4ff556..."
+                "msg": "New address (non-deterministic): 0xbd08b8f2..."
               },
               {
                 "test": "sign_after_recovery",
@@ -4073,7 +5322,7 @@
           "test_id": "t13",
           "test_name": "authorization_audit_trace",
           "status": "pass",
-          "elapsed_ms": 2425.5781670217402,
+          "elapsed_ms": 2096.3601249968633,
           "message": "\u5ba1\u8ba1\u94fe: 5/5 \u9879\u68c0\u67e5\u901a\u8fc7",
           "detail": {
             "checks": [
@@ -4166,7 +5415,7 @@
           "test_id": "t19",
           "test_name": "nonce_management",
           "status": "pass",
-          "elapsed_ms": 3360.7833749847487,
+          "elapsed_ms": 3283.2964590052143,
           "message": "\u4e24\u7b14\u4ea4\u6613\u5747\u6210\u529f\uff0cnonce \u81ea\u52a8\u9012\u589e\u6b63\u5e38",
           "detail": {
             "tx1_hash": "[REDACTED]",
@@ -4179,7 +5428,7 @@
                 "data": {
                   "hash": "[REDACTED]",
                   "caip2": "eip155:11155111",
-                  "transaction_id": "376df2ef-0b5d-4515-af82-d24f6cefac2b"
+                  "transaction_id": "cd53572c-9df0-4cf2-81a7-bab02300068c"
                 }
               }
             },
@@ -4189,7 +5438,7 @@
                 "data": {
                   "hash": "[REDACTED]",
                   "caip2": "eip155:11155111",
-                  "transaction_id": "44c9605d-3553-4cb9-9050-4d97a29b4e77"
+                  "transaction_id": "d3a6003c-e3ca-46a7-84af-8d9892be068a"
                 }
               }
             }
@@ -4201,7 +5450,7 @@
           "test_id": "t20",
           "test_name": "tx_confirmation",
           "status": "pass",
-          "elapsed_ms": 1401.8421249929816,
+          "elapsed_ms": 1620.1175840105861,
           "message": "tx_hash \u8fd4\u56de\u6709\u6548 (0x + 64\u4f4dhex)",
           "detail": {
             "tx_hash": "[REDACTED]",
@@ -4214,7 +5463,7 @@
                 "data": {
                   "hash": "[REDACTED]",
                   "caip2": "eip155:11155111",
-                  "transaction_id": "269e6998-ed4a-4733-b58d-ec05b2fce4af"
+                  "transaction_id": "49fbd139-411d-4578-b771-56a5e1370545"
                 }
               }
             }
@@ -4226,7 +5475,7 @@
           "test_id": "t22",
           "test_name": "denial_reason_quality",
           "status": "fail",
-          "elapsed_ms": 582.4472499662079,
+          "elapsed_ms": 595.586207928136,
           "message": "\u62d2\u7edd\u4fe1\u606f\u8d28\u91cf\u4e0d\u8db3: \u7f3a\u5c11 error_code \u6216 message",
           "detail": {
             "meta": {
@@ -4241,7 +5490,7 @@
           "test_id": "t23",
           "test_name": "idempotent_submit",
           "status": "fail",
-          "elapsed_ms": 3179.020459007006,
+          "elapsed_ms": 3341.189333004877,
           "message": "\u91cd\u590d\u63d0\u4ea4\u4ea7\u751f\u4e24\u7b14\u4e0d\u540c\u6210\u529f\u4ea4\u6613\uff0c\u5b58\u5728\u975e\u5e42\u7b49\u98ce\u9669",
           "detail": {
             "first_tx_hash": "[REDACTED]",
@@ -4252,7 +5501,7 @@
                 "data": {
                   "hash": "[REDACTED]",
                   "caip2": "eip155:11155111",
-                  "transaction_id": "066f2fcb-a50d-43b5-9af7-f6f4b2304156"
+                  "transaction_id": "bf06cae2-458b-4c6d-a4d9-1002aad1cb6d"
                 }
               }
             },
@@ -4262,7 +5511,7 @@
                 "data": {
                   "hash": "[REDACTED]",
                   "caip2": "eip155:11155111",
-                  "transaction_id": "f7360adb-b745-448a-8c69-bcfe9c959355"
+                  "transaction_id": "f14879e9-eecd-4afc-b1e3-c8279bd4d770"
                 }
               }
             }
@@ -4274,7 +5523,7 @@
           "test_id": "t24",
           "test_name": "retry_backoff",
           "status": "pass",
-          "elapsed_ms": 1659.9980000173673,
+          "elapsed_ms": 1744.214125094004,
           "message": "\u672a\u68c0\u6d4b\u5230\u9650\u6d41\uff0c\u8fde\u7eed\u8c03\u7528\u7a33\u5b9a",
           "detail": {
             "burst": 10,
@@ -4306,17 +5555,76 @@
           "source": "auto"
         },
         {
+          "test_id": "t27",
+          "test_name": "erc20_transfer",
+          "status": "pass",
+          "elapsed_ms": 2149.6096251066774,
+          "message": "ERC-20 transfer calldata \u5df2\u63d0\u4ea4: [REDACTED]",
+          "detail": {
+            "tx_hash": "[REDACTED]",
+            "calldata": "[REDACTED]0000dead0000000000000000000000000000000000000000000000000000000000000001",
+            "wallet": "[REDACTED]"
+          },
+          "owner": "provider",
+          "source": "auto"
+        },
+        {
+          "test_id": "t28",
+          "test_name": "contract_write",
+          "status": "pass",
+          "elapsed_ms": 1513.9345829375088,
+          "message": "\u542b calldata \u7684\u4ea4\u6613\u53ef\u88ab\u9002\u914d\u5668\u5904\u7406\u5e76\u63d0\u4ea4\u3002",
+          "detail": {
+            "tx_hash": "[REDACTED]",
+            "revert": false,
+            "data": "0xd09de08a",
+            "to": "[REDACTED]"
+          },
+          "owner": "provider",
+          "source": "auto"
+        },
+        {
+          "test_id": "t29",
+          "test_name": "sig_verify",
+          "status": "fail",
+          "elapsed_ms": 610.1351670222357,
+          "message": "\u6d88\u606f\u7b7e\u540d\u6062\u590d\u5730\u5740\u4e0e\u94b1\u5305\u5730\u5740\u4e0d\u4e00\u81f4\u3002",
+          "detail": {
+            "wallet": "[REDACTED]",
+            "recovered": "[REDACTED]"
+          },
+          "owner": "provider",
+          "source": "auto"
+        },
+        {
+          "test_id": "t30",
+          "test_name": "tx_finality",
+          "status": "pass",
+          "elapsed_ms": 21954.064833000302,
+          "message": "\u4ea4\u6613\u5df2\u6700\u7ec8\u786e\u8ba4",
+          "detail": {
+            "tx_hash": "[REDACTED]",
+            "receipt_status": 1,
+            "block_number": 10401558,
+            "confirmations": 2,
+            "rpc_url": "https://ethereum-sepolia-rpc.publicnode.com",
+            "revert": false
+          },
+          "owner": "provider",
+          "source": "auto"
+        },
+        {
           "test_id": "tc01",
           "test_name": "attestation",
           "status": "pass",
-          "elapsed_ms": 588.5357079678215,
+          "elapsed_ms": 566.8744581053033,
           "message": "TEE \u8bc1\u660e\u68c0\u67e5\u901a\u8fc7",
           "detail": {
             "checks": [
               {
                 "test": "valid_address",
                 "ok": true,
-                "msg": "Address: 0x82Fa6fDB..."
+                "msg": "Address: 0xC6c5623D..."
               },
               {
                 "test": "custody_model",
@@ -4337,7 +5645,7 @@
           "test_id": "tc02",
           "test_name": "failover_continuity",
           "status": "pass",
-          "elapsed_ms": 728.3108750125393,
+          "elapsed_ms": 773.4223749721423,
           "message": "\u94b1\u5305\u8eab\u4efd\u5728\u4f1a\u8bdd\u91cd\u542f\u540e\u4fdd\u6301\u4e00\u81f4",
           "detail": {},
           "owner": "",
@@ -4426,7 +5734,7 @@
     }
   ],
   "summary": {
-    "generated_at": "2026-03-07T08:32:40.162632+00:00",
+    "generated_at": "2026-03-07T09:18:31.281237+00:00",
     "provider_count": 7
   }
 }
