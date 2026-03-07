@@ -3096,12 +3096,15 @@ function initChainPieCharts(onchain) {
         const canvas = document.getElementById(`chain-pie-${pid}`);
         if (!canvas) continue;
 
-        const entries = Object.entries(p.chain_distribution)
+        const rawEntries = Object.entries(p.chain_distribution)
             .filter(([, v]) => v > 0)
             .sort((a, b) => b[1] - a[1]);
-        if (!entries.length) continue;
+        if (!rawEntries.length) continue;
 
-        const total = entries.reduce((s, [, v]) => s + v, 0);
+        const total = rawEntries.reduce((s, [, v]) => s + v, 0);
+
+        // Hide tiny entries (< 0.05%) to reduce visual noise
+        const entries = rawEntries.filter(([, v]) => (v / total * 100) >= 0.05);
 
         new Chart(canvas, {
             type: 'doughnut',
@@ -3122,6 +3125,7 @@ function initChainPieCharts(onchain) {
                     legend: {
                         display: true,
                         position: 'bottom',
+                        align: 'center',
                         labels: {
                             color: '#EAECEF',
                             font: { size: 13, family: getCssVar('--font-body'), weight: '600' },

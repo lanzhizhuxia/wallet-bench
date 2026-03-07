@@ -2621,11 +2621,14 @@ td.defi-difficulty { font-size: 0.82rem; white-space: nowrap; text-align: center
     display: flex;
     gap: var(--space-m);
     flex-wrap: wrap;
+    justify-content: center;
 }
 
 .market-chain-pie-item {
-    flex: 1;
+    flex: 0 1 280px;
     min-width: 200px;
+    max-width: 300px;
+    text-align: center;
 }
 
 .market-chain-pie-label {
@@ -2638,7 +2641,7 @@ td.defi-difficulty { font-size: 0.82rem; white-space: nowrap; text-align: center
 
 .market-chain-pie-wrap {
     position: relative;
-    height: 240px;
+    height: 190px;
 }
 
 .market-upgrade-date {
