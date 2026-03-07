@@ -62,6 +62,14 @@ const TEST_NAME_ZH = {
     erc20_transfer: "ERC-20 代币转账", contract_write: "合约写入交互",
     sig_verify: "签名验证", tx_finality: "交易最终确认",
     schema_quality: "返回结构质量", machine_errors: "错误可机读性", deterministic_response: "响应确定性",
+    // Phase 3 (ISSUE-021)
+    timeout_sla: "响应时延SLA", idempotency_key: "幂等Key防护",
+    soak_24h: "持续运行稳定性", version_compat: "版本兼容性",
+    token_cost: "调用成本", multi_step_recovery: "多步恢复",
+    // Observation-only stubs (ISSUE-021 Phase 3)
+    policy_method_scope: "策略方法粒度", rbac: "角色权限控制",
+    approval_workflow: "审批工作流", audit_export: "审计日志导出",
+    secret_rotation: "密钥轮换",
 };
 
 const TEST_DESCRIPTIONS = {
@@ -108,6 +116,19 @@ const TEST_DESCRIPTIONS = {
     schema_quality: "验证成功/失败路径返回的数据结构是否完整可机读",
     machine_errors: "验证错误信息是否可捕获、非空、且同类错误稳定一致",
     deterministic_response: "验证相同输入多次调用返回的结构字段是否一致",
+    // Phase 3 (ISSUE-021)
+    timeout_sla: "验证签名/交易操作的P50/P95延迟是否在SLA阈值内",
+    idempotency_key: "验证重复提交同一请求时是否被正确去重",
+    soak_24h: "验证持续运行下操作成功率是否保持稳定",
+    version_compat: "验证adapter元数据完整性与基本功能烟雾测试",
+    token_cost: "验证完成标准任务所需的API调用次数和成本",
+    multi_step_recovery: "验证多步操作中注入错误后能否正确恢复",
+    // Observation-only stubs (ISSUE-021 Phase 3)
+    policy_method_scope: "验证策略引擎是否支持方法级粒度控制（观察项）",
+    rbac: "验证是否支持角色级访问控制（观察项）",
+    approval_workflow: "验证是否支持多签审批工作流（观察项）",
+    audit_export: "验证是否支持审计日志导出（观察项）",
+    secret_rotation: "验证是否支持密钥/凭证轮换（观察项）",
 };
 
 
@@ -193,6 +214,13 @@ const TEST_CATEGORY = {
     sig_verify: 'security',
     // Agent 可用性 (agent) — ISSUE-021
     schema_quality: 'agent', machine_errors: 'agent', deterministic_response: 'agent',
+    // Phase 3 (ISSUE-021)
+    timeout_sla: 'reliability', idempotency_key: 'reliability',
+    soak_24h: 'ops', version_compat: 'ops',
+    token_cost: 'agent', multi_step_recovery: 'agent',
+    // Observation-only stubs (ISSUE-021 Phase 3)
+    policy_method_scope: 'governance', rbac: 'governance', approval_workflow: 'governance',
+    audit_export: 'ops', secret_rotation: 'security',
 };
 
 const TEST_SOURCE = {
@@ -216,6 +244,13 @@ const TEST_SOURCE = {
   'erc20_transfer': 'auto', 'contract_write': 'auto', 'sig_verify': 'auto',
   'tx_finality': 'auto',
   'schema_quality': 'auto', 'machine_errors': 'auto', 'deterministic_response': 'auto',
+  // Phase 3 (ISSUE-021)
+  'timeout_sla': 'auto', 'idempotency_key': 'auto',
+  'soak_24h': 'auto', 'version_compat': 'auto',
+  'token_cost': 'auto', 'multi_step_recovery': 'auto',
+  // Observation-only stubs (ISSUE-021 Phase 3)
+  'policy_method_scope': 'auto', 'rbac': 'auto', 'approval_workflow': 'auto',
+  'audit_export': 'auto', 'secret_rotation': 'auto',
 };
 // YAML-only scores are rendered separately via EVAL_SCORE_META, not in TEST_SOURCE
 
@@ -421,7 +456,7 @@ function renderCoverageBanner(providers, summaryData) {
     });
 
     // Based on user prompt, total is 34. Let's use a dynamic calculation but keep the user's number in mind.
-    const totalTestCount = 34; // As specified in prompt
+    const totalTestCount = 45; // ISSUE-021 expansion: 34 original + 11 new
     // Derive last-updated: prefer summary.generated_at, fallback to latest provider timestamp
     let lastUpdated = 'N/A';
     if (summaryData?.generated_at) {
@@ -1115,7 +1150,6 @@ const RADAR_DIMENSIONS = [
       desc: '签名验证、密钥轮换等安全测试通过率。公式：pass ÷ (pass + fail + error + unsupported) × 100。' },
     { key: 'agent', label: 'Agent 可用性',
       desc: 'AI Agent 集成质量：返回结构完整性、错误可机读性、响应确定性的通过率。公式：pass ÷ (pass + fail + error + unsupported) × 100。' },
-      desc: 'DeFi 对接能力：基于 4 场景（Uniswap Swap / Aave 借贷 / Hyperliquid 永续 / Polymarket 预测市场）的对接成本评估，等权平均。数据来源：DeFi Integration Cost Matrix v1。' },
 ];
 
 async function renderRadarTab(providers) {

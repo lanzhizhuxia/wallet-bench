@@ -114,6 +114,18 @@ TEST_CATEGORY: dict[str, str] = {
     'schema_quality': 'agent',
     'machine_errors': 'agent',
     'deterministic_response': 'agent',
+    'timeout_sla': 'reliability',
+    'idempotency_key': 'reliability',
+    'soak_24h': 'ops',
+    'version_compat': 'ops',
+    'token_cost': 'agent',
+    'multi_step_recovery': 'agent',
+    # Observation-only stubs (ISSUE-021 Phase 3)
+    'policy_method_scope': 'governance',
+    'rbac': 'governance',
+    'approval_workflow': 'governance',
+    'audit_export': 'ops',
+    'secret_rotation': 'security',
 }
 
 # Providers without built-in app-layer actions (swap/DeFi/bridge etc.).
@@ -145,6 +157,13 @@ TEST_SOURCE: dict[str, str] = {
     'erc20_transfer': 'auto', 'contract_write': 'auto', 'sig_verify': 'auto',
     'tx_finality': 'auto',
     'schema_quality': 'auto', 'machine_errors': 'auto', 'deterministic_response': 'auto',
+    # Phase 3: new automated tests (ISSUE-021)
+    'timeout_sla': 'auto', 'idempotency_key': 'auto',
+    'soak_24h': 'auto', 'version_compat': 'auto',
+    'token_cost': 'auto', 'multi_step_recovery': 'auto',
+    # Observation-only stubs (ISSUE-021 Phase 3)
+    'policy_method_scope': 'auto', 'rbac': 'auto', 'approval_workflow': 'auto',
+    'audit_export': 'auto', 'secret_rotation': 'auto',
 }
 
 
