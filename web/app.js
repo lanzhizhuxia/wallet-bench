@@ -2514,7 +2514,7 @@ Response: {"id": "wallet_xxx", "address": "0x..."}</code></pre>
 // Tab 4: 市场活跃度
 // --------------------------------------------------------------------------
 
-const MARKET_PROVIDER_ORDER = ['privy', 'coinbase', 'crossmint', 'bnbchain_mcp', 'moonpay', 'minara'];
+const MARKET_PROVIDER_ORDER = ['privy', 'coinbase', 'crossmint', 'bnbchain_mcp', 'moonpay', 'minara', 'okx_onchainos'];
 const MARKET_PROVIDER_NAMES = {
     bnbchain_mcp: 'BNB Chain MCP',
     coinbase: 'Coinbase AgentKit',
@@ -2522,6 +2522,7 @@ const MARKET_PROVIDER_NAMES = {
     privy: 'Privy',
     moonpay: 'MoonPay',
     minara: 'Minara',
+    okx_onchainos: 'OKX OnchainOS',
 };
 
 let marketDataLoaded = false;
@@ -3120,13 +3121,13 @@ function initChainPieCharts(onchain) {
                 plugins: {
                     legend: {
                         display: true,
-                        position: 'right',
+                        position: 'bottom',
                         labels: {
-                            color: getCssVar('--text-primary'),
-                            font: { size: 12, family: getCssVar('--font-body'), weight: '500' },
-                            boxWidth: 12,
-                            boxHeight: 12,
-                            padding: 10,
+                            color: '#EAECEF',
+                            font: { size: 13, family: getCssVar('--font-body'), weight: '600' },
+                            boxWidth: 14,
+                            boxHeight: 14,
+                            padding: 14,
                             usePointStyle: true,
                             pointStyle: 'circle',
                             generateLabels: function(chart) {
