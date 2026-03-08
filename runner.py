@@ -17,12 +17,16 @@ from pathlib import Path
 from typing import Any
 
 import yaml
+from dotenv import load_dotenv
 
 from adapters.base import TestResult, TestStatus
 from cases.registry import discover
 
 _ROOT = Path(__file__).resolve().parent
 _RESULTS_DIR = _ROOT / "results"
+
+# Auto-load .env if present (OKX keys, etc.); won't override existing env vars
+load_dotenv(_ROOT / ".env", override=False)
 
 # ---------------------------------------------------------------------------
 # Safety: redaction patterns
@@ -419,7 +423,7 @@ async def _run_tests(provider_name: str, config: dict, runs: int = 1) -> dict[st
                 print(f"  [{spec.test_id}] {spec.test_name} ({spec.source}) ... ", end="", flush=True)
                 try:
                     result = await spec.run(adapter, config)
-                except Exception as exc:
+                except BaseException as exc:
                     result = TestResult(
                         test_id=spec.test_id,
                         test_name=spec.test_name,
@@ -437,7 +441,7 @@ async def _run_tests(provider_name: str, config: dict, runs: int = 1) -> dict[st
                 for i in range(runs):
                     try:
                         r = await spec.run(adapter, config)
-                    except Exception as exc:
+                    except BaseException as exc:
                         r = TestResult(
                             test_id=spec.test_id,
                             test_name=spec.test_name,
@@ -476,8 +480,23 @@ async def _run_tests(provider_name: str, config: dict, runs: int = 1) -> dict[st
                 print(f"{representative.status.value.upper()} ({pass_count}/{total_count} pass, median {median_ms:.0f}ms)")
                 rec['source'] = TEST_SOURCE.get(spec.test_name, 'auto')
                 results.append(rec)
+
+                # Session recovery: cold_start may kill the adapter session
+                if spec.test_name == 'cold_start' and pass_count == 0:
+                    try:
+                        await adapter.teardown()
+                    except BaseException:
+                        pass
+                    try:
+                        await adapter.setup()
+                        print("  [info] adapter re-setup after cold_start")
+                    except BaseException as exc:
+                        print(f"  [warn] adapter re-setup failed: {exc}")
     finally:
-        await adapter.teardown()
+        try:
+            await adapter.teardown()
+        except BaseException as exc:
+            print(f"\n  [warn] teardown error (non-fatal): {type(exc).__name__}: {exc}")
 
     # Load DX evaluation if available
     eval_path = _ROOT / "evaluations" / f"{provider_name}.yaml"
