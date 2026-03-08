@@ -564,7 +564,16 @@ function handleRouting() {
             document.querySelector('header')?.classList.remove('hidden');
             document.getElementById('view-tabs')?.classList.remove('hidden');
         }
-        const tab = hash.substring(1) || 'comparison';
+        // Parse scenario from hash: #radar&scenario=swap
+        const raw = hash.substring(1) || 'comparison';
+        const parts = raw.split('&');
+        const tab = parts[0];
+        const scenarioParam = parts.find(p => p.startsWith('scenario='));
+        if (scenarioParam) {
+            activeScenario = scenarioParam.split('=')[1] || 'all';
+        } else if (tab === 'radar') {
+            activeScenario = 'all';
+        }
         switchTab(tab, true);
     }
 }
@@ -745,7 +754,6 @@ function renderComparisonCards(providers) {
             html += `<h2>${tierHeaders[tier]}</h2>`;
             groupedByTier[tier].forEach(p => {
                 const meta = p.provider_meta || {};
-                const gov = meta.governance || {};
                 const results = p.results || [];
                 const scorable = results.filter(r => r.status !== 'not_applicable' && r.status !== 'inconclusive' && r.status !== 'skip');
                 const passed = scorable.filter(r => r.status === 'pass').length;
@@ -789,47 +797,46 @@ function renderComparisonCards(providers) {
                 }
                 html += `</div>`;
 
-                const defiProvider = decisionData?.providers?.find(dp => dp.id === p.provider);
-                if (defiProvider?.defi) {
-                    const scenarios = defiProvider.defi.scenarios || {};
-                    const coverage = defiProvider.defi.coverage || '0/0';
-                    const defiScore = defiProvider.defi.scores?.equal || 0;
-                    const SCENARIO_NAMES = {
-                        uniswap_swap: 'Uniswap', aave_morpho: 'Aave/Morpho',
-                        hyperliquid: 'Hyperliquid', polymarket: 'Polymarket'
-                    };
-                    html += `<div class="comp-card-defi">`;
-                    html += `<div class="comp-card-defi-header">`;
-                    html += `<span>DeFi 场景集成</span>`;
-                    html += `<span class="comp-card-defi-coverage">覆盖 ${coverage}</span>`;
-                    html += `</div>`;
-                    html += `<div class="comp-card-defi-grid">`;
-                    for (const [sid, sname] of Object.entries(SCENARIO_NAMES)) {
-                        const s = scenarios[sid];
-                        if (s) {
-                            html += `<span class="comp-card-defi-item">${s.emoji} ${sname}</span>`;
-                        }
-                    }
-                    html += `</div>`;
-                    html += `<div class="comp-card-defi-score">DeFi ${defiScore}</div>`;
-                    html += `</div>`;
-                } else {
-                    html += `<div class="comp-card-defi comp-card-defi-empty"><span>DeFi 场景：暂无数据</span></div>`;
-                }
-                const govFeatures = [];
-                if (gov.policy_engine) govFeatures.push('策略引擎');
-                if (gov.spend_limit) govFeatures.push('限额');
-                if (gov.address_allowlist) govFeatures.push('白名单');
-                if (gov.human_in_loop) govFeatures.push('HITL');
+                // v2 Scoring: PlatformScore + Coverage + scenario scores
+                const radarScores = computeRadarScores(p);
+                const platformScore = Math.round(computePlatformScore(radarScores));
+                const coverageInfo = computeCoverage(radarScores);
 
-                html += `<div class="comp-card-gov">`;
-                if (govFeatures.length > 0) {
-                    govFeatures.forEach(f => {
-                        html += `<span class="comp-card-gov-tag">${f}</span>`;
-                    });
-                } else {
-                    html += `<span class="comp-card-gov-empty">无治理功能</span>`;
+                html += `<div class="comp-card-defi">`;
+                html += `<div class="comp-card-defi-header">`;
+                html += `<span>PlatformScore <strong>${platformScore}</strong></span>`;
+                html += `<span class="comp-card-defi-coverage"><span class="coverage-dots">`;
+                for (let ci = 0; ci < coverageInfo.total; ci++) {
+                    html += `<span class="coverage-dot ${ci < coverageInfo.count ? 'filled' : 'empty'}"></span>`;
                 }
+                html += `</span> 覆盖 ${coverageInfo.label}</span>`;
+                html += `</div>`;
+                // 5 scenario FitScores
+                html += `<div class="scenario-scores-grid">`;
+                for (const sk of SCENARIO_KEYS) {
+                    const raw = radarScores[sk] || 0;
+                    const fit = Math.round(computeFitScore(radarScores, sk));
+                    const label = SCENARIO_LABELS_ZH[sk] || sk;
+                    if (raw < 5) {
+                        html += `<span class="scenario-score-item">${label}: <span class="scenario-score-na">--</span></span>`;
+                    } else {
+                        html += `<span class="scenario-score-item">${label}: <span class="scenario-score-value">${fit}</span></span>`;
+                    }
+                }
+                html += `</div>`;
+                // 4 non-scenario dimensions
+                const nonScenarioDims = [
+                    { key: 'agent_autonomy', label: 'Agent' },
+                    { key: 'performance', label: '性能' },
+                    { key: 'wallet_basics', label: '基础' },
+                    { key: 'enterprise_readiness', label: '企业' }
+                ];
+                html += `<div class="non-scenario-dims">`;
+                for (const d of nonScenarioDims) {
+                    const val = Math.round(radarScores[d.key] || 0);
+                    html += `<span>${d.label}: <span class="dim-val">${val}</span></span>`;
+                }
+                html += `</div>`;
                 html += `</div>`;
 
                 html += `<div class="comp-card-accent" style="background:${providerColor}"></div>`;
@@ -1236,8 +1243,9 @@ const RADAR_DIMENSIONS = [
       desc: '治理 + 安全 + 运维合并：策略引擎、审计、密钥管理、备份恢复等。' },
 ];
 
-function renderRadarLegend(providers) {
+function renderRadarLegend(providers, scenario) {
     const container = document.getElementById('radar-legend');
+    if (!scenario) scenario = 'all';
 
     // Helper to get tier info, with fallback
     const getTierInfo = (providerId) => {
@@ -1255,7 +1263,9 @@ function renderRadarLegend(providers) {
         return fallbackTiers[providerId] || 'unknown';
     };
 
-    // Provider ranking by PlatformScore (v2)
+    const isScenarioMode = scenario !== 'all';
+
+    // Build ranking data
     const ranked = providers.map(p => {
         const results = getApplicableResults(p);
         const scorable = results.filter(r => r.status !== 'inconclusive' && r.status !== 'skip');
@@ -1265,23 +1275,53 @@ function renderRadarLegend(providers) {
         const radarScores = computeRadarScores(p);
         const platformScore = Math.round(computePlatformScore(radarScores));
         const coverage = computeCoverage(radarScores);
-        return { provider: p, name: p.provider_meta?.name || p.provider, pct, passed, total, platformScore, coverage };
-    }).sort((a, b) => b.platformScore - a.platformScore);
+        const fitScore = isScenarioMode ? Math.round(computeFitScore(radarScores, scenario)) : 0;
+        const scenarioRaw = isScenarioMode ? (radarScores[scenario] || 0) : 0;
+        return { provider: p, name: p.provider_meta?.name || p.provider, pct, passed, total, platformScore, coverage, radarScores, fitScore, scenarioRaw };
+    });
 
-    let html = '<h3>综合排名 <span class="rank-subtitle">（PlatformScore v2）</span></h3>';
+    if (isScenarioMode) {
+        // Sort: supported (scenarioRaw >= 5) first by fitScore desc, then unsupported at bottom
+        ranked.sort((a, b) => {
+            const aSupported = a.scenarioRaw >= 5 ? 1 : 0;
+            const bSupported = b.scenarioRaw >= 5 ? 1 : 0;
+            if (aSupported !== bSupported) return bSupported - aSupported;
+            return b.fitScore - a.fitScore;
+        });
+    } else {
+        ranked.sort((a, b) => b.platformScore - a.platformScore);
+    }
+
+    const scenarioLabel = isScenarioMode ? (SCENARIO_LABELS_ZH[scenario] || scenario) : '';
+    const title = isScenarioMode
+        ? `${scenarioLabel}排名 <span class="rank-subtitle">（FitScore）</span>`
+        : '综合排名 <span class="rank-subtitle">（PlatformScore v2）</span>';
+
+    let html = `<h3>${title}</h3>`;
     html += '<div class="radar-rank-list">';
-    ranked.forEach((r, i) => {
+    let rank = 0;
+    ranked.forEach((r) => {
         const color = PROVIDER_COLORS[r.provider.provider] || '#888';
-        const verdictClass = r.platformScore >= 60 ? 'rank-pass' : r.platformScore >= 35 ? 'rank-warn' : 'rank-fail';
+        const score = isScenarioMode ? r.fitScore : r.platformScore;
+        const unsupported = isScenarioMode && r.scenarioRaw < 5;
+        const verdictClass = score >= 60 ? 'rank-pass' : score >= 35 ? 'rank-warn' : 'rank-fail';
         const tier = getTierInfo(r.provider.provider);
         const tierLabel = tier === 'waas_infrastructure' ? 'WaaS' : 'Skill';
         const tierClass = tier === 'waas_infrastructure' ? 'tier-waas' : 'tier-skill';
-        html += `<div class="radar-rank-item ${verdictClass}" data-provider="${r.provider.provider}">
-            <span class="radar-rank-pos">#${i + 1}</span>
+        const unsupportedClass = unsupported ? ' unsupported-scenario' : '';
+
+        if (!unsupported) rank++;
+        const posLabel = unsupported ? '—' : `#${rank}`;
+        const detailText = isScenarioMode
+            ? (unsupported ? '<span class="radar-rank-unsupported-label">不支持此场景</span>' : `场景分 ${Math.round(r.scenarioRaw)} · 覆盖 ${r.coverage.label}`)
+            : `${r.pct}% 通过 · 覆盖 ${r.coverage.label}`;
+
+        html += `<div class="radar-rank-item ${verdictClass}${unsupportedClass}" data-provider="${r.provider.provider}">
+            <span class="radar-rank-pos">${posLabel}</span>
             <span class="radar-rank-swatch" style="background:${color}"></span>
             <span class="radar-rank-name">${r.name} <span class="tier-badge ${tierClass}">${tierLabel}</span></span>
-            <span class="radar-rank-score">${r.platformScore}</span>
-            <span class="radar-rank-detail">${r.pct}% 通过 · 覆盖 ${r.coverage.label}</span>
+            <span class="radar-rank-score">${score}</span>
+            <span class="radar-rank-detail">${detailText}</span>
         </div>`;
     });
     html += '</div>';
@@ -1388,6 +1428,8 @@ function computeRadarScores(provider) {
 // ── v2 Scoring: FitScore (per-scenario) ──
 // FitScore_j = 0.55 × S_j + 0.20 × A + 0.15 × P + 0.10 × W
 const SCENARIO_KEYS = ['swap', 'defi_lending', 'cross_chain', 'prediction_market', 'perps'];
+const SCENARIO_LABELS_ZH = { swap: 'Swap 兑换', defi_lending: 'DeFi 借贷', cross_chain: '跨链', prediction_market: '预测市场', perps: '永续' };
+let activeScenario = 'all';
 
 function computeFitScore(radarScores, scenarioKey) {
     const S = radarScores[scenarioKey] || 0;
@@ -1423,6 +1465,42 @@ function computeCoverage(radarScores) {
     return { count, total: SCENARIO_KEYS.length, label: `${count}/${SCENARIO_KEYS.length}` };
 }
 
+
+// ── Radar Tab: compose scenario selector + radar chart + legend + toggle ──
+function renderRadarTab(providers) {
+    renderScenarioSelector(providers);
+    renderRadarToggle(providers);
+    renderMainRadarChart(providers);
+    renderRadarLegend(providers, activeScenario);
+}
+
+function renderScenarioSelector(providers) {
+    const container = document.getElementById('scenario-selector');
+    if (!container) return;
+    const buttons = [
+        { key: 'all', label: '全部' },
+        ...SCENARIO_KEYS.map(k => ({ key: k, label: SCENARIO_LABELS_ZH[k] || k }))
+    ];
+    let html = '';
+    buttons.forEach(b => {
+        const cls = b.key === activeScenario ? 'scenario-btn active' : 'scenario-btn';
+        html += `<button class="${cls}" data-scenario="${b.key}">${b.label}</button>`;
+    });
+    container.innerHTML = html;
+    container.querySelectorAll('.scenario-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            activeScenario = btn.dataset.scenario;
+            container.querySelectorAll('.scenario-btn').forEach(b => b.classList.toggle('active', b.dataset.scenario === activeScenario));
+            renderRadarLegend(providers, activeScenario);
+            // Update URL hash with scenario
+            if (activeScenario === 'all') {
+                window.location.hash = 'radar';
+            } else {
+                window.location.hash = `radar&scenario=${activeScenario}`;
+            }
+        });
+    });
+}
 
 function renderMainRadarChart(providers) {
     const container = document.getElementById('radar-container');
@@ -1834,6 +1912,21 @@ function renderDetail(provider) {
     }
 
     html += '<div class="detail-tab-pane" id="detail-basics">';
+    // Best scenario banner
+    const detailRadar = computeRadarScores(provider);
+    let bestScenario = null;
+    let bestFit = -1;
+    for (const sk of SCENARIO_KEYS) {
+        const raw = detailRadar[sk] || 0;
+        if (raw >= 5) {
+            const fit = computeFitScore(detailRadar, sk);
+            if (fit > bestFit) { bestFit = fit; bestScenario = sk; }
+        }
+    }
+    if (bestScenario) {
+        const bestLabel = SCENARIO_LABELS_ZH[bestScenario] || bestScenario;
+        html += `<div class="best-scenario-banner">最佳场景：${bestLabel} <span class="best-scenario-score">FitScore ${Math.round(bestFit)}</span></div>`;
+    }
     // AI Insight block (replaces old evaluation summary)
     const aiInsight = AI_INSIGHTS[provider.provider];
     if (aiInsight) {
