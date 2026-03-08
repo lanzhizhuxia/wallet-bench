@@ -56,7 +56,11 @@ def _looks_like_success(result: Any) -> bool:
     # Keyword blacklist on stringified result (narrower scope: only check short reprs)
     raw = str(result).lower()
     if len(raw) > 2000:
-        return True  # too large to keyword-scan reliably; trust structured checks above
+        failure_signals = ("error", "failed", "not found", "denied", "rejected", "exception", "traceback")
+        failure_count = sum(1 for s in failure_signals if s in raw[:500])
+        if failure_count >= 2:
+            return False
+        return True
     failure_signals = ("error", "failed", "not found", "denied", "rejected")
     return not any(sig in raw for sig in failure_signals)
 

@@ -10,6 +10,7 @@ let lastActiveTab = 'comparison';
 let mainRadarChart = null;
 
 const DEFERRED_PROVIDERS = [];
+const SCENARIO_SUPPORT_THRESHOLD = 5;
 
 // --- Two-level navigation structure ---
 const NAV_STRUCTURE = {
@@ -817,7 +818,7 @@ function renderComparisonCards(providers) {
                     const raw = radarScores[sk] || 0;
                     const fit = Math.round(computeFitScore(radarScores, sk));
                     const label = SCENARIO_LABELS_ZH[sk] || sk;
-                    if (raw < 5) {
+                    if (raw < SCENARIO_SUPPORT_THRESHOLD) {
                         html += `<span class="scenario-score-item">${label}: <span class="scenario-score-na">--</span></span>`;
                     } else {
                         html += `<span class="scenario-score-item">${label}: <span class="scenario-score-value">${fit}</span></span>`;
@@ -1281,10 +1282,10 @@ function renderRadarLegend(providers, scenario) {
     });
 
     if (isScenarioMode) {
-        // Sort: supported (scenarioRaw >= 5) first by fitScore desc, then unsupported at bottom
+        // Sort: supported (scenarioRaw >= SCENARIO_SUPPORT_THRESHOLD) first by fitScore desc, then unsupported at bottom
         ranked.sort((a, b) => {
-            const aSupported = a.scenarioRaw >= 5 ? 1 : 0;
-            const bSupported = b.scenarioRaw >= 5 ? 1 : 0;
+            const aSupported = a.scenarioRaw >= SCENARIO_SUPPORT_THRESHOLD ? 1 : 0;
+            const bSupported = b.scenarioRaw >= SCENARIO_SUPPORT_THRESHOLD ? 1 : 0;
             if (aSupported !== bSupported) return bSupported - aSupported;
             return b.fitScore - a.fitScore;
         });
@@ -1303,7 +1304,7 @@ function renderRadarLegend(providers, scenario) {
     ranked.forEach((r) => {
         const color = PROVIDER_COLORS[r.provider.provider] || '#888';
         const score = isScenarioMode ? r.fitScore : r.platformScore;
-        const unsupported = isScenarioMode && r.scenarioRaw < 5;
+        const unsupported = isScenarioMode && r.scenarioRaw < SCENARIO_SUPPORT_THRESHOLD;
         const verdictClass = score >= 60 ? 'rank-pass' : score >= 35 ? 'rank-warn' : 'rank-fail';
         const tier = getTierInfo(r.provider.provider);
         const tierLabel = tier === 'waas_infrastructure' ? 'WaaS' : 'Skill';
@@ -1918,7 +1919,7 @@ function renderDetail(provider) {
     let bestFit = -1;
     for (const sk of SCENARIO_KEYS) {
         const raw = detailRadar[sk] || 0;
-        if (raw >= 5) {
+        if (raw >= SCENARIO_SUPPORT_THRESHOLD) {
             const fit = computeFitScore(detailRadar, sk);
             if (fit > bestFit) { bestFit = fit; bestScenario = sk; }
         }

@@ -26,7 +26,13 @@
     { "id": "crossmint", "name": "Crossmint", "architecture": "Intent/REST" },
     { "id": "bnbchain_mcp", "name": "BNB Chain MCP", "architecture": "Local/MCP" },
     { "id": "moonpay", "name": "MoonPay", "architecture": "Local/CLI" },
-    { "id": "minara", "name": "Minara", "architecture": "Custodial/CLI" }
+    { "id": "minara", "name": "Minara", "architecture": "Custodial/CLI" },
+    { "id": "okx_onchainos", "name": "OKX OnchainOS", "architecture": "Local/CLI" },
+    { "id": "clawlett", "name": "Clawlett", "architecture": "Smart Account/Gnosis Safe" },
+    { "id": "para_wallet", "name": "Para Wallet", "architecture": "MPC/REST" },
+    { "id": "universal_trading", "name": "Universal Trading (Particle Network)", "architecture": "Local/Scripts" },
+    { "id": "polymarket_agent", "name": "Polymarket Agent", "architecture": "Local/CLI" },
+    { "id": "coinpilot_hyperliquid", "name": "Coinpilot Hyperliquid", "architecture": "Intent/Copy-Trade" }
   ],
   "ratings": {
     "privy": {
@@ -189,13 +195,14 @@
     },
     "moonpay": {
       "uniswap_swap": {
-        "rating": "not_feasible",
-        "integration_mode": "不可行",
-        "tx_steps": null,
+        "rating": "ready_to_use_conditional",
+        "integration_mode": "声明即用（受限）",
+        "tx_steps": 0,
         "external_deps": [],
-        "human_intervention": null,
-        "rationale": "无原始 calldata 接口。KYC 网关聚合器兑换，无 send-tx --data 命令。",
-        "confidence": "high"
+        "human_intervention": false,
+        "rationale": "mp token swap 命令是内置聚合器兑换，非 Uniswap V3 Router 直连。支持通用 Token Swap 意图，Agent 声明即用但无法指定路由/滑点。",
+        "confidence": "high",
+        "caveats": ["内置聚合器，非 Uniswap V3 直连", "无 calldata 级别控制"]
       },
       "aave_morpho": {
         "rating": "not_feasible",
@@ -261,6 +268,244 @@
         "external_deps": [],
         "human_intervention": null,
         "rationale": "无密钥导出，无签名接口。无法满足 Path A 或 Path B。",
+        "confidence": "high"
+      }
+    },
+    "okx_onchainos": {
+      "uniswap_swap": {
+        "rating": "ready_to_use_conditional",
+        "integration_mode": "内置 DEX 聚合 + gateway 广播",
+        "tx_steps": 2,
+        "external_deps": ["onchainos swap quote"],
+        "human_intervention": false,
+        "rationale": "onchainos swap quote 提供 DEX 聚合级别报价，gateway broadcast 广播预签名交易。Agent 需外部签名，非完全自主，但 Swap 路由由 onchainos 内置处理。",
+        "confidence": "medium",
+        "caveats": ["需 Agent 自行签名", "swap 仅提供报价，实际执行需 gateway broadcast"]
+      },
+      "aave_morpho": {
+        "rating": "not_feasible",
+        "integration_mode": "不可行",
+        "tx_steps": null,
+        "external_deps": [],
+        "human_intervention": null,
+        "rationale": "gateway broadcast 可广播预签名交易，但 onchainos 不托管私钥也不提供签名能力，Agent 需完全自行编码 + 签名 + 广播，实际上等同于不使用 onchainos。无合约调用内置能力。",
+        "confidence": "high"
+      },
+      "hyperliquid": {
+        "rating": "not_feasible",
+        "integration_mode": "不可行",
+        "tx_steps": null,
+        "external_deps": [],
+        "human_intervention": null,
+        "rationale": "无 signTypedData 或 personal_sign 能力。Hyperliquid 需要 EIP-712 签名授权，onchainos CLI 不暴露任何签名原语。",
+        "confidence": "high"
+      },
+      "polymarket": {
+        "rating": "not_feasible",
+        "integration_mode": "不可行",
+        "tx_steps": null,
+        "external_deps": [],
+        "human_intervention": null,
+        "rationale": "Polymarket CLOB 需要 EIP-712 签名，onchainos 不支持 signTypedData。",
+        "confidence": "high"
+      }
+    },
+    "clawlett": {
+      "uniswap_swap": {
+        "rating": "ready_to_use_conditional",
+        "integration_mode": "内置 KyberSwap/CoW Swap",
+        "tx_steps": 1,
+        "external_deps": [],
+        "human_intervention": false,
+        "rationale": "Clawlett 内置 KyberSwap/CoW Protocol Swap 脚本，覆盖通用兑换意图。仅 Base 主网。",
+        "confidence": "medium",
+        "caveats": ["内置聚合器，非 Uniswap V3 直连", "仅 Base 主网"]
+      },
+      "aave_morpho": {
+        "rating": "moderate",
+        "integration_mode": "Zodiac Roles 授权 + ABI 编码",
+        "tx_steps": 3,
+        "external_deps": ["Aave V3 ABI", "Zodiac Roles 配置"],
+        "human_intervention": false,
+        "rationale": "Zodiac Roles 可授权合约调用，需预配置 Aave/Morpho 合约权限 + Agent 自行编码 ABI calldata。可行但配置门槛较高。",
+        "confidence": "medium",
+        "caveats": ["需额外部署和配置 Roles 模块", "仅 Base 链"]
+      },
+      "hyperliquid": {
+        "rating": "not_feasible",
+        "integration_mode": "不可行",
+        "tx_steps": null,
+        "external_deps": [],
+        "human_intervention": null,
+        "rationale": "无 signTypedData，Zodiac Roles 仅支持交易级操作，无法签名 EIP-712 离链授权。",
+        "confidence": "high"
+      },
+      "polymarket": {
+        "rating": "not_feasible",
+        "integration_mode": "不可行",
+        "tx_steps": null,
+        "external_deps": [],
+        "human_intervention": null,
+        "rationale": "Polymarket CLOB 需 EIP-712 签名，Clawlett 不暴露签名原语。仅 Base 链，与 Polygon 不兼容。",
+        "confidence": "high"
+      }
+    },
+    "para_wallet": {
+      "uniswap_swap": {
+        "rating": "low_barrier",
+        "integration_mode": "sign-raw + 客户端组装 tx",
+        "tx_steps": 3,
+        "external_deps": ["Uniswap ABI 编码", "RPC 节点广播"],
+        "human_intervention": false,
+        "rationale": "sign-raw 可签任意 hex，Agent 需自行组装 Uniswap calldata + unsigned tx，调用 sign-raw 签名后通过 RPC 广播。",
+        "confidence": "medium",
+        "caveats": ["sign-raw 返回无 0x 前缀，需客户端拼接", "需客户端维护 nonce 和 gas 估算"]
+      },
+      "aave_morpho": {
+        "rating": "low_barrier",
+        "integration_mode": "sign-raw + 多步 tx",
+        "tx_steps": 4,
+        "external_deps": ["Aave V3 ABI", "RPC 节点广播"],
+        "human_intervention": false,
+        "rationale": "与 Swap 同路径，两步交易（approve + supply）。每步均需：构建 tx → sign-raw → 广播。",
+        "confidence": "medium",
+        "caveats": ["两步交易需顺序执行，nonce 管理更复杂"]
+      },
+      "hyperliquid": {
+        "rating": "moderate",
+        "integration_mode": "sign-raw + EIP-712 手动哈希",
+        "tx_steps": 2,
+        "external_deps": ["Hyperliquid EIP-712 domain", "hyperliquid-python-sdk"],
+        "human_intervention": false,
+        "rationale": "sign-raw 可签 hash，但无 EIP-712 内置支持，Agent 需自行 hash EIP-712 structured data 再传 hex。需验证 SDK 兼容性。",
+        "confidence": "medium",
+        "caveats": ["需自行构造 EIP-712 hash", "SDK 注入外部签名者需验证"]
+      },
+      "polymarket": {
+        "rating": "moderate",
+        "integration_mode": "sign-raw + EIP-712 手动哈希",
+        "tx_steps": 2,
+        "external_deps": ["Polymarket CLOB API", "自定义 EIP-712 编码器"],
+        "human_intervention": false,
+        "rationale": "同 Hyperliquid 路径，需自行构造 EIP-712 hash 再调 sign-raw。py-clob-client 注入外部签名者需验证。",
+        "confidence": "medium",
+        "caveats": ["需自行构造 EIP-712 hash"]
+      }
+    },
+    "universal_trading": {
+      "uniswap_swap": {
+        "rating": "ready_to_use_conditional",
+        "integration_mode": "声明即用（受限）",
+        "tx_steps": 0,
+        "external_deps": [],
+        "human_intervention": false,
+        "rationale": "内置 buy.ts/sell.ts 脚本通过 Particle Universal Accounts 执行 Swap。非 Uniswap V3 直连，通过 Particle 聚合器路由。",
+        "confidence": "high",
+        "caveats": ["聚合器路由，非 Uniswap V3 直连", "需 Particle 项目 ID 和密钥"]
+      },
+      "aave_morpho": {
+        "rating": "not_feasible",
+        "integration_mode": "不可行",
+        "tx_steps": null,
+        "external_deps": [],
+        "human_intervention": null,
+        "rationale": "脚本集仅覆盖 buy/sell（Swap）流程，无借贷/存款命令。不暴露通用 send_transaction 或 calldata 接口，SDK 内部处理签名。",
+        "confidence": "high"
+      },
+      "hyperliquid": {
+        "rating": "not_feasible",
+        "integration_mode": "不可行",
+        "tx_steps": null,
+        "external_deps": [],
+        "human_intervention": null,
+        "rationale": "不暴露 sign_message 或 sign_typed_data 原语。脚本仅覆盖 Swap 流程，SDK 不暴露 signTypedData。",
+        "confidence": "high"
+      },
+      "polymarket": {
+        "rating": "not_feasible",
+        "integration_mode": "不可行",
+        "tx_steps": null,
+        "external_deps": [],
+        "human_intervention": null,
+        "rationale": "无签名原语，无 Polygon 链支持。脚本集聚焦 EVM/Solana Swap，不覆盖预测市场。",
+        "confidence": "high"
+      }
+    },
+    "polymarket_agent": {
+      "uniswap_swap": {
+        "rating": "not_feasible",
+        "integration_mode": "不可行",
+        "tx_steps": null,
+        "external_deps": [],
+        "human_intervention": null,
+        "rationale": "仅支持 Polymarket 预测市场交易（buy/sell）。无通用 Swap 或 send_transaction 能力。钱包由 poly CLI 内部管理，不暴露签名原语。",
+        "confidence": "high"
+      },
+      "aave_morpho": {
+        "rating": "not_feasible",
+        "integration_mode": "不可行",
+        "tx_steps": null,
+        "external_deps": [],
+        "human_intervention": null,
+        "rationale": "无借贷/存款命令。CLI 仅覆盖 Polymarket CLOB 交易，不支持通用 DeFi 操作。",
+        "confidence": "high"
+      },
+      "hyperliquid": {
+        "rating": "not_feasible",
+        "integration_mode": "不可行",
+        "tx_steps": null,
+        "external_deps": [],
+        "human_intervention": null,
+        "rationale": "CLI 聚焦 Polygon/Polymarket，不支持 Hyperliquid L1。无签名原语可复用。",
+        "confidence": "high"
+      },
+      "polymarket": {
+        "rating": "ready_to_use",
+        "integration_mode": "声明即用",
+        "tx_steps": 0,
+        "external_deps": [],
+        "human_intervention": false,
+        "rationale": "poly buy/sell 命令直接在 Polymarket CLOB 下单。Agent 仅需传递 market slug + 方向 + 金额即可完成交易。内置钱包管理和 USDC 结算。",
+        "confidence": "high",
+        "caveats": ["仅 Polymarket 预测市场，不可用于其他 DeFi 场景"]
+      }
+    },
+    "coinpilot_hyperliquid": {
+      "uniswap_swap": {
+        "rating": "not_feasible",
+        "integration_mode": "不可行",
+        "tx_steps": null,
+        "external_deps": [],
+        "human_intervention": null,
+        "rationale": "Coinpilot 专注 Hyperliquid 永续合约跟单。不支持 EVM Swap 或通用交易。钱包由 Privy 预创建，不暴露签名/交易原语。",
+        "confidence": "high"
+      },
+      "aave_morpho": {
+        "rating": "not_feasible",
+        "integration_mode": "不可行",
+        "tx_steps": null,
+        "external_deps": [],
+        "human_intervention": null,
+        "rationale": "无借贷/存款能力。平台仅提供 Hyperliquid perps copy-trade 订阅执行。",
+        "confidence": "high"
+      },
+      "hyperliquid": {
+        "rating": "ready_to_use_conditional",
+        "integration_mode": "声明即用（跟单模式）",
+        "tx_steps": 0,
+        "external_deps": [],
+        "human_intervention": false,
+        "rationale": "Coinpilot 内置 Hyperliquid 永续合约跟单（start/stop/history）。Agent 选择 leader 后自动复制交易。非自主下单，而是跟单执行模式。",
+        "confidence": "high",
+        "caveats": ["跟单模式，非自主交易", "5 req/s 速率限制", "需 Coinpilot 账户和配置"]
+      },
+      "polymarket": {
+        "rating": "not_feasible",
+        "integration_mode": "不可行",
+        "tx_steps": null,
+        "external_deps": [],
+        "human_intervention": null,
+        "rationale": "Coinpilot 仅覆盖 Hyperliquid L1 perps 跟单，不支持 Polygon/Polymarket。",
         "confidence": "high"
       }
     }

@@ -14,8 +14,8 @@ _DEFAULT_TIMEOUT = 30
 
 _TOOL_LIST_METHODS = ("list_tools", "describe_schema", "get_tools", "tool_list")
 
-_MIN_CAP_ENTRIES = 5
-_MIN_PUBLIC_METHODS = 5
+_MIN_CAP_ENTRIES = 8
+_MIN_PUBLIC_METHODS = 10
 
 
 def _count_public_methods(adapter: WalletAdapter) -> list[str]:
@@ -111,10 +111,18 @@ async def run(adapter: WalletAdapter, config: dict) -> TestResult:
 
     # ── Scoring / message ─────────────────────────────────────────────────
     score_parts: list[str] = []
-    if pass_via_tool_list:
-        score_parts.append(f"dedicated method '{found_method}' returned structured data")
-    if pass_via_introspection:
+    if pass_via_tool_list and pass_via_introspection:
+        score_parts.append("full discovery")
+        score_parts.append(f"dedicated method '{found_method}' + capabilities={cap_count}, public_methods={public_count}")
+        detail["discovery_quality"] = "full"
+    elif pass_via_tool_list:
+        score_parts.append("dedicated method only")
+        score_parts.append(f"'{found_method}' returned structured data")
+        detail["discovery_quality"] = "dedicated"
+    elif pass_via_introspection:
+        score_parts.append("introspection only")
         score_parts.append(f"capabilities={cap_count}, public_methods={public_count}")
+        detail["discovery_quality"] = "basic"
 
     message = f"Tool discovery OK: {'; '.join(score_parts)}"
     if notes:
