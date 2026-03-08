@@ -213,39 +213,47 @@ const AI_INSIGHTS = {
 };
 
 const TEST_CATEGORY = {
-    // 钱包基础 (wallet_core)
-    key_generate: 'wallet_core', sign_message: 'wallet_core', sign_typed_data: 'wallet_core',
-    send_tx: 'wallet_core', multi_chain: 'wallet_core', preflight_fee: 'wallet_core',
-    nonce_management: 'wallet_core', tx_confirmation: 'wallet_core',
-    erc20_transfer: 'wallet_core', contract_write: 'wallet_core',
-    // 权限治理 (governance)
-    policy_enforcement: 'governance', session_delegation: 'governance',
-    authorization_audit_trace: 'governance',
-    policy_revocation_latency: 'governance', denial_reason_quality: 'governance',
-    // 稳定性 (reliability)
-    concurrent_ops: 'reliability', failure_recovery: 'reliability',
-    rate_limit_resilience: 'reliability',
-    idempotent_submit: 'reliability', retry_backoff: 'reliability',
-    tx_finality: 'reliability',
-    // 运维能力 (ops)
-    portability_recovery: 'ops', webhook_delivery: 'ops', quota_disclosure: 'ops',
-    derivation_path: 'ops', keychain_lock: 'ops', backup_recovery: 'ops',
-    intent_schema: 'ops', fulfillment_sla: 'ops', cancellation: 'ops',
-    attestation: 'ops', failover_continuity: 'ops', policy_depth: 'ops',
-    // 应用能力 (app)
-    token_swap: 'app', defi_interaction: 'app', cross_chain_bridge: 'app',
-    prediction_market: 'app', perps_trading: 'app',
-    // 安全性 (security) — ISSUE-021
-    sig_verify: 'security',
-    // Agent 可用性 (agent) — ISSUE-021
-    schema_quality: 'agent', machine_errors: 'agent', deterministic_response: 'agent',
-    // Phase 3 (ISSUE-021)
-    timeout_sla: 'reliability', idempotency_key: 'reliability',
-    soak_24h: 'ops', version_compat: 'ops',
-    token_cost: 'agent', multi_step_recovery: 'agent',
-    // Observation-only stubs (ISSUE-021 Phase 3)
-    policy_method_scope: 'governance', rbac: 'governance', approval_workflow: 'governance',
-    audit_export: 'ops', secret_rotation: 'security',
+    // ── 钱包基础 (wallet_basics) ──
+    key_generate: 'wallet_basics', sign_message: 'wallet_basics', sign_typed_data: 'wallet_basics',
+    send_tx: 'wallet_basics', multi_chain: 'wallet_basics', preflight_fee: 'wallet_basics',
+    nonce_management: 'wallet_basics', tx_confirmation: 'wallet_basics',
+    erc20_transfer: 'wallet_basics', contract_write: 'wallet_basics',
+    // ── 5 个应用场景维度 ──
+    token_swap: 'swap',
+    defi_interaction: 'defi_lending',
+    cross_chain_bridge: 'cross_chain',
+    prediction_market: 'prediction_market',
+    perps_trading: 'perps',
+    // ── Agent 自主性 (agent_autonomy) ──
+    schema_quality: 'agent_autonomy', machine_errors: 'agent_autonomy',
+    deterministic_response: 'agent_autonomy',
+    token_cost: 'agent_autonomy', multi_step_recovery: 'agent_autonomy',
+    // ── 性能 (performance) ──
+    concurrent_ops: 'performance', failure_recovery: 'performance',
+    rate_limit_resilience: 'performance',
+    idempotent_submit: 'performance', retry_backoff: 'performance',
+    tx_finality: 'performance',
+    timeout_sla: 'performance', idempotency_key: 'performance',
+    soak_24h: 'performance',
+    // ── 企业就绪度 (enterprise_readiness) = governance + security + ops ──
+    // governance →
+    policy_enforcement: 'enterprise_readiness', session_delegation: 'enterprise_readiness',
+    authorization_audit_trace: 'enterprise_readiness',
+    policy_revocation_latency: 'enterprise_readiness', denial_reason_quality: 'enterprise_readiness',
+    policy_method_scope: 'enterprise_readiness', rbac: 'enterprise_readiness',
+    approval_workflow: 'enterprise_readiness',
+    // security →
+    sig_verify: 'enterprise_readiness', secret_rotation: 'enterprise_readiness',
+    // ops →
+    portability_recovery: 'enterprise_readiness', webhook_delivery: 'enterprise_readiness',
+    quota_disclosure: 'enterprise_readiness',
+    derivation_path: 'enterprise_readiness', keychain_lock: 'enterprise_readiness',
+    backup_recovery: 'enterprise_readiness',
+    intent_schema: 'enterprise_readiness', fulfillment_sla: 'enterprise_readiness',
+    cancellation: 'enterprise_readiness',
+    attestation: 'enterprise_readiness', failover_continuity: 'enterprise_readiness',
+    policy_depth: 'enterprise_readiness',
+    version_compat: 'enterprise_readiness', audit_export: 'enterprise_readiness',
 };
 
 const TEST_SOURCE = {
@@ -279,15 +287,17 @@ const TEST_SOURCE = {
 };
 // YAML-only scores are rendered separately via EVAL_SCORE_META, not in TEST_SOURCE
 
-// Category display labels + render order
+// Category display labels + render order (v2: 9 dimensions)
 const CATEGORY_META = [
-    { key: 'wallet_core', label: '钱包基础' },
-    { key: 'governance', label: '权限治理' },
-    { key: 'reliability', label: '稳定性' },
-    { key: 'ops', label: '运维能力' },
-    { key: 'app', label: '应用能力' },
-    { key: 'security', label: '安全性' },
-    { key: 'agent', label: 'Agent 可用性' },
+    { key: 'swap', label: 'Swap 兑换' },
+    { key: 'defi_lending', label: 'DeFi 借贷' },
+    { key: 'cross_chain', label: '跨链' },
+    { key: 'prediction_market', label: '预测市场' },
+    { key: 'perps', label: '永续合约' },
+    { key: 'agent_autonomy', label: 'Agent 自主性' },
+    { key: 'performance', label: '性能' },
+    { key: 'wallet_basics', label: '钱包基础' },
+    { key: 'enterprise_readiness', label: '企业就绪度' },
 ];
 
 // DeFi scenario display mappings (shared by matrix + heatmap)
@@ -917,7 +927,7 @@ function renderRequirementFilter(providers) {
     const catGroups = {};
     CATEGORY_META.forEach(c => { catGroups[c.key] = []; });
     sortedTests.forEach(([testId, testName]) => {
-        const cat = TEST_CATEGORY[testName] || 'wallet_core';
+        const cat = TEST_CATEGORY[testName] || 'wallet_basics';
         if (catGroups[cat]) catGroups[cat].push([testId, testName]);
     });
 
@@ -1073,7 +1083,7 @@ function renderMatrix(providers, deciData) {
     const catGroups = {};
     CATEGORY_META.forEach(c => { catGroups[c.key] = []; });
     sortedTests.forEach(([testId, testName]) => {
-        const cat = TEST_CATEGORY[testName] || 'wallet_core';
+        const cat = TEST_CATEGORY[testName] || 'wallet_basics';
         if (catGroups[cat]) catGroups[cat].push([testId, testName]);
     });
 
@@ -1181,20 +1191,26 @@ function renderMatrixLegend() {
 
 // --- Tab 2: 能力雷达 ---
 const RADAR_DIMENSIONS = [
-    { key: 'wallet_core', label: '钱包基础',
-      desc: '钱包基础功能通过率：创建钱包、签名、转账、多链、Gas 预估等。公式：pass ÷ (pass + fail) × 100。' },
-    { key: 'governance', label: '权限治理',
-      desc: '策略引擎、临时授权、审计追踪的通过率（权重 60%）+ 治理完整度 YAML 评分（权重 40%）。' },
-    { key: 'reliability', label: '稳定性',
-      desc: '并发处理、故障恢复、限流韧性的通过率。公式：pass ÷ (pass + fail) × 100。' },
-    { key: 'ops', label: '运维能力',
-      desc: '运维类测试通过率（权重 50%）+ 环境矩阵和文档上手度 YAML 评分均值（权重 50%）。' },
-    { key: 'app', label: '应用能力',
-      desc: 'DeFi 对接能力：基于 4 场景（Uniswap Swap / Aave 借贷 / Hyperliquid 永续 / Polymarket 预测市场）的对接成本评估，等权平均。数据来源：DeFi Integration Cost Matrix v1。' },
-    { key: 'security', label: '安全性',
-      desc: '签名验证、密钥轮换等安全测试通过率。公式：pass ÷ (pass + fail + error + unsupported) × 100。' },
-    { key: 'agent', label: 'Agent 可用性',
-      desc: 'AI Agent 集成质量：返回结构完整性、错误可机读性、响应确定性的通过率。公式：pass ÷ (pass + fail + error + unsupported) × 100。' },
+    // 5 个应用场景维度
+    { key: 'swap', label: 'Swap 兑换',
+      desc: 'Token 兑换能力：路由发现、滑点保护、MEV 防护、授权管理。' },
+    { key: 'defi_lending', label: 'DeFi 借贷',
+      desc: 'Aave/Morpho 等借贷协议操作、多步组合流程。' },
+    { key: 'cross_chain', label: '跨链',
+      desc: '跨链桥接、套利双腿原子性、状态一致性。' },
+    { key: 'prediction_market', label: '预测市场',
+      desc: 'Polymarket 等预测市场操作。' },
+    { key: 'perps', label: '永续合约',
+      desc: 'Hyperliquid 等永续合约交易。' },
+    // 4 个基础/加分维度
+    { key: 'agent_autonomy', label: 'Agent 自主性',
+      desc: '工具发现、零样本完成、错误自恢复、多步规划、上下文效率。公式：pass ÷ (pass + fail + error + unsupported) × 100。' },
+    { key: 'performance', label: '性能',
+      desc: '交易延迟、并发吞吐、冷启动、Gas 估算精度。公式：pass ÷ (pass + fail + error + unsupported) × 100。' },
+    { key: 'wallet_basics', label: '钱包基础',
+      desc: '创建钱包、签名、转账、多链支持——基线门槛。公式：pass ÷ (pass + fail + error + unsupported) × 100。' },
+    { key: 'enterprise_readiness', label: '企业就绪度',
+      desc: '治理 + 安全 + 运维合并：策略引擎、审计、密钥管理、备份恢复等。' },
 ];
 
 function renderRadarLegend(providers) {
@@ -1216,7 +1232,7 @@ function renderRadarLegend(providers) {
         return fallbackTiers[providerId] || 'unknown';
     };
 
-    // Provider ranking by pass rate
+    // Provider ranking by PlatformScore (v2)
     const ranked = providers.map(p => {
         const results = getApplicableResults(p);
         const scorable = results.filter(r => r.status !== 'inconclusive' && r.status !== 'skip');
@@ -1224,15 +1240,16 @@ function renderRadarLegend(providers) {
         const total = scorable.length;
         const pct = total > 0 ? Math.round(passed / total * 100) : 0;
         const radarScores = computeRadarScores(p);
-        const overall = Math.round(RADAR_DIMENSIONS.reduce((sum, d) => sum + radarScores[d.key], 0) / RADAR_DIMENSIONS.length);
-        return { provider: p, name: p.provider_meta?.name || p.provider, pct, passed, total, overall };
-    }).sort((a, b) => b.pct - a.pct);
+        const platformScore = Math.round(computePlatformScore(radarScores));
+        const coverage = computeCoverage(radarScores);
+        return { provider: p, name: p.provider_meta?.name || p.provider, pct, passed, total, platformScore, coverage };
+    }).sort((a, b) => b.platformScore - a.platformScore);
 
-    let html = '<h3>综合排名</h3>';
+    let html = '<h3>综合排名 <span class="rank-subtitle">（PlatformScore v2）</span></h3>';
     html += '<div class="radar-rank-list">';
     ranked.forEach((r, i) => {
         const color = PROVIDER_COLORS[r.provider.provider] || '#888';
-        const verdictClass = r.pct >= 80 ? 'rank-pass' : r.pct >= 50 ? 'rank-warn' : 'rank-fail';
+        const verdictClass = r.platformScore >= 60 ? 'rank-pass' : r.platformScore >= 35 ? 'rank-warn' : 'rank-fail';
         const tier = getTierInfo(r.provider.provider);
         const tierLabel = tier === 'waas_infrastructure' ? 'WaaS' : 'Skill';
         const tierClass = tier === 'waas_infrastructure' ? 'tier-waas' : 'tier-skill';
@@ -1240,8 +1257,8 @@ function renderRadarLegend(providers) {
             <span class="radar-rank-pos">#${i + 1}</span>
             <span class="radar-rank-swatch" style="background:${color}"></span>
             <span class="radar-rank-name">${r.name} <span class="tier-badge ${tierClass}">${tierLabel}</span></span>
-            <span class="radar-rank-score">${r.pct}%</span>
-            <span class="radar-rank-detail">${r.passed}/${r.total} 通过 · 综合 ${r.overall}</span>
+            <span class="radar-rank-score">${r.platformScore}</span>
+            <span class="radar-rank-detail">${r.pct}% 通过 · 覆盖 ${r.coverage.label}</span>
         </div>`;
     });
     html += '</div>';
@@ -1283,11 +1300,11 @@ function computeRadarScores(provider) {
     const results = getApplicableResults(provider);
     const allResults = provider.results || [];
     const ev = provider.evaluation || {};
-    const scores = ev.scores || {};
+    const yamlScores = ev.scores || {};
+    const providerId = provider.provider;
+    const defiProvider = decisionData?.providers?.find(p => p.id === providerId);
 
-    // Helper: pass rate for a category
-    // Scorable = pass + fail + error + unsupported (provider responsibility)
-    // Excluded from denominator: skip (industry blank), inconclusive (benchmark gap), not_applicable (arch mismatch)
+    // Helper: pass rate for a v2 category
     function catPassRate(catKey) {
         const catResults = results.filter(r => TEST_CATEGORY[r.test_name] === catKey);
         const passed = catResults.filter(r => r.status === 'pass').length;
@@ -1297,13 +1314,21 @@ function computeRadarScores(provider) {
         return scorable > 0 ? (passed / scorable) * 100 : 0;
     }
 
-    // Helper: YAML score (1-5 normal scale) to percentage (5 = 100)
+    // Helper: YAML score (1-5) to percentage
     function yamlPct(field) {
-        const val = scores[field];
+        const val = yamlScores[field];
         return (val != null && val > 0) ? val * 20 : null;
     }
 
-    // Helper: weighted blend of auto pass rate + yaml percentage
+    // Helper: DeFi matrix score for a single scenario
+    function defiScenarioScore(scenarioId) {
+        const sc = defiProvider?.defi?.scenarios?.[scenarioId];
+        if (!sc) return null;
+        const RATING_SCORES = { ready_to_use: 100, ready_to_use_conditional: 80, low_barrier: 65, moderate: 40, not_feasible: 0 };
+        return RATING_SCORES[sc.rating] ?? null;
+    }
+
+    // Helper: blend auto + yaml
     function blend(autoRate, yamlFields, autoWeight) {
         const yamlVals = yamlFields.map(yamlPct).filter(v => v !== null);
         if (yamlVals.length === 0) return autoRate;
@@ -1311,27 +1336,68 @@ function computeRadarScores(provider) {
         return autoRate * autoWeight + yamlAvg * (1 - autoWeight);
     }
 
-    const wallet_core = catPassRate('wallet_core');
-    const governance = blend(catPassRate('governance'), ['governance_completeness'], 0.6);
-    const reliability = catPassRate('reliability');
-    const ops = blend(catPassRate('ops'), ['network_environment', 'sdk_doc_quality'], 0.5);
-    const security = catPassRate('security');
-    const agent = catPassRate('agent');
-    // App dimension: use DeFi matrix equal-weight score if available, fallback to old test pass rate
-    let app;
-    const providerId = provider.provider;
-    const defiProvider = decisionData?.providers?.find(p => p.id === providerId);
-    if (defiProvider?.defi?.scores?.equal != null) {
-        app = defiProvider.defi.scores.equal;  // already 0-100 scale
-    } else {
-        app = blend(catPassRate('app'), ['app_tool_coverage', 'app_execution_quality'], 0.5);
-    }
+    // ── 5 application-scenario dimensions ──
+    // Each uses DeFi matrix score if available, falls back to test pass rate
+    const swap = defiScenarioScore('uniswap_swap') ?? catPassRate('swap');
+    const defi_lending = defiScenarioScore('aave_morpho') ?? catPassRate('defi_lending');
+    const cross_chain = catPassRate('cross_chain');  // no DeFi matrix entry yet
+    const prediction_market = defiScenarioScore('polymarket') ?? catPassRate('prediction_market');
+    const perps = defiScenarioScore('hyperliquid') ?? catPassRate('perps');
+
+    // ── 4 base/bonus dimensions ──
+    const agent_autonomy = catPassRate('agent_autonomy');
+    const performance = catPassRate('performance');
+    const wallet_basics = catPassRate('wallet_basics');
+    const enterprise_readiness = blend(
+        catPassRate('enterprise_readiness'),
+        ['governance_completeness', 'network_environment', 'sdk_doc_quality'],
+        0.7
+    );
 
     return {
-        wallet_core, governance, reliability, ops, app, security, agent,
+        swap, defi_lending, cross_chain, prediction_market, perps,
+        agent_autonomy, performance, wallet_basics, enterprise_readiness,
         _applicableCount: results.length,
         _totalCount: allResults.length
     };
+}
+
+// ── v2 Scoring: FitScore (per-scenario) ──
+// FitScore_j = 0.55 × S_j + 0.20 × A + 0.15 × P + 0.10 × W
+const SCENARIO_KEYS = ['swap', 'defi_lending', 'cross_chain', 'prediction_market', 'perps'];
+
+function computeFitScore(radarScores, scenarioKey) {
+    const S = radarScores[scenarioKey] || 0;
+    const A = radarScores.agent_autonomy || 0;
+    const P = radarScores.performance || 0;
+    const W = radarScores.wallet_basics || 0;
+    return 0.55 * S + 0.20 * A + 0.15 * P + 0.10 * W;
+}
+
+// ── v2 Scoring: PlatformScore (global ranking) ──
+// AppTop2 = (top1 + top2) / 2; PlatformScore = 0.27A + 0.23P + 0.20W + 0.20×AppTop2 + 0.10E
+function computePlatformScore(radarScores) {
+    const scenarioValues = SCENARIO_KEYS.map(k => radarScores[k] || 0).sort((a, b) => b - a);
+    let appTop2;
+    if (scenarioValues[0] > 0 && scenarioValues[1] > 0) {
+        appTop2 = (scenarioValues[0] + scenarioValues[1]) / 2;
+    } else if (scenarioValues[0] > 0) {
+        appTop2 = scenarioValues[0] / 2;
+    } else {
+        appTop2 = 0;
+    }
+    const A = radarScores.agent_autonomy || 0;
+    const P = radarScores.performance || 0;
+    const W = radarScores.wallet_basics || 0;
+    const E = radarScores.enterprise_readiness || 0;
+    return 0.27 * A + 0.23 * P + 0.20 * W + 0.20 * appTop2 + 0.10 * E;
+}
+
+// ── v2 Scoring: Coverage badge ──
+// Coverage = #(S_i >= 40) / 5
+function computeCoverage(radarScores) {
+    const count = SCENARIO_KEYS.filter(k => (radarScores[k] || 0) >= 40).length;
+    return { count, total: SCENARIO_KEYS.length, label: `${count}/${SCENARIO_KEYS.length}` };
 }
 
 
@@ -1343,12 +1409,15 @@ function renderMainRadarChart(providers) {
     const labels = RADAR_DIMENSIONS.map(d => d.label);
     const keys = RADAR_DIMENSIONS.map(d => d.key);
 
+    // Minimum radius so zero-score dimensions don't collapse to center
+    const MIN_RADAR_VALUE = 3;
+
     const datasets = providers.map(p => {
         const scores = computeRadarScores(p);
         const color = PROVIDER_COLORS[p.provider] || getCssVar('--text-tertiary');
         return {
             label: p.provider_meta?.name || p.provider,
-            data: keys.map(key => scores[key]),
+            data: keys.map(key => Math.max(scores[key], MIN_RADAR_VALUE)),
             borderColor: color,
             backgroundColor: `${color}18`,
             pointBackgroundColor: color,
@@ -1375,7 +1444,7 @@ function renderMainRadarChart(providers) {
                 r: {
                     angleLines: { color: getCssVar('--bg-border') },
                     grid: { color: getCssVar('--bg-border') },
-                    pointLabels: { color: getCssVar('--text-secondary'), font: { size: 12 } },
+                    pointLabels: { color: getCssVar('--text-secondary'), font: { size: 11 }, padding: 8 },
                     ticks: { display: false, backdropColor: 'transparent' },
                     suggestedMin: 0,
                     suggestedMax: 100,
@@ -1387,11 +1456,12 @@ function renderMainRadarChart(providers) {
                     callbacks: {
                         label: function(context) {
                             let label = context.dataset.label || '';
-                            if (label) {
-                                label += ': ';
-                            }
+                            if (label) { label += ': '; }
                             if (context.parsed.r !== null) {
-                                label += context.parsed.r.toFixed(2);
+                                // Show real score (undo MIN_RADAR_VALUE clamp)
+                                const displayed = context.parsed.r;
+                                const real = displayed <= MIN_RADAR_VALUE ? 0 : displayed;
+                                label += real.toFixed(1);
                             }
                             return label;
                         }
@@ -1611,8 +1681,8 @@ function renderDecisionBar(provider) {
     const latencies = results.filter(r => getLatencyMs(r) > 0).map(r => getLatencyMs(r)).sort((a, b) => a - b);
     const p50 = latencies.length > 0 ? latencies[Math.floor(latencies.length / 2)] : null;
     
-    // Top blocker — only show app / wallet_core failures; deeper issues belong in test detail table
-    const BLOCKER_CATS = new Set(['app', 'wallet_core']);
+    // Top blocker — only show app scenario / wallet_basics failures; deeper issues belong in test detail table
+    const BLOCKER_CATS = new Set(['swap', 'defi_lending', 'cross_chain', 'prediction_market', 'perps', 'wallet_basics']);
     const userFacingFailures = results.filter(r =>
         (r.status === 'fail' || r.status === 'error') && BLOCKER_CATS.has(TEST_CATEGORY[r.test_name])
     );
@@ -1640,9 +1710,10 @@ function renderDecisionBar(provider) {
 
 function renderScoreCard(provider) {
     const scores = computeRadarScores(provider);
+    const platformScore = Math.round(computePlatformScore(scores));
+    const coverage = computeCoverage(scores);
 
     const dims = RADAR_DIMENSIONS.map(d => ({ key: d.key, label: d.label }));
-    const total = Math.round(dims.reduce((sum, d) => sum + scores[d.key], 0) / dims.length);
     function semanticColor(val) {
         if (val >= 80) return 'var(--color-pass)';
         if (val >= 50) return 'var(--color-skip)';
@@ -1650,11 +1721,20 @@ function renderScoreCard(provider) {
     }
     let html = '<div class="detail-card wide score-card">';
     html += '<div class="score-card-header">';
-    html += `<div class="score-card-total" style="color:${semanticColor(total)}">${total}<span class="score-card-unit">/100</span></div>`;
+    html += `<div class="score-card-total" style="color:${semanticColor(platformScore)}">${platformScore}<span class="score-card-unit">/100</span></div>`;
+    html += `<div class="score-card-coverage">覆盖 ${coverage.label} 场景</div>`;
     html += '<canvas id="detail-score-radar" width="200" height="200"></canvas>';
     html += '</div>';
     html += '<div class="score-card-body">';
-    html += '<h3>综合评分</h3>';
+    html += '<h3>PlatformScore v2</h3>';
+    // FitScore per scenario
+    html += '<div class="score-card-fit">';
+    const SCENARIO_LABELS = { swap: 'Swap', defi_lending: 'DeFi 借贷', cross_chain: '跨链', prediction_market: '预测市场', perps: '永续合约' };
+    for (const sk of SCENARIO_KEYS) {
+        const fit = Math.round(computeFitScore(scores, sk));
+        html += `<span class="fit-score-chip" style="color:${semanticColor(fit)}" title="FitScore: ${SCENARIO_LABELS[sk]}">${SCENARIO_LABELS[sk]} ${fit}</span>`;
+    }
+    html += '</div>';
     html += '<div class="score-card-dims">';
     for (const d of dims) {
         const val = Math.round(scores[d.key]);
@@ -1901,7 +1981,7 @@ function renderDetail(provider) {
     const detailCatGroups = {};
     CATEGORY_META.forEach(c => { detailCatGroups[c.key] = []; });
     sortedResults.forEach(r => {
-        const cat = TEST_CATEGORY[r.test_name] || 'wallet_core';
+        const cat = TEST_CATEGORY[r.test_name] || 'wallet_basics';
         if (detailCatGroups[cat]) detailCatGroups[cat].push(r);
     });
     CATEGORY_META.forEach(c => {
@@ -1991,7 +2071,7 @@ function renderDetail(provider) {
         const scores = computeRadarScores(provider);
         const radarColor = PROVIDER_COLORS[provider.provider] || getCssVar('--text-tertiary');
         const radarLabels = RADAR_DIMENSIONS.map(d => d.label);
-        const radarData = RADAR_DIMENSIONS.map(d => scores[d.key]);
+        const radarData = RADAR_DIMENSIONS.map(d => Math.max(scores[d.key], 3));
 
         new Chart(detailRadarCtx, {
             type: 'radar',

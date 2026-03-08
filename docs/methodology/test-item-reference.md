@@ -11,7 +11,9 @@
 
 ---
 
-## 一、钱包基础 (wallet_core)
+## 一、钱包基础 (wallet_basics)
+
+> v2 维度归属：`wallet_basics`
 
 钱包最核心的能力：创建、签名、交易。这些是所有上层功能的基石。
 
@@ -127,7 +129,9 @@
 
 ---
 
-## 二、权限治理 (governance)
+## 二、权限治理 → 企业就绪度 (enterprise_readiness)
+
+> v2 维度归属：`enterprise_readiness`
 
 企业级钱包需要回答的问题：谁能做什么？做了什么？被拒绝时为什么？
 
@@ -172,7 +176,9 @@
 
 ---
 
-## 三、稳定性 (reliability)
+## 三、稳定性 → 性能 (performance)
+
+> v2 维度归属：`performance`
 
 从"能用"到"能在生产环境扛住"的差距。
 
@@ -246,7 +252,9 @@
 
 ---
 
-## 四、运维能力 (ops)
+## 四、运维能力 → 企业就绪度 (enterprise_readiness)
+
+> v2 维度归属：`enterprise_readiness`（t34 soak_24h 归 `performance`）
 
 ### 通用运维测试
 
@@ -418,7 +426,9 @@
 
 ---
 
-## 五、应用能力 (app)
+## 五、应用能力 → 5 场景维度
+
+> v2 维度归属：`swap`（t14）、`defi_lending`（t15）、`cross_chain`（t16）、`prediction_market`（t17）、`perps`（t18）
 
 测试钱包是否内置了 DeFi 操作工具。纯基础设施供应商（不提供内置应用 API 的）不参与此类测试评分。
 
@@ -475,6 +485,14 @@
 | **适用范围** | 提供应用层 API 的服务商 |
 | **具体操作** | 通过供应商的 SDK / CLI 执行永续合约交易（如 Hyperliquid）的 dry-run |
 | **对应 DeFi 场景** | Hyperliquid 永续合约 |
+
+---
+
+## 五b、Agent 可用性 → Agent 自主性 (agent_autonomy)
+
+> v2 维度归属：`agent_autonomy`（a01-a05）
+
+AI Agent 集成质量测试：返回结构完整性、错误可机读性、响应确定性、调用成本、多步恢复。
 
 ---
 
