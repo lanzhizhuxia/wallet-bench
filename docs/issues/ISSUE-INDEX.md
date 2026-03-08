@@ -1,6 +1,6 @@
 # wallet-bench Issue Index
 
-**Last Updated**: 2026-03-08 (ISSUE-027 评分修正 + 判定收紧 + DeFi Matrix 补全)
+**Last Updated**: 2026-03-09 (ISSUE-028 v2.1 全面审查修复)
 
 ## Current Execution Focus
 
@@ -33,3 +33,4 @@
 | ISSUE-025 | Done | 新增测试项 — App 场景扩充 + Agent 自主性 + 性能基准 | DONE | P0 | 21 项新测试：Swap 6 项 + DeFi/跨链/预测各 1 项 + Agent 6 项 + 性能 6 项，总计 45→66 | docs/issues/ISSUE-025-new-test-items.md |
 | ISSUE-026 | Done | Dashboard v2 — 场景选择器 + FitScore 排序 + 覆盖度徽章 | DONE | P1 | 9 维雷达、场景选择器按 FitScore 排序、PlatformScore 用 AppTop2 不惩罚专精、Coverage 徽章 | docs/issues/ISSUE-026-dashboard-v2.md |
 | ISSUE-027 | Done | 评分修正 + 判定收紧 + DeFi Matrix 补全 | DONE | P0 | MoonPay swap 修正、ag01 阈值收紧、_looks_like_success 假阳性修复、SCENARIO_SUPPORT_THRESHOLD 常量化、DeFi Matrix 6→12 provider | docs/issues/ISSUE-027-scoring-calibration.md |
+| ISSUE-028 | TODO | v2.1 全面审查修复 — 评分偏差 + Dashboard 健壮性 + 数据补全 | TODO | P0 | cross_chain 全 0 修复、fetch 容错、市场数据补全、ag01 阈值、Clawlett 标注、63→66 对齐 | docs/issues/ISSUE-028-v2.1-review-fixes.md |
