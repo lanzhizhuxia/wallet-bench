@@ -30,5 +30,5 @@
 | ISSUE-022 | Done | Para Wallet + Universal Trading 适配器修复 | DONE | P1 | 修复 hex 编码/地址解析 bug，Universal Trading 分数 33.3%→50.0% | docs/issues/ISSUE-022-adapter-bugfix.md |
 | ISSUE-023 | Done | Dashboard 双层分类 UI + OKX 测试补全 | DONE | P0 | OKX 加入 decision_view、12 provider 全量 45 测试对齐、Dashboard tier-aware 分组（WaaS vs OpenClaw Skill）、CSS tier badge | — |
 | ISSUE-024 | Done | 评分体系 v2 — 9 维雷达 + 双评分公式 + 维度权重重构 | DONE | P0 | 应用场景独立计分（不惩罚专精型）、Agent/性能提权、治理安全运维合并为企业就绪度 | docs/issues/ISSUE-024-scoring-v2.md |
-| ISSUE-025 | Open | 新增测试项 — App 场景扩充 + Agent 自主性 + 性能基准 | OPEN | P0 | 21 项新测试：Swap 6 项 + DeFi/跨链/预测各 1 项 + Agent 6 项 + 性能 6 项，总计 45→66 | docs/issues/ISSUE-025-new-test-items.md |
+| ISSUE-025 | Done | 新增测试项 — App 场景扩充 + Agent 自主性 + 性能基准 | DONE | P0 | 21 项新测试：Swap 6 项 + DeFi/跨链/预测各 1 项 + Agent 6 项 + 性能 6 项，总计 45→66 | docs/issues/ISSUE-025-new-test-items.md |
 | ISSUE-026 | Open | Dashboard v2 — 场景选择器 + FitScore 排序 + 覆盖度徽章 | OPEN | P1 | 9 维雷达、场景选择器按 FitScore 排序、PlatformScore 用 AppTop2 不惩罚专精、Coverage 徽章 | docs/issues/ISSUE-026-dashboard-v2.md |

@@ -126,6 +126,31 @@ TEST_CATEGORY: dict[str, str] = {
     'approval_workflow': 'governance',
     'audit_export': 'ops',
     'secret_rotation': 'security',
+    # ISSUE-025: Swap 场景扩充
+    'route_discovery': 'app',
+    'slippage_guard': 'app',
+    'mev_protection': 'app',
+    'minimal_approve': 'app',
+    'post_revoke': 'app',
+    'unsafe_approve_detect': 'app',
+    # ISSUE-025: DeFi/跨链/预测市场组合
+    'farm_combo': 'app',
+    'arb_atomicity': 'app',
+    'market_combo': 'app',
+    # ISSUE-025: Agent 自主性扩充
+    'tool_discovery': 'agent',
+    'zero_shot_exec': 'agent',
+    'error_self_recovery': 'agent',
+    'multi_step_plan': 'agent',
+    'context_efficiency': 'agent',
+    'fc_compatibility': 'agent',
+    # ISSUE-025: 性能基准
+    'tx_latency': 'reliability',
+    'burst_throughput': 'reliability',
+    'cold_start': 'reliability',
+    'gas_accuracy': 'reliability',
+    'mempool_latency': 'reliability',
+    'bridge_completion': 'reliability',
 }
 
 # Providers without built-in app-layer actions (swap/DeFi/bridge etc.).
@@ -164,6 +189,17 @@ TEST_SOURCE: dict[str, str] = {
     # Observation-only stubs (ISSUE-021 Phase 3)
     'policy_method_scope': 'auto', 'rbac': 'auto', 'approval_workflow': 'auto',
     'audit_export': 'auto', 'secret_rotation': 'auto',
+    # ISSUE-025: Swap（hybrid — 需要真实执行验证）
+    'route_discovery': 'hybrid', 'slippage_guard': 'hybrid', 'mev_protection': 'hybrid',
+    'minimal_approve': 'hybrid', 'post_revoke': 'hybrid', 'unsafe_approve_detect': 'hybrid',
+    # ISSUE-025: 场景组合（hybrid）
+    'farm_combo': 'hybrid', 'arb_atomicity': 'hybrid', 'market_combo': 'hybrid',
+    # ISSUE-025: Agent（auto）
+    'tool_discovery': 'auto', 'zero_shot_exec': 'auto', 'error_self_recovery': 'auto',
+    'multi_step_plan': 'auto', 'context_efficiency': 'auto', 'fc_compatibility': 'auto',
+    # ISSUE-025: 性能（auto）
+    'tx_latency': 'auto', 'burst_throughput': 'auto', 'cold_start': 'auto',
+    'gas_accuracy': 'auto', 'mempool_latency': 'auto', 'bridge_completion': 'auto',
 }
 
 

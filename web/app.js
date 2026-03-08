@@ -254,6 +254,18 @@ const TEST_CATEGORY = {
     attestation: 'enterprise_readiness', failover_continuity: 'enterprise_readiness',
     policy_depth: 'enterprise_readiness',
     version_compat: 'enterprise_readiness', audit_export: 'enterprise_readiness',
+    // ISSUE-025: Swap 场景扩充
+    route_discovery: 'swap', slippage_guard: 'swap', mev_protection: 'swap',
+    minimal_approve: 'swap', post_revoke: 'swap', unsafe_approve_detect: 'swap',
+    // ISSUE-025: DeFi/跨链/预测市场组合
+    farm_combo: 'defi_lending', arb_atomicity: 'cross_chain', market_combo: 'prediction_market',
+    // ISSUE-025: Agent 自主性扩充
+    tool_discovery: 'agent_autonomy', zero_shot_exec: 'agent_autonomy',
+    error_self_recovery: 'agent_autonomy', multi_step_plan: 'agent_autonomy',
+    context_efficiency: 'agent_autonomy', fc_compatibility: 'agent_autonomy',
+    // ISSUE-025: 性能基准
+    tx_latency: 'performance', burst_throughput: 'performance', cold_start: 'performance',
+    gas_accuracy: 'performance', mempool_latency: 'performance', bridge_completion: 'performance',
 };
 
 const TEST_SOURCE = {
@@ -284,6 +296,17 @@ const TEST_SOURCE = {
   // Observation-only stubs (ISSUE-021 Phase 3)
   'policy_method_scope': 'auto', 'rbac': 'auto', 'approval_workflow': 'auto',
   'audit_export': 'auto', 'secret_rotation': 'auto',
+  // ISSUE-025: Swap（hybrid）
+  'route_discovery': 'hybrid', 'slippage_guard': 'hybrid', 'mev_protection': 'hybrid',
+  'minimal_approve': 'hybrid', 'post_revoke': 'hybrid', 'unsafe_approve_detect': 'hybrid',
+  // ISSUE-025: 场景组合（hybrid）
+  'farm_combo': 'hybrid', 'arb_atomicity': 'hybrid', 'market_combo': 'hybrid',
+  // ISSUE-025: Agent（auto）
+  'tool_discovery': 'auto', 'zero_shot_exec': 'auto', 'error_self_recovery': 'auto',
+  'multi_step_plan': 'auto', 'context_efficiency': 'auto', 'fc_compatibility': 'auto',
+  // ISSUE-025: 性能（auto）
+  'tx_latency': 'auto', 'burst_throughput': 'auto', 'cold_start': 'auto',
+  'gas_accuracy': 'auto', 'mempool_latency': 'auto', 'bridge_completion': 'auto',
 };
 // YAML-only scores are rendered separately via EVAL_SCORE_META, not in TEST_SOURCE
 
