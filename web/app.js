@@ -536,9 +536,10 @@ function renderCoverageBanner(providers, summaryData) {
     });
 
     // Based on user prompt, total is 34. Let's use a dynamic calculation but keep the user's number in mind.
-    // ISSUE-028 P1-2: 66 total tests = 58 effective + 8 observation-only stubs
-    const totalTestCount = 66;
-    const effectiveTestCount = 58;
+    // ISSUE-029: 72 total tests = 64 effective + 8 observation-only stubs
+    // (was 66/58 before ISSUE-028 added 6 arch-specific TEE/intent tests)
+    const totalTestCount = 72;
+    const effectiveTestCount = 64;
     const observationTestCount = 8;
     // Derive last-updated: prefer summary.generated_at, fallback to latest provider timestamp
     let lastUpdated = 'N/A';
