@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import time
-from typing import Any
+from cases.shared._utils import looks_like_success as _looks_like_success  # ISSUE-028 P2-1
 
 from adapters.base import TestResult, TestStatus, WalletAdapter
 
@@ -33,30 +33,6 @@ def _params(config: dict) -> dict[str, Any]:
     }
 
 
-def _looks_like_success(result: Any) -> bool:
-    """Heuristic: check that the result doesn't indicate a hidden failure."""
-    if result is None:
-        return False
-
-    if isinstance(result, dict):
-        if "success" in result and not result["success"]:
-            return False
-        if "status" in result and str(result["status"]).lower() in ("failed", "error", "rejected"):
-            return False
-    elif hasattr(result, "success") and not getattr(result, "success", True):
-        return False
-    elif hasattr(result, "status") and str(getattr(result, "status", "")).lower() in ("failed", "error", "rejected"):
-        return False
-
-    raw = str(result).lower()
-    if len(raw) > 2000:
-        failure_signals = ("error", "failed", "not found", "denied", "rejected", "exception", "traceback")
-        failure_count = sum(1 for s in failure_signals if s in raw[:500])
-        if failure_count >= 2:
-            return False
-        return True
-    failure_signals = ("error", "failed", "not found", "denied", "rejected")
-    return not any(sig in raw for sig in failure_signals)
 
 
 async def run(adapter: WalletAdapter, config: dict) -> TestResult:

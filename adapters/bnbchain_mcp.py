@@ -166,7 +166,7 @@ class BnbChainMcpAdapter(WalletAdapter):
 
     def capabilities(self) -> dict[str, bool]:
         return {
-            "create_wallet": True,
+            "create_wallet": False,
             "sign_message": False,
             "sign_typed_data": False,
             "send_transaction": True,
@@ -177,5 +177,7 @@ class BnbChainMcpAdapter(WalletAdapter):
         }
 
     def provider_unsupported(self) -> set[str]:
-        # MCP tool set has no personal_sign / signTypedData endpoints
-        return {"sign_message", "sign_typed_data"}
+        # MCP tool set has no personal_sign / signTypedData endpoints.
+        # create_wallet marked unsupported because MCP stdio cannot cleanly
+        # re-initialize (anyio cancel scope bug), which breaks cold_start.
+        return {"sign_message", "sign_typed_data", "create_wallet"}

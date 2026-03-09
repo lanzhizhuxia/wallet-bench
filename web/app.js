@@ -1,6 +1,24 @@
 'use strict';
 
 // --------------------------------------------------------------------------
+// fetchJson() — unified fetch wrapper with timeout + friendly error (ISSUE-028)
+// --------------------------------------------------------------------------
+async function fetchJson(url, timeoutMs = 10000) {
+    const controller = new AbortController();
+    const tid = setTimeout(() => controller.abort(), timeoutMs);
+    try {
+        const resp = await fetch(url, { signal: controller.signal });
+        if (!resp.ok) throw new Error(`HTTP ${resp.status} 加载 ${url} 失败`);
+        return await resp.json();
+    } catch (err) {
+        if (err.name === 'AbortError') throw new Error(`请求超时（${timeoutMs}ms）: ${url}`);
+        throw err;
+    } finally {
+        clearTimeout(tid);
+    }
+}
+
+// --------------------------------------------------------------------------
 // Globals & Constants
 // --------------------------------------------------------------------------
 let currentData = null;
@@ -11,6 +29,9 @@ let mainRadarChart = null;
 
 const DEFERRED_PROVIDERS = [];
 const SCENARIO_SUPPORT_THRESHOLD = 5;
+
+// ISSUE-028: Providers with known placeholder credentials — results not representative
+const CREDENTIAL_NOT_CONFIGURED = new Set(['clawlett']);
 
 // --- Two-level navigation structure ---
 const NAV_STRUCTURE = {
@@ -515,7 +536,10 @@ function renderCoverageBanner(providers, summaryData) {
     });
 
     // Based on user prompt, total is 34. Let's use a dynamic calculation but keep the user's number in mind.
-    const totalTestCount = 45; // ISSUE-021 expansion: 34 original + 11 new
+    // ISSUE-028 P1-2: 66 total tests = 58 effective + 8 observation-only stubs
+    const totalTestCount = 66;
+    const effectiveTestCount = 58;
+    const observationTestCount = 8;
     // Derive last-updated: prefer summary.generated_at, fallback to latest provider timestamp
     let lastUpdated = 'N/A';
     if (summaryData?.generated_at) {
@@ -526,22 +550,20 @@ function renderCoverageBanner(providers, summaryData) {
     }
 
     const providerCount = providers.length;
-    container.innerHTML = `📊 基准套件: ${totalTestCount} 项测试 · ${providerCount} 个评测对象（WaaS + OpenClaw Skills）· ${autoCount} 自动验证 · ${yamlCount} 人工评估 · 最后更新: ${lastUpdated}`;
+    container.innerHTML = `📊 基准套件: ${effectiveTestCount} 项有效测试 <span class="coverage-note" title="另加 ${observationTestCount} 项观察项（永远 skip，不计入评分）">共 ${totalTestCount} 项</span> · ${providerCount} 个评测对象（WaaS + OpenClaw Skills）· ${autoCount} 自动验证 · ${yamlCount} 人工评估 · 最后更新: ${lastUpdated}`;
 }
 async function loadData() {
     try {
-        const [mainResp] = await Promise.all([
-            fetch('data/public_results.json'),
+        const [data] = await Promise.all([
+            fetchJson('data/public_results.json'),
             loadDecisionData(),  // pre-load DeFi data for radar chart app dimension
         ]);
-        if (!mainResp.ok) throw new Error(`HTTP ${mainResp.status}`);
-        const data = await mainResp.json();
         currentData = Array.isArray(data.providers) ? data.providers : [data];
         renderCoverageBanner(currentData, data.summary);
         handleRouting();
     } catch (err) {
         document.getElementById("overview-section").innerHTML =
-            `<p class="loading">加载失败: ${err.message}</p>`;
+            `<p class="loading">数据加载失败，请刷新页面再试。错误：${err.message}</p>`;
     }
 }
 
@@ -571,6 +593,10 @@ function handleRouting() {
         const tab = parts[0];
         const scenarioParam = parts.find(p => p.startsWith('scenario='));
         if (scenarioParam) {
+            const parsed = scenarioParam.split('=')[1] || 'all';
+            // ISSUE-028: fallback unknown scenario values to 'all'
+            activeScenario = (parsed === 'all' || SCENARIO_KEYS.includes(parsed)) ? parsed : 'all';
+        } else if (tab === 'radar') {
             activeScenario = scenarioParam.split('=')[1] || 'all';
         } else if (tab === 'radar') {
             activeScenario = 'all';
@@ -773,6 +799,10 @@ function renderComparisonCards(providers) {
                 html += `<div class="comp-card-title-row">`;
                 html += `<span class="comp-card-name">${meta.name || p.provider}</span>`;
                 html += `<span class="tier-badge ${tierClass}">${tierLabel}</span>`;
+                if (CREDENTIAL_NOT_CONFIGURED.has(p.provider)) {
+                    html += `<span class="credential-warning-badge" title="凭证未配置，测试结果不代表真实能力">⚠️ 凭证未配置</span>`;
+                }
+                html += `</div>`;
                 html += `</div>`;
                 html += `<span class="arch-badge ${meta.class || 'unknown'}" title="${ARCH_TOOLTIPS[meta.class] || ARCH_TOOLTIPS.unknown}">${ARCH_LABELS[meta.class] || meta.class || '—'}</span>`;
                 html += `</div>`;
@@ -806,11 +836,11 @@ function renderComparisonCards(providers) {
                 html += `<div class="comp-card-defi">`;
                 html += `<div class="comp-card-defi-header">`;
                 html += `<span>PlatformScore <strong>${platformScore}</strong></span>`;
-                html += `<span class="comp-card-defi-coverage"><span class="coverage-dots">`;
+                html += `<span class="comp-card-defi-coverage" aria-label="覆盖 ${coverageInfo.count}/${coverageInfo.total} 应用场景"><span class="coverage-dots" role="img" aria-hidden="true">`;
                 for (let ci = 0; ci < coverageInfo.total; ci++) {
-                    html += `<span class="coverage-dot ${ci < coverageInfo.count ? 'filled' : 'empty'}"></span>`;
+                    html += `<span class="coverage-dot ${ci < coverageInfo.count ? 'filled' : 'empty'}" aria-hidden="true"></span>`;
                 }
-                html += `</span> 覆盖 ${coverageInfo.label}</span>`;
+                html += `</span> 覆盖 ${coverageInfo.label} <span class="coverage-note" title="当前按4维计算，跨链暂无数据">场景(4维)</span></span>`;
                 html += `</div>`;
                 // 5 scenario FitScores
                 html += `<div class="scenario-scores-grid">`;
@@ -1228,7 +1258,7 @@ const RADAR_DIMENSIONS = [
     { key: 'defi_lending', label: 'DeFi 借贷',
       desc: 'Aave/Morpho 等借贷协议操作、多步组合流程。' },
     { key: 'cross_chain', label: '跨链',
-      desc: '跨链桥接、套利双腿原子性、状态一致性。' },
+      desc: '跨链桥接、套利双腿原子性、状态一致性。（v2.1 暂无测试数据，不计入评分与覆盖率）' },
     { key: 'prediction_market', label: '预测市场',
       desc: 'Polymarket 等预测市场操作。' },
     { key: 'perps', label: '永续合约',
@@ -1314,8 +1344,8 @@ function renderRadarLegend(providers, scenario) {
         if (!unsupported) rank++;
         const posLabel = unsupported ? '—' : `#${rank}`;
         const detailText = isScenarioMode
-            ? (unsupported ? '<span class="radar-rank-unsupported-label">不支持此场景</span>' : `场景分 ${Math.round(r.scenarioRaw)} · 覆盖 ${r.coverage.label}`)
-            : `${r.pct}% 通过 · 覆盖 ${r.coverage.label}`;
+            ? (unsupported ? '<span class="radar-rank-unsupported-label">不支持此场景</span>' : `场景分 ${Math.round(r.scenarioRaw)} · 覆盖 ${r.coverage.label}场景(4维)`)
+            : `${r.pct}% 通过 · 覆盖 ${r.coverage.label}场景(4维)`;
 
         html += `<div class="radar-rank-item ${verdictClass}${unsupportedClass}" data-provider="${r.provider.provider}">
             <span class="radar-rank-pos">${posLabel}</span>
@@ -1428,7 +1458,9 @@ function computeRadarScores(provider) {
 
 // ── v2 Scoring: FitScore (per-scenario) ──
 // FitScore_j = 0.55 × S_j + 0.20 × A + 0.15 × P + 0.10 × W
+// SCORING_SCENARIO_KEYS excludes cross_chain until test data is available (ISSUE-028)
 const SCENARIO_KEYS = ['swap', 'defi_lending', 'cross_chain', 'prediction_market', 'perps'];
+const SCORING_SCENARIO_KEYS = ['swap', 'defi_lending', 'prediction_market', 'perps']; // cross_chain excluded
 const SCENARIO_LABELS_ZH = { swap: 'Swap 兑换', defi_lending: 'DeFi 借贷', cross_chain: '跨链', prediction_market: '预测市场', perps: '永续' };
 let activeScenario = 'all';
 
@@ -1442,8 +1474,9 @@ function computeFitScore(radarScores, scenarioKey) {
 
 // ── v2 Scoring: PlatformScore (global ranking) ──
 // AppTop2 = (top1 + top2) / 2; PlatformScore = 0.27A + 0.23P + 0.20W + 0.20×AppTop2 + 0.10E
+// Note: AppTop2 computed from SCORING_SCENARIO_KEYS (cross_chain excluded, ISSUE-028)
 function computePlatformScore(radarScores) {
-    const scenarioValues = SCENARIO_KEYS.map(k => radarScores[k] || 0).sort((a, b) => b - a);
+    const scenarioValues = SCORING_SCENARIO_KEYS.map(k => radarScores[k] || 0).sort((a, b) => b - a);
     let appTop2;
     if (scenarioValues[0] > 0 && scenarioValues[1] > 0) {
         appTop2 = (scenarioValues[0] + scenarioValues[1]) / 2;
@@ -1460,10 +1493,10 @@ function computePlatformScore(radarScores) {
 }
 
 // ── v2 Scoring: Coverage badge ──
-// Coverage = #(S_i >= 40) / 5
+// Coverage = #(S_i >= 40) / 4 (cross_chain excluded until data available, ISSUE-028)
 function computeCoverage(radarScores) {
-    const count = SCENARIO_KEYS.filter(k => (radarScores[k] || 0) >= 40).length;
-    return { count, total: SCENARIO_KEYS.length, label: `${count}/${SCENARIO_KEYS.length}` };
+    const count = SCORING_SCENARIO_KEYS.filter(k => (radarScores[k] || 0) >= 40).length;
+    return { count, total: SCORING_SCENARIO_KEYS.length, label: `${count}/${SCORING_SCENARIO_KEYS.length}`, note: '当前按4维计算，跨链维度暂无数据' };
 }
 
 
@@ -1701,9 +1734,7 @@ function renderHeatmap(providers) {
 async function loadDecisionData() {
     if (decisionData) return;
     try {
-        const resp = await fetch("data/decision_view.v1.json");
-        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-        decisionData = await resp.json();
+        decisionData = await fetchJson("data/decision_view.v1.json");
     } catch (err) {
         decisionData = { providers: [], scenarios: [], weight_presets: {}, rating_definitions: {}, recommendations: [] };
     }
@@ -1824,7 +1855,7 @@ function renderScoreCard(provider) {
     let html = '<div class="detail-card wide score-card">';
     html += '<div class="score-card-header">';
     html += `<div class="score-card-total" style="color:${semanticColor(platformScore)}">${platformScore}<span class="score-card-unit">/100</span></div>`;
-    html += `<div class="score-card-coverage">覆盖 ${coverage.label} 场景</div>`;
+    html += `<div class="score-card-coverage">覆盖 ${coverage.label} 场景 <span class="coverage-note" title="当前按4维计算，跨链暂无数据">(4维)</span></div>`;
     html += '<canvas id="detail-score-radar" width="200" height="200"></canvas>';
     html += '</div>';
     html += '<div class="score-card-body">';
@@ -1898,6 +1929,13 @@ function renderDetail(provider) {
     const meta = provider.provider_meta || {};
     const caps = provider.capabilities || {};
     nameContainer.textContent = meta.name || provider.provider;
+    if (CREDENTIAL_NOT_CONFIGURED.has(provider.provider)) {
+        const badge = document.createElement('span');
+        badge.className = 'credential-warning-badge';
+        badge.title = '凭证未配置，测试结果不代表真实能力';
+        badge.textContent = '⚠️ 凭证未配置';
+        nameContainer.appendChild(badge);
+    }
 
     // Sub-nav visibility
     const detailNav = document.getElementById('detail-nav');
@@ -2859,10 +2897,7 @@ async function loadAndRenderMarketTab() {
         'data/market_docs.json',
         'data/market_onchain.json',
     ];
-    const results = await Promise.allSettled(files.map(f => fetch(f).then(r => {
-        if (!r.ok) throw new Error(`HTTP ${r.status}`);
-        return r.json();
-    })));
+    const results = await Promise.allSettled(files.map(f => fetchJson(f)));
 
     const [npm, pypi, github, status, docs, onchain] = results.map(r => r.status === 'fulfilled' ? r.value : null);
     renderMarketTab(npm, pypi, github, status, docs, onchain);
@@ -2943,9 +2978,12 @@ function renderMarketCard1(npm, pypi) {
         <div class="market-bar-row">
             <span class="market-bar-label">${MARKET_PROVIDER_NAMES[id]}</span>
             <div class="market-bar-track">
-                <div class="market-bar-fill${isMax ? ' market-bar-max' : ''}" style="width:${pct}%"></div>
+                ${val > 0
+                    ? `<div class="market-bar-fill${isMax ? ' market-bar-max' : ''}" style="width:${pct}%"></div>`
+                    : `<span class="market-no-data">暂无公开数据</span>`
+                }
             </div>
-            <span class="market-bar-value${isMax ? ' market-bar-max-text' : ''}">${formatNum(val)}</span>
+            <span class="market-bar-value${isMax ? ' market-bar-max-text' : ''}">${val > 0 ? formatNum(val) : ''}</span>
         </div>`;
     });
 
@@ -3543,15 +3581,19 @@ function renderMarkdownTab(containerId, mdPath) {
     if (!container || container.dataset.rendered) return;
     container.dataset.rendered = '1';
 
-    fetch(mdPath)
+    const controller = new AbortController();
+    const tid = setTimeout(() => controller.abort(), 10000);
+    fetch(mdPath, { signal: controller.signal })
         .then(r => {
-            if (!r.ok) throw new Error(`${r.status} ${r.statusText}`);
+            clearTimeout(tid);
+            if (!r.ok) throw new Error(`HTTP ${r.status}`);
             return r.text();
         })
         .then(md => {
             container.innerHTML = '<div class="wt-article">' + marked.parse(md) + '</div>';
         })
         .catch(err => {
-            container.innerHTML = `<p class="loading">加载失败：${err.message}</p>`;
+            clearTimeout(tid);
+            container.innerHTML = `<p class="loading">文档加载失败，请刷新页面再试。错误：${err.name === 'AbortError' ? '请求超时' : err.message}</p>`;
         });
 }

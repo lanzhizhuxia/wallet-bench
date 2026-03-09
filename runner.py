@@ -211,6 +211,13 @@ TEST_SOURCE: dict[str, str] = {
 # Non-local providers get N/A for these (architecture_mismatch).
 ARCH_LOCAL_ONLY_TESTS: set[str] = {'derivation_path', 'keychain_lock', 'backup_recovery'}
 
+# Architecture-specific tests that only apply to 'tee' class providers (ISSUE-028).
+ARCH_TEE_ONLY_TESTS: set[str] = {'attestation', 'failover_continuity', 'policy_depth'}
+
+# Architecture-specific tests that only apply to 'intent' class providers (ISSUE-028).
+ARCH_INTENT_ONLY_TESTS: set[str] = {'intent_schema', 'fulfillment_sla', 'cancellation'}
+# Non-local providers get N/A for these (architecture_mismatch).
+
 # Human-readable N/A messages per skip_reason
 _NA_MESSAGES: dict[str, str] = {
     'category_mismatch': (
@@ -218,8 +225,9 @@ _NA_MESSAGES: dict[str, str] = {
         '详见 DeFi 集成矩阵。'
     ),
     'architecture_mismatch': '该测试仅适用于 local 架构的供应商。',
+    'architecture_mismatch_tee': '该测试仅适用于 TEE 架构的供应商（可信执行环境）。',
+    'architecture_mismatch_intent': '该测试仅适用于 Intent 架构的供应商。',
 }
-
 
 def _is_not_applicable(provider_name: str, arch_class: str, test_name: str) -> str | None:
     """Return skip_reason if the test is not applicable, else None."""
@@ -230,6 +238,12 @@ def _is_not_applicable(provider_name: str, arch_class: str, test_name: str) -> s
     # Non-local providers cannot run local-only arch tests
     if test_name in ARCH_LOCAL_ONLY_TESTS and arch_class != 'local':
         return 'architecture_mismatch'
+    # Non-tee providers cannot run tee-only arch tests (ISSUE-028)
+    if test_name in ARCH_TEE_ONLY_TESTS and arch_class != 'tee':
+        return 'architecture_mismatch_tee'
+    # Non-intent providers cannot run intent-only arch tests (ISSUE-028)
+    if test_name in ARCH_INTENT_ONLY_TESTS and arch_class != 'intent':
+        return 'architecture_mismatch_intent'
     return None
 
 # ---------------------------------------------------------------------------
@@ -388,7 +402,7 @@ def _load_adapter(provider_name: str, config: dict):
 
 async def _run_tests(provider_name: str, config: dict, runs: int = 1) -> dict[str, Any]:
     adapter, arch_class, provider_meta = _load_adapter(provider_name, config)
-    test_specs = discover(arch_class)
+    test_specs = discover(arch_class, include_all_classes=True)  # ISSUE-028: include all arch tests for N/A marking
 
     print(f"Provider: {provider_meta.get('name', provider_name)}")
     print(f"Class: {arch_class}")

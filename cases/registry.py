@@ -48,11 +48,14 @@ def _load_module_specs(package_path: Path, package_name: str, source_label: str)
     return specs
 
 
-def discover(arch_class: str) -> list[TestSpec]:
+def discover(arch_class: str, include_all_classes: bool = False) -> list[TestSpec]:
     """Return all test specs for the given architecture class.
 
     Includes ``cases/shared/*`` (always) + ``cases/class/{arch_class}/*``
     (if the directory exists).
+
+    If ``include_all_classes`` is True, also loads tests from all other
+    class directories so the runner can mark them NOT_APPLICABLE (ISSUE-028).
     """
     specs: list[TestSpec] = []
 
@@ -64,13 +67,26 @@ def discover(arch_class: str) -> list[TestSpec]:
     ))
 
     # class-specific tests
-    class_dir = _CASES_ROOT / "class" / arch_class
-    if class_dir.is_dir():
-        specs.extend(_load_module_specs(
-            class_dir,
-            f"cases.class.{arch_class}",
-            f"class/{arch_class}",
-        ))
+    loaded_classes: set[str] = set()
+
+    def _load_class(cls_name: str) -> None:
+        if cls_name in loaded_classes:
+            return
+        loaded_classes.add(cls_name)
+        class_dir = _CASES_ROOT / "class" / cls_name
+        if class_dir.is_dir():
+            specs.extend(_load_module_specs(
+                class_dir,
+                f"cases.class.{cls_name}",
+                f"class/{cls_name}",
+            ))
+
+    _load_class(arch_class)
+
+    if include_all_classes:
+        for cls_dir in (_CASES_ROOT / "class").iterdir():
+            if cls_dir.is_dir() and not cls_dir.name.startswith("_"):
+                _load_class(cls_dir.name)
 
     # Sort: shared first (by test_id), then class-specific (by test_id)
     specs.sort(key=lambda s: (0 if s.source == "shared" else 1, s.test_id))

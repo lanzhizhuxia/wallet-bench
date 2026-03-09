@@ -1156,6 +1156,12 @@ td.provider-col-highlighted {
 .coverage-dot.empty {
   background: transparent;
 }
+.coverage-note {
+  font-size: 0.72em;
+  color: var(--color-text-muted, #888);
+  margin-left: 2px;
+  cursor: help;
+}
 
 /* Scenario scores grid (comp-card) */
 .scenario-scores-grid {
@@ -2593,6 +2599,17 @@ td.defi-difficulty { font-size: 0.82rem; white-space: nowrap; text-align: center
   font-family: var(--font-body) !important;
 }
 
+.market-no-data {
+  color: var(--text-tertiary);
+  font-style: italic;
+  font-size: 0.85em;
+  padding-left: 4px;
+}
+  color: var(--text-tertiary) !important;
+  font-style: italic;
+  font-family: var(--font-body) !important;
+}
+
 .market-fail-text {
   color: var(--color-fail) !important;
 }
@@ -2972,4 +2989,17 @@ td.defi-difficulty { font-size: 0.82rem; white-space: nowrap; text-align: center
     margin: 16px 0 0 0;
     padding-bottom: 8px;
     border-bottom: 1px solid var(--bg-border);
+}
+
+.credential-warning-badge {
+  display: inline-block;
+  padding: 2px 7px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 600;
+  background-color: #F59E0B;
+  color: #1a1a1a;
+  margin-left: 6px;
+  vertical-align: middle;
+  cursor: help;
 }

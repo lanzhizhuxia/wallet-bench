@@ -15,7 +15,13 @@ _DEFAULT_TIMEOUT = 30
 _TOOL_LIST_METHODS = ("list_tools", "describe_schema", "get_tools", "tool_list")
 
 _MIN_CAP_ENTRIES = 8
-_MIN_PUBLIC_METHODS = 10
+_MIN_PUBLIC_METHODS = 9  # ISSUE-028: lowered from 10 to allow adapters with 9 methods (e.g. Coinbase, Privy) to pass
+
+# Key wallet methods that must be present for introspection to count as meaningful
+# (prevents adapters that merely "pad" base class methods from passing)
+_REQUIRED_METHODS: frozenset[str] = frozenset({
+    'create_wallet', 'sign_message', 'send_transaction', 'capabilities',
+})
 
 
 def _count_public_methods(adapter: WalletAdapter) -> list[str]:
@@ -68,12 +74,16 @@ async def run(adapter: WalletAdapter, config: dict) -> TestResult:
     detail["capabilities_count"] = cap_count
     detail["capabilities_rich"] = caps_rich
 
-    # ── Count public callable methods ─────────────────────────────────────
+    # ── Count public callable methods + key method guard (ISSUE-028) ───────
     public_methods = _count_public_methods(adapter)
     public_count = len(public_methods)
+    public_methods_set = set(public_methods)
     has_enough_public = public_count >= _MIN_PUBLIC_METHODS
+    has_required_methods = _REQUIRED_METHODS.issubset(public_methods_set)
     detail["public_method_count"] = public_count
     detail["public_methods"] = public_methods[:20]  # cap for readability
+    detail["required_methods_present"] = sorted(_REQUIRED_METHODS & public_methods_set)
+    detail["required_methods_missing"] = sorted(_REQUIRED_METHODS - public_methods_set)
 
     elapsed = (time.perf_counter() - t0) * 1000
 
@@ -81,7 +91,7 @@ async def run(adapter: WalletAdapter, config: dict) -> TestResult:
     # PASS if: dedicated tool list method returning structured data,
     #   OR capabilities() >= 5 entries AND >= 5 public callable methods
     pass_via_tool_list = tool_list_ok
-    pass_via_introspection = caps_rich and has_enough_public
+    pass_via_introspection = caps_rich and has_enough_public and has_required_methods  # ISSUE-028: added key method guard
 
     if not pass_via_tool_list and not pass_via_introspection:
         # Neither path satisfied — UNSUPPORTED if no tool method exists and
