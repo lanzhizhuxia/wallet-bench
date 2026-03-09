@@ -451,5 +451,47 @@
       "reason": "托管钱包，链上不可追踪",
       "daily_series": null
     }
+,
+    "clawlett": {
+      "trackable": true,
+      "erc4337_active_wallets_30d": null,
+      "eip7702_live_accounts": null,
+      "total_onchain_footprint": null,
+      "source": null,
+      "note": "Gnosis Safe 智能合约錢包（Base 主网），理论可追踪 Safe 工厂活动，但待定义筛选条件后选择追踪",
+      "daily_series": null
+    },
+    "para_wallet": {
+      "trackable": false,
+      "erc4337_active_wallets_30d": null,
+      "eip7702_live_accounts": null,
+      "total_onchain_footprint": null,
+      "reason": "MPC 云签名，链上无工厂合约，不可通过 bundlebear 追踪",
+      "daily_series": null
+    },
+    "universal_trading": {
+      "trackable": false,
+      "erc4337_active_wallets_30d": null,
+      "eip7702_live_accounts": null,
+      "total_onchain_footprint": null,
+      "reason": "本地私鑰 EOA，链上无区分度",
+      "daily_series": null
+    },
+    "polymarket_agent": {
+      "trackable": false,
+      "erc4337_active_wallets_30d": null,
+      "eip7702_live_accounts": null,
+      "total_onchain_footprint": null,
+      "reason": "预测市场交易在 Polygon 上，活动来自 Polymarket 平台全体用户，无法单独识别此 Skill 操作",
+      "daily_series": null
+    },
+    "coinpilot_hyperliquid": {
+      "trackable": false,
+      "erc4337_active_wallets_30d": null,
+      "eip7702_live_accounts": null,
+      "total_onchain_footprint": null,
+      "reason": "Hyperliquid L1 跟单交易，bundlebear 不覆盖 Hyperliquid",
+      "daily_series": null
+    }
   }
 }
