@@ -25,6 +25,12 @@ from cases.registry import discover
 _ROOT = Path(__file__).resolve().parent
 _RESULTS_DIR = _ROOT / "results"
 
+# ---------------------------------------------------------------------------
+# Per-test timeout (seconds). Prevents a single stuck test from hanging the
+# entire provider run. Crossmint poll loop is 60 s; we allow 2× headroom.
+# Override via --test-timeout CLI flag.
+# ---------------------------------------------------------------------------
+_TEST_TIMEOUT_SECONDS = 120
 # Auto-load .env if present (OKX keys, etc.); won't override existing env vars
 load_dotenv(_ROOT / ".env", override=False)
 
@@ -436,7 +442,18 @@ async def _run_tests(provider_name: str, config: dict, runs: int = 1) -> dict[st
                 # Single run — original behavior
                 print(f"  [{spec.test_id}] {spec.test_name} ({spec.source}) ... ", end="", flush=True)
                 try:
-                    result = await spec.run(adapter, config)
+                    result = await asyncio.wait_for(
+                        spec.run(adapter, config),
+                        timeout=_TEST_TIMEOUT_SECONDS,
+                    )
+                except asyncio.TimeoutError:
+                    result = TestResult(
+                        test_id=spec.test_id,
+                        test_name=spec.test_name,
+                        status=TestStatus.ERROR,
+                        message=f"Test timed out after {_TEST_TIMEOUT_SECONDS}s",
+                        elapsed_ms=_TEST_TIMEOUT_SECONDS * 1000,
+                    )
                 except BaseException as exc:
                     result = TestResult(
                         test_id=spec.test_id,
@@ -454,7 +471,18 @@ async def _run_tests(provider_name: str, config: dict, runs: int = 1) -> dict[st
                 run_results: list[TestResult] = []
                 for i in range(runs):
                     try:
-                        r = await spec.run(adapter, config)
+                        r = await asyncio.wait_for(
+                            spec.run(adapter, config),
+                            timeout=_TEST_TIMEOUT_SECONDS,
+                        )
+                    except asyncio.TimeoutError:
+                        r = TestResult(
+                            test_id=spec.test_id,
+                            test_name=spec.test_name,
+                            status=TestStatus.ERROR,
+                            message=f"Test timed out after {_TEST_TIMEOUT_SECONDS}s",
+                            elapsed_ms=_TEST_TIMEOUT_SECONDS * 1000,
+                        )
                     except BaseException as exc:
                         r = TestResult(
                             test_id=spec.test_id,
@@ -614,6 +642,7 @@ def _print_summary(run_record: dict[str, Any]) -> None:
 # ---------------------------------------------------------------------------
 
 def main() -> None:
+    global _TEST_TIMEOUT_SECONDS  # may be overridden by --test-timeout
     parser = argparse.ArgumentParser(description="wallet-bench runner")
     sub = parser.add_subparsers(dest="command")
 
@@ -621,6 +650,7 @@ def main() -> None:
     run_p.add_argument("--provider", required=True, help="Provider name (e.g. bnbchain_mcp)")
     run_p.add_argument("--config", required=True, help="Path to config.yaml")
     run_p.add_argument("--runs", type=int, default=1, help="Number of runs per test (default: 1). Median of successes is used.")
+    run_p.add_argument("--test-timeout", type=int, default=None, metavar="SECONDS", help=f"Per-test timeout in seconds (default: {_TEST_TIMEOUT_SECONDS}). Use 0 to disable.")
 
     args = parser.parse_args()
     if args.command != "run":
@@ -631,6 +661,10 @@ def main() -> None:
     if not config_path.exists():
         print(f"ERROR: config file not found: {config_path}", file=sys.stderr)
         sys.exit(1)
+
+    # Apply --test-timeout override
+    if args.test_timeout is not None:
+        _TEST_TIMEOUT_SECONDS = args.test_timeout if args.test_timeout > 0 else 86400
 
     with open(config_path) as f:
         config = yaml.safe_load(f)
