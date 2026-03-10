@@ -3003,3 +3003,49 @@ td.defi-difficulty { font-size: 0.82rem; white-space: nowrap; text-align: center
   vertical-align: middle;
   cursor: help;
 }
+
+/* Confidence badges */
+.conf-badge {
+  display: inline-block;
+  padding: 2px 7px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 600;
+  margin-left: 6px;
+  vertical-align: middle;
+  cursor: help;
+  line-height: 1;
+}
+.conf-high { background-color: rgba(34,197,94,0.2); color: #22C55E; }
+.conf-medium { background-color: rgba(234,179,8,0.2); color: #EAB308; }
+.conf-low { background-color: rgba(239,68,68,0.2); color: #EF4444; }
+
+/* Stability notes (inline warning under card header) */
+.stability-note {
+  font-size: 12px;
+  color: #EF4444;
+  padding: 4px 8px;
+  margin: 4px 0 0 0;
+  background: rgba(239,68,68,0.08);
+  border-radius: var(--radius-xs);
+  line-height: 1.4;
+}
+.detail-stability-note {
+  margin: 8px 0;
+  padding: 8px 12px;
+}
+
+/* Provider footnotes (inline info note) */
+.provider-footnote {
+  font-size: 12px;
+  color: var(--color-skip);
+  padding: 4px 8px;
+  margin: 4px 0 0 0;
+  background: rgba(234,179,8,0.08);
+  border-radius: var(--radius-xs);
+  line-height: 1.4;
+}
+.detail-provider-footnote {
+  margin: 8px 0;
+  padding: 8px 12px;
+}

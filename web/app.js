@@ -33,6 +33,28 @@ const SCENARIO_SUPPORT_THRESHOLD = 5;
 // ISSUE-028: Providers with known placeholder credentials — results not representative
 const CREDENTIAL_NOT_CONFIGURED = new Set(['clawlett']);
 
+// Confidence levels: high / medium / low — display-only, no scoring impact
+const CONFIDENCE_LEVELS = {
+    privy: 'high', coinbase_agentkit: 'high', moonpay: 'high', bnbchain_mcp: 'high',
+    crossmint: 'medium', minara: 'medium', universal_trading: 'medium',
+    polymarket_agent: 'medium', coinpilot_hyperliquid: 'medium',
+    okx_onchainos: 'low', para_wallet: 'low', clawlett: 'low'
+};
+const CONFIDENCE_LABELS = { high: '高置信', medium: '中置信', low: '低置信' };
+const CONFIDENCE_CSS = { high: 'conf-high', medium: 'conf-medium', low: 'conf-low' };
+
+// Stability notes for providers with known test-run issues
+const STABILITY_NOTES = {
+    okx_onchainos: 'Rate-limit sensitive — 重跑后仍限流，出现 pass→fail 漂移',
+    para_wallet: 'API unstable — 测试中出现大量 429 + timeout',
+    clawlett: '凭证未配置 — error 量高，结果不代表真实能力'
+};
+
+// Known false-negative footnotes
+const PROVIDER_FOOTNOTES = {
+    crossmint: '已知误差待修复：sig_verify EIP-1271 兼容缺口导致当前 1 个 false-negative'
+};
+
 // --- Two-level navigation structure ---
 const NAV_STRUCTURE = {
     overview: { label: '评测总览', defaultSub: 'comparison', subs: ['comparison', 'radar', 'latency'] },
@@ -803,10 +825,20 @@ function renderComparisonCards(providers) {
                 if (CREDENTIAL_NOT_CONFIGURED.has(p.provider)) {
                     html += `<span class="credential-warning-badge" title="凭证未配置，测试结果不代表真实能力">⚠️ 凭证未配置</span>`;
                 }
+                const confLevel = CONFIDENCE_LEVELS[p.provider] || 'medium';
+                const confLabel = CONFIDENCE_LABELS[confLevel];
+                const confCss = CONFIDENCE_CSS[confLevel];
+                html += `<span class="conf-badge ${confCss}" title="测试置信度：${confLabel}">${confLabel}</span>`;
                 html += `</div>`;
                 html += `</div>`;
                 html += `<span class="arch-badge ${meta.class || 'unknown'}" title="${ARCH_TOOLTIPS[meta.class] || ARCH_TOOLTIPS.unknown}">${ARCH_LABELS[meta.class] || meta.class || '—'}</span>`;
                 html += `</div>`;
+                if (STABILITY_NOTES[p.provider]) {
+                    html += `<div class="stability-note" title="${escapeHtml(STABILITY_NOTES[p.provider])}">⚠️ ${escapeHtml(STABILITY_NOTES[p.provider])}</div>`;
+                }
+                if (PROVIDER_FOOTNOTES[p.provider]) {
+                    html += `<div class="provider-footnote">📌 ${escapeHtml(PROVIDER_FOOTNOTES[p.provider])}</div>`;
+                }
 
                 const verdictLabel = pct >= 80 ? '✅推荐' : pct >= 50 ? '⚠️谨慎' : '❌不推荐';
                 const verdictClass = pct >= 80 ? 'verdict-badge-pass' : pct >= 50 ? 'verdict-badge-warn' : 'verdict-badge-fail';
@@ -1351,7 +1383,7 @@ function renderRadarLegend(providers, scenario) {
         html += `<div class="radar-rank-item ${verdictClass}${unsupportedClass}" data-provider="${r.provider.provider}">
             <span class="radar-rank-pos">${posLabel}</span>
             <span class="radar-rank-swatch" style="background:${color}"></span>
-            <span class="radar-rank-name">${r.name} <span class="tier-badge ${tierClass}">${tierLabel}</span></span>
+            <span class="radar-rank-name">${r.name} <span class="tier-badge ${tierClass}">${tierLabel}</span><span class="conf-badge ${CONFIDENCE_CSS[CONFIDENCE_LEVELS[r.provider.provider] || 'medium']}" title="测试置信度：${CONFIDENCE_LABELS[CONFIDENCE_LEVELS[r.provider.provider] || 'medium']}">${CONFIDENCE_LABELS[CONFIDENCE_LEVELS[r.provider.provider] || 'medium']}</span></span>
             <span class="radar-rank-score">${score}</span>
             <span class="radar-rank-detail">${detailText}</span>
         </div>`;
@@ -1937,6 +1969,13 @@ function renderDetail(provider) {
         badge.textContent = '⚠️ 凭证未配置';
         nameContainer.appendChild(badge);
     }
+    // Confidence badge in detail header
+    const detConfLevel = CONFIDENCE_LEVELS[provider.provider] || 'medium';
+    const detConfBadge = document.createElement('span');
+    detConfBadge.className = `conf-badge ${CONFIDENCE_CSS[detConfLevel]}`;
+    detConfBadge.title = `测试置信度：${CONFIDENCE_LABELS[detConfLevel]}`;
+    detConfBadge.textContent = CONFIDENCE_LABELS[detConfLevel];
+    nameContainer.appendChild(detConfBadge);
 
     // Sub-nav visibility
     const detailNav = document.getElementById('detail-nav');
@@ -1949,6 +1988,12 @@ function renderDetail(provider) {
     // AC-005-12 Deferred Banner
     if (DEFERRED_PROVIDERS.includes(provider.provider)) {
         html += '<div class="detail-provider-banner">此评测对象已被标记为 DEFERRED，以下数据仅供参考。</div>';
+    }
+    if (STABILITY_NOTES[provider.provider]) {
+        html += `<div class="stability-note detail-stability-note">⚠️ ${escapeHtml(STABILITY_NOTES[provider.provider])}</div>`;
+    }
+    if (PROVIDER_FOOTNOTES[provider.provider]) {
+        html += `<div class="provider-footnote detail-provider-footnote">📌 ${escapeHtml(PROVIDER_FOOTNOTES[provider.provider])}</div>`;
     }
 
     html += '<div class="detail-tab-pane" id="detail-basics">';
