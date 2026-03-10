@@ -185,6 +185,14 @@ async def run(adapter: WalletAdapter, config: dict) -> TestResult:
     # signer matches the wallet address.  This is valid because the provider's
     # custodial signing pipeline (e.g. Crossmint + ZeroDev Kernel) already
     # performed internal signature validation before returning success.
+    #
+    # ⚠️  LIMITATION: this path trusts the provider's self-reported signer field
+    # and does NOT perform independent cryptographic verification.  It is
+    # intentionally lenient for benchmark purposes — we are testing whether the
+    # provider *can* produce a signed message, not auditing the signing pipeline.
+    # Do not use this logic in production security code.
+    # Affected providers (arch=intent): crossmint, coinpilot_hyperliquid, okx_onchainos.
+    # Currently only crossmint triggers this path (others return unsupported).
     sw_attestation = False
     if not eoa_match and not eip1271_ok:
         sig_raw = bytes.fromhex(signed.signature.replace("0x", ""))
