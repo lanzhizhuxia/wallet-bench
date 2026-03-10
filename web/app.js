@@ -830,7 +830,6 @@ function renderComparisonCards(providers) {
                 const confCss = CONFIDENCE_CSS[confLevel];
                 html += `<span class="conf-badge ${confCss}" title="测试置信度：${confLabel}">${confLabel}</span>`;
                 html += `</div>`;
-                html += `</div>`;
                 html += `<span class="arch-badge ${meta.class || 'unknown'}" title="${ARCH_TOOLTIPS[meta.class] || ARCH_TOOLTIPS.unknown}">${ARCH_LABELS[meta.class] || meta.class || '—'}</span>`;
                 html += `</div>`;
                 if (STABILITY_NOTES[p.provider]) {
