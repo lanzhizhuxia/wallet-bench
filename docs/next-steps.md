@@ -1,6 +1,6 @@
 # 下一步计划 — 候选评测对象与未来方向
 
-**日期**: 2026-03-09（更新：ISSUE-028）
+**日期**: 2026-03-11（更新：ISSUE-029）
 **来源**: OpenClaw ClawHub 生态调研（7,300+ Skills 扫描）
 **筛选标准**: 具备钱包创建 / 签名 / 链上交易执行能力（排除纯数据查询、纯支付通道）
 
@@ -8,21 +8,22 @@
 
 ---
 
-## 〇、当前评测状态
+## 〇、当前评测状态（截至 ISSUE-029）
 
-| Skill | Tier | 分数 | 状态 |
-|-------|------|------|------|
-| Clawlett | openclaw_skill | 7.4% | ⚠️ 凭证未配置，结果不代表真实能力 |
-| Para Wallet | openclaw_skill | 27.6% | ⚠️ API 不稳定，已纳入评测 |
-| Polymarket Agent | openclaw_skill | 39.3% | ✅ 配置正确 |
-| Universal Trading | openclaw_skill | 50.0% | ✅ 适配器已修复，已纳入评测 |
-| Coinpilot Hyperliquid | openclaw_skill | 12.0% | ❌ 无 API |
-|-------|------|------|------|
-| Clawlett | openclaw_skill | 6.1% | ❌ 需 Base ETH |
-| Para Wallet | openclaw_skill | 27.6% | ⚠️ API 不稳定 |
-| Polymarket Agent | openclaw_skill | 39.3% | ✅ 配置正确 |
-| Universal Trading | openclaw_skill | 50.0% | ✅ 适配器已修复 |
-| Coinpilot Hyperliquid | openclaw_skill | 12.0% | ❌ 无 API |
+| Provider | 类型 | 置信度 | 状态 |
+|----------|------|:------:|------|
+| BNB Chain MCP | WaaS | 🟢 高 | ✅ 配置正确 |
+| Crossmint | WaaS | 🟡 中 | ✅ 配置正确 |
+| Coinbase AgentKit | WaaS | 🟢 高 | ✅ 配置正确 |
+| Privy | WaaS | 🟢 高 | ✅ 配置正确 |
+| MoonPay | WaaS | 🟢 高 | ✅ 配置正确 |
+| Minara | WaaS | 🟡 中 | ✅ 配置正确 |
+| OKX OnchainOS | WaaS | 🔴 低 | ⚠️ IP 级限流，结果有漂移 |
+| Clawlett | OpenClaw Skill | 🔴 低 | ⚠️ 凭证未配置，结果不代表真实能力 |
+| Para Wallet | OpenClaw Skill | 🔴 低 | ⚠️ API 不稳定，频繁 429/timeout |
+| Polymarket Agent | OpenClaw Skill | 🟡 中 | ✅ 配置正确 |
+| Universal Trading | OpenClaw Skill | 🟡 中 | ✅ 配置正确 |
+| Coinpilot Hyperliquid | OpenClaw Skill | 🟡 中 | ⚠️ 无公开 API，结果受限 |
 
 ---
 
@@ -40,9 +41,9 @@
 | **钱包能力** | Safe 合约钱包部署、Zodiac Roles 范围签名、交易提交（受权限约束） |
 | **DeFi 能力** | DEX Swap（KyberSwap 聚合器 + CoW Protocol MEV 保护）、ETH ⇄ WETH Wrap/Unwrap、ERC-20 Approve |
 | **治理能力** | Zodiac Roles 引擎限制 Agent 只能调用白名单合约和函数，**Agent 无法提现** |
-| **独特价值** | 目前 wallet-bench 里唯一能对标的是 Minara (MPC+AA)，但 Clawlett 的权限模型远比 Minara 精细。自带 MEV 保护（CoW Protocol）。正好补充 `governance` 维度评测 |
+| **独特价值** | 已纳入评测。Zodiac Roles 权限引擎对标 `enterprise_readiness` 维度。自带 MEV 保护（CoW Protocol）。 |
 
-**推荐理由**: 在已有 6 个 Provider 中，没有一个是 Smart Account 原生架构 + 细粒度权限引擎的组合。Clawlett 填补这个空缺。
+**推荐理由**: 在初始 7 家 WaaS 供应商中，没有一个是 Smart Account 原生架构 + 细粒度权限引擎的组合。Clawlett 填补这个空缺，已纳入评测。
 
 ---
 
@@ -125,7 +126,7 @@
 
 ## 四、未来评测维度扩展方向
 
-当前 wallet-bench 覆盖 5 个评测维度（wallet_core / governance / reliability / ops / app）。以下维度在本轮暂不纳入，但值得在后续版本中考虑：
+当前 wallet-bench 覆盖 9 个雷达维度（wallet_basics / enterprise_readiness / performance / agent_autonomy / swap / defi_lending / cross_chain / prediction_market / perps）。以下维度在本轮暂不纳入，但值得在后续版本中考虑：
 
 | 候选维度 | 说明 | 触发条件 |
 |----------|------|----------|

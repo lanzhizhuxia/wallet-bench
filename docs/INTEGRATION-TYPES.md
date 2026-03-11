@@ -280,14 +280,20 @@ REST API 是所有其他方式的**底层基础** — MCP Server、SDK、CLI 最
 
 ## wallet-bench 中各 Provider 的集成方式
 
-| Provider | 主要集成方式 | 替代路径 | 独特能力 |
-|---|---|---|---|
-| **Privy Agentic Wallets** | `mcp_server_stdio` (`@privy-io/mcp-server`) | REST API, OpenClaw Skill | 策略引擎 + 多签 Quorum |
-| **BNB Chain MCP** | `mcp_server_stdio` (`@bnb-chain/mcp`) | — | 零注册，毫秒级 |
-| **Crossmint Wallets** | `mcp_server_stdio` (mcp-crossmint-checkout) | OpenClaw Plugin (lobster.cash), REST API | Visa 虚拟卡 + x402 |
-| **MoonPay Agents** | `cli_subprocess` (`@moonpay/cli`) | `mp mcp` 转 MCP Server | 54 工具, 10 链 |
-| **Coinbase AgentKit** | `python_sdk` (`coinbase-agentkit`) | — | 内置 faucet |
-| **Minara AI** | `cli_subprocess` (`minara`) | — | DeFi 一站式 |
+| Provider | 类型 | 主要集成方式 | 替代路径 | 独特能力 |
+|---|---|---|---|---|
+| **Privy Agentic Wallets** | WaaS | `mcp_server_stdio` (`@privy-io/mcp-server`) | REST API | 策略引擎 + 多签 Quorum |
+| **BNB Chain MCP** | WaaS | `mcp_server_stdio` (`@bnb-chain/mcp`) | — | 零注册，毫秒级 |
+| **Crossmint Wallets** | WaaS | `mcp_server_stdio` (mcp-crossmint-checkout) | REST API | Visa 虚拟卡 + x402 |
+| **MoonPay Agents** | WaaS | `cli_subprocess` (`@moonpay/cli`) | `mp mcp` 转 MCP Server | 54 工具, 10 链 |
+| **Coinbase AgentKit** | WaaS | `python_sdk` (`coinbase-agentkit`) | — | 内置 faucet |
+| **Minara AI** | WaaS | `cli_subprocess` (`minara`) | — | DeFi 一站式 |
+| **OKX OnchainOS** | WaaS | `rest_api` | — | 链聚合器，多链意图执行 |
+| **Clawlett** | OpenClaw Skill | `cli_subprocess` (clawlett repo scripts) | — | Gnosis Safe + Zodiac Roles 细粒度权限 |
+| **Para Wallet** | OpenClaw Skill | `rest_api` (Para API) | — | MPC 分片密钥，EVM + Solana + Cosmos |
+| **Universal Trading** | OpenClaw Skill | `cli_subprocess` (Particle Network SDK) | — | 跨链最广，支持 Solana MEV |
+| **Polymarket Agent** | OpenClaw Skill | `cli_subprocess` (`polymarket` CLI) | — | Polymarket CLOB 全链路自动化 |
+| **Coinpilot Hyperliquid** | OpenClaw Skill | `cli_subprocess` (coinpilot scripts) | — | Hyperliquid 永续合约跟单 |
 
 ---
 
