@@ -2964,15 +2964,16 @@ async function loadAndRenderMarketTab() {
         'data/market_status.json',
         'data/market_docs.json',
         'data/market_onchain.json',
+        'data/public_results.json',
     ];
     const results = await Promise.allSettled(files.map(f => fetchJson(f)));
 
-    const [npm, pypi, github, status, docs, onchain] = results.map(r => r.status === 'fulfilled' ? r.value : null);
-    renderMarketTab(npm, pypi, github, status, docs, onchain);
+    const [npm, pypi, github, status, docs, onchain, benchRaw] = results.map(r => r.status === 'fulfilled' ? r.value : null);
+    renderMarketTab(npm, pypi, github, status, docs, onchain, benchRaw);
     marketDataLoaded = true;
 }
 
-function renderMarketTab(npm, pypi, github, status, docs, onchain) {
+function renderMarketTab(npm, pypi, github, status, docs, onchain, benchRaw) {
     const container = document.getElementById('market-container');
     if (!container) return;
 
@@ -2981,8 +2982,8 @@ function renderMarketTab(npm, pypi, github, status, docs, onchain) {
     // Global disclaimer + 分区说明
     html += `<div class="market-disclaimer">⚠️ 本 Tab 展示的是活跃度代理指标，不等于供应商真实 DAU/MAU。所有数据仅用于趋势观察与横向相对比较。<br><strong>WaaS 基础设施</strong>（7家）与 <strong>OpenClaw Skills</strong>（5家）分区展示——两类对象的市场信号口径不同，不宜直接横向比较。</div>`;
 
-    // Card 5 — 可观测用户激活（链上数据）— 置顶
-    html += renderMarketCard5(onchain);
+    // Card 0 — Bench 能力评测（直接测量，置信度最高）
+    html += renderMarketCardBench(benchRaw);
 
     // Card 1 — 开发者兴趣
     html += renderMarketCard1(npm, pypi);
@@ -2995,6 +2996,9 @@ function renderMarketTab(npm, pypi, github, status, docs, onchain) {
 
     // Card 4 — 产品成熟度
     html += renderMarketCard4(docs);
+
+    // Card 5 — 可观测用户激活（链上数据）— 移至末尾
+    html += renderMarketCard5(onchain);
 
     // Data freshness
     html += renderMarketFreshness(npm, pypi, github, status, docs, onchain);
@@ -3017,13 +3021,110 @@ function formatMttr(minutes) {
     return `${(minutes / 60).toFixed(1)}h`;
 }
 
+function renderMarketCardBench(benchRaw) {
+    // Parse bench results from public_results.json
+    const benchData = {};
+    if (benchRaw && Array.isArray(benchRaw.providers)) {
+        for (const p of benchRaw.providers) {
+            const id = p.provider;
+            const results = Array.isArray(p.results) ? p.results : [];
+            const counts = { pass: 0, fail: 0, error: 0 };
+            for (const r of results) {
+                if (counts[r.status] !== undefined) counts[r.status]++;
+            }
+            const attempted = counts.pass + counts.fail + counts.error;
+            const total = 72;
+            const na = total - attempted;
+            benchData[id] = { pass: counts.pass, fail: counts.fail, error: counts.error, na, total };
+        }
+    } else {
+        // Fallback: static snapshot (collected 2026-03)
+        const static_bench = {
+            privy:                 { pass: 32, fail: 7,  error: 0,  na: 33, total: 72 },
+            coinbase_agentkit:     { pass: 29, fail: 11, error: 0,  na: 32, total: 72 },
+            crossmint:             { pass: 31, fail: 9,  error: 0,  na: 32, total: 72 },
+            bnbchain_mcp:          { pass: 17, fail: 8,  error: 0,  na: 47, total: 72 },
+            moonpay:               { pass: 29, fail: 14, error: 0,  na: 29, total: 72 },
+            minara:                { pass: 22, fail: 11, error: 1,  na: 38, total: 72 },
+            okx_onchainos:         { pass: 21, fail: 11, error: 4,  na: 36, total: 72 },
+            clawlett:              { pass: 5,  fail: 9,  error: 16, na: 42, total: 72 },
+            para_wallet:           { pass: 9,  fail: 12, error: 16, na: 35, total: 72 },
+            universal_trading:     { pass: 22, fail: 9,  error: 1,  na: 40, total: 72 },
+            polymarket_agent:      { pass: 13, fail: 3,  error: 1,  na: 55, total: 72 },
+            coinpilot_hyperliquid: { pass: 5,  fail: 8,  error: 1,  na: 58, total: 72 },
+        };
+        Object.assign(benchData, static_bench);
+    }
+
+    function _benchRow(id) {
+        // Look up by id or by coinbase_agentkit alias
+        const key = benchData[id] ? id : (id === 'coinbase' ? 'coinbase_agentkit' : null);
+        const b = key ? benchData[key] : null;
+        const name = MARKET_PROVIDER_NAMES[id];
+        const sig = _marketSignalBadge(id);  // Only WaaS have no badge; Skills get A/B/C/D
+        if (!b) {
+            return `<tr>
+                <td>${name}${sig}</td>
+                <td colspan="4" class="market-na">暂无数据</td>
+            </tr>`;
+        }
+        const attempted = b.pass + b.fail + b.error;
+        const passRate = attempted > 0 ? (b.pass / attempted * 100) : 0;
+        const pct = passRate.toFixed(0);
+        const rateClass = passRate >= 70 ? 'market-green' : passRate >= 40 ? '' : 'market-red';
+        const errorCell = b.error > 0
+            ? `<td class="market-red">${b.error}</td>`
+            : `<td class="market-green">0</td>`;
+        return `<tr>
+            <td>${name}${sig}</td>
+            <td class="${rateClass}">${b.pass}/${attempted} (${pct}%)</td>
+            <td>
+                <div class="market-bar-track market-bench-bar-track">
+                    <div class="market-bar-fill${passRate >= 70 ? ' market-bar-max' : ''}" style="width:${pct}%"></div>
+                </div>
+            </td>
+            ${errorCell}
+            <td class="market-muted">${b.na}</td>
+        </tr>`;
+    }
+
+    const waasRows  = MARKET_WAAS_IDS.map(_benchRow).join('');
+    const skillRows = MARKET_SKILL_IDS.map(_benchRow).join('');
+    const thead = `<thead><tr><th>供应商</th><th>通过/有效题 (通过率)</th><th></th><th>错误数 🔴</th><th>N/A 数</th></tr></thead>`;
+
+    return `
+    <div class="market-card">
+        <h3 class="market-card-title">🧠 Bench 能力评测（72 题）</h3>
+        <div class="market-card-subtitle">直接测量结果——最高置信度。错误数 = 运行时异常，非逻辑错误。N/A = 该 provider 不支持此能力题。Signal badge 反映市场信号置信度（仅对 OpenClaw Skills ）。</div>
+        <div class="market-section-header">WaaS 基础设施</div>
+        <table class="market-table">${thead}<tbody>${waasRows}</tbody></table>
+        <div class="market-section-header">OpenClaw Skills</div>
+        <table class="market-table">${thead}<tbody>${skillRows}</tbody></table>
+        <div class="market-confidence status-pass">置信度：高（直接测量，非代理指标）。各供应商支持题数不同，N/A 不计入通过率分母。</div>
+    </div>`;
+}
+
 function renderMarketCard1(npm, pypi) {
+    // Build per-provider downloads and package metadata
     const downloads = {};
+    const npmMeta  = {};  // id -> { pkgCount, corePackage, coreDownloads }
     MARKET_PROVIDER_ORDER.forEach(id => { downloads[id] = 0; });
 
     if (npm && npm.providers) {
         for (const [id, d] of Object.entries(npm.providers)) {
-            if (downloads[id] !== undefined) downloads[id] += (d.total_weekly_downloads || 0);
+            if (downloads[id] === undefined) continue;
+            downloads[id] += (d.total_weekly_downloads || 0);
+            // Identify core package (highest weekly downloads among packages list)
+            const pkgs = Array.isArray(d.packages) ? d.packages : [];
+            const pkgCount = pkgs.length;
+            let corePkg = null, coreDownloads = 0;
+            for (const p of pkgs) {
+                if ((p.weekly_downloads || 0) > coreDownloads) {
+                    coreDownloads = p.weekly_downloads || 0;
+                    corePkg = p.package;
+                }
+            }
+            npmMeta[id] = { pkgCount, corePkg, coreDownloads };
         }
     }
     if (pypi && pypi.providers) {
@@ -3035,7 +3136,7 @@ function renderMarketCard1(npm, pypi) {
         }
     }
 
-    // 对数刻度（log10），避免数据悬殊时低值 bar 不可见
+    // 对数尺度（log10），避免数据悬殊时低值 bar 不可见
     const logMax = Math.log10(Math.max(...Object.values(downloads), 10));
     const rawMax = Math.max(...Object.values(downloads));
 
@@ -3046,9 +3147,18 @@ function renderMarketCard1(npm, pypi) {
         const isMax = val === rawMax;
         const noiseNote = (id === 'polymarket_agent' && val > 0)
             ? ' <span class="market-noise-note" title="实际安装路径为 Homebrew，PyPI 下载量有噪音">噪音ℹ️</span>' : '';
+        // npm package count annotation (for multi-package providers)
+        const meta = npmMeta[id];
+        let pkgNote = '';
+        if (meta && meta.pkgCount > 1) {
+            // Show core package + total agg note
+            pkgNote = ` <span class="market-pkg-note">核心包: ${meta.corePkg} ${formatNum(meta.coreDownloads)}（${meta.pkgCount} 包聚合）</span>`;
+        } else if (meta && meta.corePkg) {
+            pkgNote = ` <span class="market-pkg-note">${meta.corePkg}</span>`;
+        }
         return `
         <div class="market-bar-row">
-            <span class="market-bar-label">${MARKET_PROVIDER_NAMES[id]}${_marketSignalBadge(id)}${noiseNote}</span>
+            <span class="market-bar-label">${MARKET_PROVIDER_NAMES[id]}${noiseNote}${pkgNote}</span>
             <div class="market-bar-track">
                 ${val > 0
                     ? `<div class="market-bar-fill${isMax ? ' market-bar-max' : ''}" style="width:${pct}%"></div>`
@@ -3069,7 +3179,7 @@ function renderMarketCard1(npm, pypi) {
         <div class="market-bar-chart">${waasRows}</div>
         <div class="market-section-header">OpenClaw Skills</div>
         <div class="market-bar-chart">${skillRows}</div>
-        <p class="market-log-note">图表使用对数坐标，右侧数字为实际值</p>
+        <p class="market-log-note">图表使用对数坐标，右侧数字为实际值。多包聚合不宜直接横比，查看标注的核心包数据更准确</p>
         <div class="market-confidence status-skip">置信度：中 — 含 CI 重复下载，仅看趋势</div>
     </div>`;
 }
@@ -3080,7 +3190,7 @@ function renderMarketCard2(github) {
         const noRepo = !d || (d.total_stars == null && (!d.repos || d.repos.length === 0));
         if (noRepo) {
             return `<tr>
-                <td>${MARKET_PROVIDER_NAMES[id]}${_marketSignalBadge(id)}</td>
+                <td>${MARKET_PROVIDER_NAMES[id]}</td>
                 <td colspan="3" class="market-na">暂无公开仓库</td>
             </tr>`;
         }
@@ -3088,9 +3198,13 @@ function renderMarketCard2(github) {
         const starsDisplay = (id === 'polymarket_agent' && d.total_stars)
             ? `${formatNum(d.total_stars)} <span class="market-noise-note" title="来自 Polymarket/py-clob-client，底层协议仓库">协议库ℹ️</span>`
             : formatNum(d.total_stars);
+        // privy: only tracking privy-mcp-server, note incomplete coverage
+        const starsWithNote = (id === 'privy' && d.total_stars != null)
+            ? `${formatNum(d.total_stars)} <span class="market-noise-note" title="仅追踪 privy-mcp-server，repo 覆盖不完整">不完整ℹ️</span>`
+            : starsDisplay;
         return `<tr>
-            <td>${MARKET_PROVIDER_NAMES[id]}${_marketSignalBadge(id)}</td>
-            <td>${starsDisplay}</td>
+            <td>${MARKET_PROVIDER_NAMES[id]}</td>
+            <td>${starsWithNote}</td>
             <td>${formatNum(d.total_commits_30d)}</td>
             <td>${formatNum(d.total_open_issues_created_30d)}</td>
         </tr>`;
@@ -3100,14 +3214,14 @@ function renderMarketCard2(github) {
     const skillRows = MARKET_SKILL_IDS.map(_row).join('');
     const thead = `<thead><tr><th>供应商</th><th>Stars</th><th>近 30d Commits</th><th>近 30d Open Issues</th></tr></thead>`;
 
-    // ClawHub ecosystem banner
+    // ClawHub ecosystem: stars as main signal, commits as footnote
     const clawhub = github && github.ecosystem && github.ecosystem.clawhub;
     const clawhubBanner = clawhub && !clawhub.error
         ? `<div class="market-clawhub-banner">
               🌐 <strong>ClawHub 生态（openclaw/skills）</strong>:
-              <strong>${formatNum(clawhub.stars)}</strong> Stars、
-              <strong>${formatNum(clawhub.commits_30d)}</strong> 近 30d Commits。
+              <strong>${formatNum(clawhub.stars)}</strong> Stars。
               包含所有 Skills 的主仓库，上方数据为各 Skill 独立仓库指标。
+              <span class="market-noise-note">（近 30d Commits: ${formatNum(clawhub.commits_30d)}，亻库指标，勿与各 Skill 直接对比）</span>
           </div>`
         : '';
 
@@ -3127,15 +3241,14 @@ function renderMarketCard3(status) {
                           'clawlett', 'para_wallet', 'universal_trading', 'polymarket_agent', 'coinpilot_hyperliquid'];
     function _row(id) {
         const d = status && status.providers && status.providers[id];
-        const sig = _marketSignalBadge(id);
         if (!d || (d.status_page_url == null && noStatusPage.includes(id))) {
             return `<tr>
-                <td>${MARKET_PROVIDER_NAMES[id]}${sig}</td>
+                <td>${MARKET_PROVIDER_NAMES[id]}</td>
                 <td colspan="2" class="market-na">无公开 Status Page</td>
             </tr>`;
         } else if (d.error) {
             return `<tr>
-                <td>${MARKET_PROVIDER_NAMES[id]}${sig}</td>
+                <td>${MARKET_PROVIDER_NAMES[id]}</td>
                 <td colspan="2" class="market-na market-fail-text">数据获取失败</td>
             </tr>`;
         } else {
@@ -3145,7 +3258,7 @@ function renderMarketCard3(status) {
             if (incidents === 0) incidentClass = ' market-green';
             else if (incidents > 10) incidentClass = ' market-red';
             return `<tr>
-                <td>${MARKET_PROVIDER_NAMES[id]}${sig}</td>
+                <td>${MARKET_PROVIDER_NAMES[id]}</td>
                 <td class="${incidentClass}">${incidents != null ? incidents : '—'}</td>
                 <td>${mttrDisplay}</td>
             </tr>`;
@@ -3170,10 +3283,9 @@ function renderMarketCard3(status) {
 function renderMarketCard4(docs) {
     function _row(id) {
         const d = docs && docs.providers && docs.providers[id];
-        const sig = _marketSignalBadge(id);
         if (!d || d.total_doc_commits_30d == null) {
             return `<tr>
-                <td>${MARKET_PROVIDER_NAMES[id]}${sig}</td>
+                <td>${MARKET_PROVIDER_NAMES[id]}</td>
                 <td class="market-na">—</td>
                 <td class="market-na">—</td>
             </tr>`;
@@ -3181,20 +3293,24 @@ function renderMarketCard4(docs) {
         const ratio = d.breaking_change_ratio || 0;
         const ratioText = (ratio * 100).toFixed(1) + '%';
         const breakingIcon = ratio > 0 ? ' <span class="market-warn-icon">⚠️</span>' : '';
+        // crossmint: this is actually release-note churn (changeset)
+        const colLabel = (id === 'crossmint')
+            ? `${d.total_doc_commits_30d} <span class="market-noise-note">(release-note churn)</span>`
+            : d.total_doc_commits_30d;
         return `<tr>
-            <td>${MARKET_PROVIDER_NAMES[id]}${sig}</td>
-            <td>${d.total_doc_commits_30d}</td>
+            <td>${MARKET_PROVIDER_NAMES[id]}</td>
+            <td>${colLabel}</td>
             <td>${ratioText}${breakingIcon}</td>
         </tr>`;
     }
 
     const waasRows  = MARKET_WAAS_IDS.map(_row).join('');
     const skillRows = MARKET_SKILL_IDS.map(_row).join('');
-    const thead = `<thead><tr><th>供应商</th><th>近 30d 文档 Commits</th><th>Breaking Change 比例</th></tr></thead>`;
+    const thead = `<thead><tr><th>供应商</th><th>近 30d 文档 Commits<br><span class="market-muted">（Crossmint = release-note churn）</span></th><th>Breaking Change 比例</th></tr></thead>`;
 
     return `
     <div class="market-card">
-        <h3 class="market-card-title">产品成熟度（文档变更密度）</h3>
+        <h3 class="market-card-title">产品成熟度（文档变更密度 / Release-note Churn）</h3>
         <div class="market-section-header">WaaS 基础设施</div>
         <table class="market-table">${thead}<tbody>${waasRows}</tbody></table>
         <div class="market-section-header">OpenClaw Skills</div>
