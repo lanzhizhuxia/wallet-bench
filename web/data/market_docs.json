@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "source": "github-docs",
-  "collected_at": "2026-03-11T06:17:25+00:00",
+  "collected_at": "2026-03-11T11:25:05+00:00",
   "period": "last-30d",
   "providers": {
     "privy": {
@@ -95,14 +95,14 @@
       "repos": [
         {
           "repo": "Minara-AI/skills",
-          "doc_commits_30d": 25,
+          "doc_commits_30d": 26,
           "breaking_change_commits_30d": 0,
           "paths_checked": [
             "skills/minara/SKILL.md"
           ]
         }
       ],
-      "total_doc_commits_30d": 25,
+      "total_doc_commits_30d": 26,
       "total_breaking_change_commits_30d": 0,
       "breaking_change_ratio": 0.0,
       "partial": false
@@ -119,6 +119,61 @@
         }
       ],
       "total_doc_commits_30d": 8,
+      "total_breaking_change_commits_30d": 0,
+      "breaking_change_ratio": 0.0,
+      "partial": false
+    },
+    "clawlett": {
+      "repos": [],
+      "total_doc_commits_30d": null,
+      "total_breaking_change_commits_30d": null,
+      "breaking_change_ratio": null,
+      "partial": false,
+      "note": "no public repos to track"
+    },
+    "coinpilot_hyperliquid": {
+      "repos": [],
+      "total_doc_commits_30d": null,
+      "total_breaking_change_commits_30d": null,
+      "breaking_change_ratio": null,
+      "partial": false,
+      "note": "no public repos to track"
+    },
+    "para_wallet": {
+      "repos": [],
+      "total_doc_commits_30d": null,
+      "total_breaking_change_commits_30d": null,
+      "breaking_change_ratio": null,
+      "partial": false,
+      "note": "no public repos to track"
+    },
+    "polymarket_agent": {
+      "repos": [
+        {
+          "repo": "Polymarket/py-clob-client",
+          "doc_commits_30d": 0,
+          "breaking_change_commits_30d": 0,
+          "paths_checked": [
+            "CHANGELOG.md"
+          ]
+        }
+      ],
+      "total_doc_commits_30d": 0,
+      "total_breaking_change_commits_30d": 0,
+      "breaking_change_ratio": 0.0,
+      "partial": false
+    },
+    "universal_trading": {
+      "repos": [
+        {
+          "repo": "Particle-Network/universal-account-example",
+          "doc_commits_30d": 0,
+          "breaking_change_commits_30d": 0,
+          "paths_checked": [],
+          "note": "no tracked docs paths"
+        }
+      ],
+      "total_doc_commits_30d": 0,
       "total_breaking_change_commits_30d": 0,
       "breaking_change_ratio": 0.0,
       "partial": false

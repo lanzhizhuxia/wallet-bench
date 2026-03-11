@@ -1,7 +1,7 @@
 {
   "schema_version": "4.0",
   "source": "bundlebear",
-  "collected_at": "2026-03-11T06:17:27+00:00",
+  "collected_at": "2026-03-11T11:25:09+00:00",
   "period": "last-30d",
   "granularity": "daily",
   "data_freshness": {
@@ -449,6 +449,54 @@
       "eip7702_live_accounts": null,
       "total_onchain_footprint": null,
       "reason": "托管钱包，链上不可追踪",
+      "daily_series": null
+    },
+    "okx_onchainos": {
+      "trackable": false,
+      "erc4337_active_wallets_30d": null,
+      "eip7702_live_accounts": null,
+      "total_onchain_footprint": null,
+      "reason": "本地 CLI 工具，不部署合约，链上无法追踪",
+      "daily_series": null
+    },
+    "clawlett": {
+      "trackable": false,
+      "erc4337_active_wallets_30d": null,
+      "eip7702_live_accounts": null,
+      "total_onchain_footprint": null,
+      "reason": "Gnosis Safe + Zodiac，工厂地址未公开，链上无法精准归因",
+      "daily_series": null
+    },
+    "coinpilot_hyperliquid": {
+      "trackable": false,
+      "erc4337_active_wallets_30d": null,
+      "eip7702_live_accounts": null,
+      "total_onchain_footprint": null,
+      "reason": "Privy 托管钱包，Hyperliquid L1 非 EVM 链，链上不可追踪",
+      "daily_series": null
+    },
+    "para_wallet": {
+      "trackable": false,
+      "erc4337_active_wallets_30d": null,
+      "eip7702_live_accounts": null,
+      "total_onchain_footprint": null,
+      "reason": "MPC 云签名，无工厂合约部署，链上不可追踪",
+      "daily_series": null
+    },
+    "polymarket_agent": {
+      "trackable": false,
+      "erc4337_active_wallets_30d": null,
+      "eip7702_live_accounts": null,
+      "total_onchain_footprint": null,
+      "reason": "直接使用 EOA 钱包（poly CLI），链上无工厂合约",
+      "daily_series": null
+    },
+    "universal_trading": {
+      "trackable": false,
+      "erc4337_active_wallets_30d": null,
+      "eip7702_live_accounts": null,
+      "total_onchain_footprint": null,
+      "reason": "本地 EOA 私钥，无工厂合约",
       "daily_series": null
     }
   }

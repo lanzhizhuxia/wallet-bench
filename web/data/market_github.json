@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "source": "github",
-  "collected_at": "2026-03-11T06:17:17+00:00",
+  "collected_at": "2026-03-11T11:24:45+00:00",
   "providers": {
     "privy": {
       "repos": [
@@ -23,7 +23,7 @@
       "repos": [
         {
           "repo": "coinbase/agentkit",
-          "stars": 1141,
+          "stars": 1142,
           "commits_30d": 6,
           "open_issues_created_30d": 17,
           "last_push": "2026-03-07T02:45:56Z"
@@ -36,7 +36,7 @@
           "last_push": "2025-10-27T21:30:53Z"
         }
       ],
-      "total_stars": 1234,
+      "total_stars": 1235,
       "total_commits_30d": 6,
       "total_open_issues_created_30d": 17,
       "latest_push": "2026-03-07T02:45:56Z",
@@ -95,32 +95,101 @@
         {
           "repo": "Minara-AI/skills",
           "stars": 29,
-          "commits_30d": 29,
+          "commits_30d": 30,
           "open_issues_created_30d": 1,
-          "last_push": "2026-03-10T06:44:05Z"
+          "last_push": "2026-03-11T08:04:33Z"
         }
       ],
       "total_stars": 29,
-      "total_commits_30d": 29,
+      "total_commits_30d": 30,
       "total_open_issues_created_30d": 1,
-      "latest_push": "2026-03-10T06:44:05Z",
+      "latest_push": "2026-03-11T08:04:33Z",
       "partial": false
     },
     "okx_onchainos": {
       "repos": [
         {
           "repo": "okx/onchainos-skills",
-          "stars": 112,
-          "commits_30d": 15,
+          "stars": 115,
+          "commits_30d": 20,
           "open_issues_created_30d": 0,
-          "last_push": "2026-03-11T02:46:38Z"
+          "last_push": "2026-03-11T08:06:19Z"
         }
       ],
-      "total_stars": 112,
-      "total_commits_30d": 15,
+      "total_stars": 115,
+      "total_commits_30d": 20,
       "total_open_issues_created_30d": 0,
-      "latest_push": "2026-03-11T02:46:38Z",
+      "latest_push": "2026-03-11T08:06:19Z",
       "partial": false
+    },
+    "clawlett": {
+      "repos": [],
+      "total_stars": null,
+      "total_commits_30d": null,
+      "total_open_issues_created_30d": null,
+      "latest_push": null,
+      "partial": false,
+      "note": "no public repos to track"
+    },
+    "coinpilot_hyperliquid": {
+      "repos": [],
+      "total_stars": null,
+      "total_commits_30d": null,
+      "total_open_issues_created_30d": null,
+      "latest_push": null,
+      "partial": false,
+      "note": "no public repos to track"
+    },
+    "para_wallet": {
+      "repos": [],
+      "total_stars": null,
+      "total_commits_30d": null,
+      "total_open_issues_created_30d": null,
+      "latest_push": null,
+      "partial": false,
+      "note": "no public repos to track"
+    },
+    "polymarket_agent": {
+      "repos": [
+        {
+          "repo": "Polymarket/py-clob-client",
+          "stars": 874,
+          "commits_30d": 1,
+          "open_issues_created_30d": 23,
+          "last_push": "2026-02-22T16:16:36Z"
+        }
+      ],
+      "total_stars": 874,
+      "total_commits_30d": 1,
+      "total_open_issues_created_30d": 23,
+      "latest_push": "2026-02-22T16:16:36Z",
+      "partial": false
+    },
+    "universal_trading": {
+      "repos": [
+        {
+          "repo": "Particle-Network/universal-account-example",
+          "stars": 1,
+          "commits_30d": 5,
+          "open_issues_created_30d": 0,
+          "last_push": "2026-02-21T19:23:06Z"
+        }
+      ],
+      "total_stars": 1,
+      "total_commits_30d": 5,
+      "total_open_issues_created_30d": 0,
+      "latest_push": "2026-02-21T19:23:06Z",
+      "partial": false
+    }
+  },
+  "ecosystem": {
+    "clawhub": {
+      "repo": "openclaw/skills",
+      "stars": 2580,
+      "forks": null,
+      "commits_30d": 50116,
+      "last_push": "2026-03-11T11:24:56Z",
+      "note": "OpenClaw 生态主仓库，包含所有 Skills"
     }
   }
 }

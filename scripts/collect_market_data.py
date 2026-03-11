@@ -537,11 +537,28 @@ def collect_github() -> dict:
             "partial": not all_ok,
         }
 
+    # Ecosystem: ClawHub (openclaw/skills) — 整体生态活跃度信号
+    ecosystem: dict = {}
+    clawhub = _fetch_github_repo("openclaw/skills", headers)
+    if clawhub:
+        ecosystem["clawhub"] = {
+            "repo": "openclaw/skills",
+            "stars": clawhub["stars"],
+            "forks": None,  # not tracked in _fetch_github_repo
+            "commits_30d": clawhub["commits_30d"],
+            "last_push": clawhub["last_push"],
+            "note": "OpenClaw 生态主仓库，包含所有 Skills",
+        }
+        log_info("clawhub ok", stars=clawhub["stars"], commits_30d=clawhub["commits_30d"])
+    else:
+        ecosystem["clawhub"] = {"repo": "openclaw/skills", "error": "fetch failed"}
+
     return {
         "schema_version": SCHEMA_VERSION,
         "source": "github",
         "collected_at": now,
         "providers": providers,
+        "ecosystem": ecosystem,
     }
 
 

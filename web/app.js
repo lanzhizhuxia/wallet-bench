@@ -2947,7 +2947,8 @@ function _marketSignalBadge(id) {
     const s = MARKET_SKILL_SIGNAL[id];
     if (!s) return '';
     const cls = { A: 'signal-a', B: 'signal-b', C: 'signal-c', D: 'signal-d' }[s.grade] || '';
-    return ` <span class="market-signal-badge ${cls}" title="${s.note}">信号 ${s.grade}</span>`;
+    // Show badge + inline note (always visible — title/tooltip unreliable on mobile/modern browsers)
+    return ` <span class="market-signal-badge ${cls}">信号 ${s.grade}</span><span class="market-signal-note">${s.note}</span>`;
 }
 
 async function loadAndRenderMarketTab() {
@@ -3099,12 +3100,24 @@ function renderMarketCard2(github) {
     const skillRows = MARKET_SKILL_IDS.map(_row).join('');
     const thead = `<thead><tr><th>供应商</th><th>Stars</th><th>近 30d Commits</th><th>近 30d Open Issues</th></tr></thead>`;
 
+    // ClawHub ecosystem banner
+    const clawhub = github && github.ecosystem && github.ecosystem.clawhub;
+    const clawhubBanner = clawhub && !clawhub.error
+        ? `<div class="market-clawhub-banner">
+              🌐 <strong>ClawHub 生态（openclaw/skills）</strong>:
+              <strong>${formatNum(clawhub.stars)}</strong> Stars、
+              <strong>${formatNum(clawhub.commits_30d)}</strong> 近 30d Commits。
+              包含所有 Skills 的主仓库，上方数据为各 Skill 独立仓库指标。
+          </div>`
+        : '';
+
     return `
     <div class="market-card">
         <h3 class="market-card-title">研发健康（GitHub）</h3>
         <div class="market-section-header">WaaS 基础设施</div>
         <table class="market-table">${thead}<tbody>${waasRows}</tbody></table>
         <div class="market-section-header">OpenClaw Skills</div>
+        ${clawhubBanner}
         <table class="market-table">${thead}<tbody>${skillRows}</tbody></table>
     </div>`;
 }
