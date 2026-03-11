@@ -3095,7 +3095,7 @@ function renderMarketCardBench(benchRaw) {
     return `
     <div class="market-card">
         <h3 class="market-card-title">🧠 Bench 能力评测（72 题）</h3>
-        <div class="market-card-subtitle">直接测量结果——最高置信度。错误数 = 运行时异常，非逻辑错误。N/A = 该 provider 不支持此能力题。Signal badge 反映市场信号置信度（仅对 OpenClaw Skills ）。</div>
+        <div class="market-card-subtitle">直接测量结果——最高置信度。错误数 = 运行时异常，非逻辑错误。N/A = 该 provider 不支持此能力题。Signal badge 反映市场信号置信度（仅对 OpenClaw Skills）。</div>
         <div class="market-section-header">WaaS 基础设施</div>
         <table class="market-table">${thead}<tbody>${waasRows}</tbody></table>
         <div class="market-section-header">OpenClaw Skills</div>
@@ -3221,7 +3221,7 @@ function renderMarketCard2(github) {
               🌐 <strong>ClawHub 生态（openclaw/skills）</strong>:
               <strong>${formatNum(clawhub.stars)}</strong> Stars。
               包含所有 Skills 的主仓库，上方数据为各 Skill 独立仓库指标。
-              <span class="market-noise-note">（近 30d Commits: ${formatNum(clawhub.commits_30d)}，亻库指标，勿与各 Skill 直接对比）</span>
+              <span class="market-noise-note">（近 30d Commits: ${formatNum(clawhub.commits_30d)}，仓库整体指标，勿与各 Skill 直接对比）</span>
           </div>`
         : '';
 
