@@ -2916,6 +2916,16 @@ Response: {"id": "wallet_xxx", "address": "0x..."}</code></pre>
 // --------------------------------------------------------------------------
 
 const MARKET_PROVIDER_ORDER = ['privy', 'coinbase', 'crossmint', 'bnbchain_mcp', 'moonpay', 'minara', 'okx_onchainos', 'clawlett', 'para_wallet', 'universal_trading', 'polymarket_agent', 'coinpilot_hyperliquid'];
+const MARKET_WAAS_IDS   = ['privy', 'coinbase', 'crossmint', 'bnbchain_mcp', 'moonpay', 'minara', 'okx_onchainos'];
+const MARKET_SKILL_IDS  = ['clawlett', 'para_wallet', 'universal_trading', 'polymarket_agent', 'coinpilot_hyperliquid'];
+// Signal confidence ratings for OpenClaw Skills (A/B/C/D)
+const MARKET_SKILL_SIGNAL = {
+    clawlett:             { grade: 'B', note: '有协议层 proxy 信号，但无法直接归因到 Skill' },
+    para_wallet:          { grade: 'C', note: 'API 不稳定，仍在 Beta；信号不足，难以评估市场活跃度' },
+    universal_trading:    { grade: 'B', note: 'Bench 通过率最高（50%），有协议生态背书' },
+    polymarket_agent:     { grade: 'A', note: '底层协议交易量可观；py-clob-client 871★ 反映生态关注' },
+    coinpilot_hyperliquid:{ grade: 'D', note: '纯移动端 App，无开发者 API/CLI，不可编排；信号不足' },
+};
 const MARKET_PROVIDER_NAMES = {
     bnbchain_mcp: 'BNB Chain MCP',
     coinbase: 'Coinbase AgentKit',
@@ -2932,6 +2942,13 @@ const MARKET_PROVIDER_NAMES = {
 };
 
 let marketDataLoaded = false;
+
+function _marketSignalBadge(id) {
+    const s = MARKET_SKILL_SIGNAL[id];
+    if (!s) return '';
+    const cls = { A: 'signal-a', B: 'signal-b', C: 'signal-c', D: 'signal-d' }[s.grade] || '';
+    return ` <span class="market-signal-badge ${cls}" title="${s.note}">信号 ${s.grade}</span>`;
+}
 
 async function loadAndRenderMarketTab() {
     if (marketDataLoaded) return;
@@ -2960,8 +2977,8 @@ function renderMarketTab(npm, pypi, github, status, docs, onchain) {
 
     let html = '';
 
-    // Global disclaimer
-    html += `<div class="market-disclaimer">⚠️ 本 Tab 展示的是活跃度代理指标，不等于供应商真实 DAU/MAU。所有数据仅用于趋势观察与横向相对比较。</div>`;
+    // Global disclaimer + 分区说明
+    html += `<div class="market-disclaimer">⚠️ 本 Tab 展示的是活跃度代理指标，不等于供应商真实 DAU/MAU。所有数据仅用于趋势观察与横向相对比较。<br><strong>WaaS 基础设施</strong>（7家）与 <strong>OpenClaw Skills</strong>（5家）分区展示——两类对象的市场信号口径不同，不宜直接横向比较。</div>`;
 
     // Card 5 — 可观测用户激活（链上数据）— 置顶
     html += renderMarketCard5(onchain);
@@ -3010,7 +3027,10 @@ function renderMarketCard1(npm, pypi) {
     }
     if (pypi && pypi.providers) {
         for (const [id, d] of Object.entries(pypi.providers)) {
-            if (downloads[id] !== undefined) downloads[id] += (d.total_weekly_downloads || 0);
+            if (downloads[id] !== undefined) {
+                // polymarket_agent: PyPI 安装路径实为 Homebrew，下载量有噪音
+                downloads[id] += (d.total_weekly_downloads || 0);
+            }
         }
     }
 
@@ -3018,15 +3038,16 @@ function renderMarketCard1(npm, pypi) {
     const logMax = Math.log10(Math.max(...Object.values(downloads), 10));
     const rawMax = Math.max(...Object.values(downloads));
 
-    let rows = '';
-    MARKET_PROVIDER_ORDER.forEach(id => {
+    function _barRow(id) {
         const val = downloads[id];
         const logVal = val > 0 ? Math.log10(val) : 0;
         const pct = (logVal / logMax * 100).toFixed(1);
         const isMax = val === rawMax;
-        rows += `
+        const noiseNote = (id === 'polymarket_agent' && val > 0)
+            ? ' <span class="market-noise-note" title="实际安装路径为 Homebrew，PyPI 下载量有噪音">噪音ℹ️</span>' : '';
+        return `
         <div class="market-bar-row">
-            <span class="market-bar-label">${MARKET_PROVIDER_NAMES[id]}</span>
+            <span class="market-bar-label">${MARKET_PROVIDER_NAMES[id]}${_marketSignalBadge(id)}${noiseNote}</span>
             <div class="market-bar-track">
                 ${val > 0
                     ? `<div class="market-bar-fill${isMax ? ' market-bar-max' : ''}" style="width:${pct}%"></div>`
@@ -3035,59 +3056,73 @@ function renderMarketCard1(npm, pypi) {
             </div>
             <span class="market-bar-value${isMax ? ' market-bar-max-text' : ''}">${val > 0 ? formatNum(val) : ''}</span>
         </div>`;
-    });
+    }
+
+    let waasRows = MARKET_WAAS_IDS.map(_barRow).join('');
+    let skillRows = MARKET_SKILL_IDS.map(_barRow).join('');
 
     return `
     <div class="market-card">
         <h3 class="market-card-title">开发者兴趣（npm + PyPI 周下载量）</h3>
-        <div class="market-bar-chart">${rows}</div>
+        <div class="market-section-header">WaaS 基础设施</div>
+        <div class="market-bar-chart">${waasRows}</div>
+        <div class="market-section-header">OpenClaw Skills</div>
+        <div class="market-bar-chart">${skillRows}</div>
         <p class="market-log-note">图表使用对数坐标，右侧数字为实际值</p>
         <div class="market-confidence status-skip">置信度：中 — 含 CI 重复下载，仅看趋势</div>
     </div>`;
 }
 
 function renderMarketCard2(github) {
-    let rows = '';
-    MARKET_PROVIDER_ORDER.forEach(id => {
+    function _row(id) {
         const d = github && github.providers && github.providers[id];
-        if (!d || (d.total_stars == null && d.repos && d.repos.length === 0)) {
-            rows += `<tr>
-                <td>${MARKET_PROVIDER_NAMES[id]}</td>
+        const noRepo = !d || (d.total_stars == null && (!d.repos || d.repos.length === 0));
+        if (noRepo) {
+            return `<tr>
+                <td>${MARKET_PROVIDER_NAMES[id]}${_marketSignalBadge(id)}</td>
                 <td colspan="3" class="market-na">暂无公开仓库</td>
             </tr>`;
-        } else {
-            rows += `<tr>
-                <td>${MARKET_PROVIDER_NAMES[id]}</td>
-                <td>${formatNum(d.total_stars)}</td>
-                <td>${formatNum(d.total_commits_30d)}</td>
-                <td>${formatNum(d.total_open_issues_created_30d)}</td>
-            </tr>`;
         }
-    });
+        // polymarket: stars 来自底层协议仓库，标注来源
+        const starsDisplay = (id === 'polymarket_agent' && d.total_stars)
+            ? `${formatNum(d.total_stars)} <span class="market-noise-note" title="来自 Polymarket/py-clob-client，底层协议仓库">协议库ℹ️</span>`
+            : formatNum(d.total_stars);
+        return `<tr>
+            <td>${MARKET_PROVIDER_NAMES[id]}${_marketSignalBadge(id)}</td>
+            <td>${starsDisplay}</td>
+            <td>${formatNum(d.total_commits_30d)}</td>
+            <td>${formatNum(d.total_open_issues_created_30d)}</td>
+        </tr>`;
+    }
+
+    const waasRows  = MARKET_WAAS_IDS.map(_row).join('');
+    const skillRows = MARKET_SKILL_IDS.map(_row).join('');
+    const thead = `<thead><tr><th>供应商</th><th>Stars</th><th>近 30d Commits</th><th>近 30d Open Issues</th></tr></thead>`;
 
     return `
     <div class="market-card">
         <h3 class="market-card-title">研发健康（GitHub）</h3>
-        <table class="market-table">
-            <thead><tr><th>供应商</th><th>Stars</th><th>近 30d Commits</th><th>近 30d Open Issues</th></tr></thead>
-            <tbody>${rows}</tbody>
-        </table>
+        <div class="market-section-header">WaaS 基础设施</div>
+        <table class="market-table">${thead}<tbody>${waasRows}</tbody></table>
+        <div class="market-section-header">OpenClaw Skills</div>
+        <table class="market-table">${thead}<tbody>${skillRows}</tbody></table>
     </div>`;
 }
 
 function renderMarketCard3(status) {
-    const noStatusPage = ['bnbchain_mcp', 'moonpay', 'minara', 'okx_onchainos'];
-    let rows = '';
-    MARKET_PROVIDER_ORDER.forEach(id => {
+    const noStatusPage = ['bnbchain_mcp', 'moonpay', 'minara', 'okx_onchainos',
+                          'clawlett', 'para_wallet', 'universal_trading', 'polymarket_agent', 'coinpilot_hyperliquid'];
+    function _row(id) {
         const d = status && status.providers && status.providers[id];
+        const sig = _marketSignalBadge(id);
         if (!d || (d.status_page_url == null && noStatusPage.includes(id))) {
-            rows += `<tr>
-                <td>${MARKET_PROVIDER_NAMES[id]}</td>
+            return `<tr>
+                <td>${MARKET_PROVIDER_NAMES[id]}${sig}</td>
                 <td colspan="2" class="market-na">无公开 Status Page</td>
             </tr>`;
         } else if (d.error) {
-            rows += `<tr>
-                <td>${MARKET_PROVIDER_NAMES[id]}</td>
+            return `<tr>
+                <td>${MARKET_PROVIDER_NAMES[id]}${sig}</td>
                 <td colspan="2" class="market-na market-fail-text">数据获取失败</td>
             </tr>`;
         } else {
@@ -3096,54 +3131,61 @@ function renderMarketCard3(status) {
             let incidentClass = '';
             if (incidents === 0) incidentClass = ' market-green';
             else if (incidents > 10) incidentClass = ' market-red';
-            rows += `<tr>
-                <td>${MARKET_PROVIDER_NAMES[id]}</td>
+            return `<tr>
+                <td>${MARKET_PROVIDER_NAMES[id]}${sig}</td>
                 <td class="${incidentClass}">${incidents != null ? incidents : '—'}</td>
                 <td>${mttrDisplay}</td>
             </tr>`;
         }
-    });
+    }
+
+    const waasRows  = MARKET_WAAS_IDS.map(_row).join('');
+    const skillRows = MARKET_SKILL_IDS.map(_row).join('');
+    const thead = `<thead><tr><th>供应商</th><th>30d Incidents</th><th>MTTR</th></tr></thead>`;
 
     return `
     <div class="market-card">
         <h3 class="market-card-title">服务可靠性（Status Page）</h3>
-        <table class="market-table">
-            <thead><tr><th>供应商</th><th>30d Incidents</th><th>MTTR</th></tr></thead>
-            <tbody>${rows}</tbody>
-        </table>
+        <div class="market-section-header">WaaS 基础设施</div>
+        <table class="market-table">${thead}<tbody>${waasRows}</tbody></table>
+        <div class="market-section-header">OpenClaw Skills</div>
+        <table class="market-table">${thead}<tbody>${skillRows}</tbody></table>
         <div class="market-confidence status-pass">置信度：高（仅覆盖有公开 Status Page 的供应商）</div>
     </div>`;
 }
 
 function renderMarketCard4(docs) {
-    let rows = '';
-    MARKET_PROVIDER_ORDER.forEach(id => {
+    function _row(id) {
         const d = docs && docs.providers && docs.providers[id];
+        const sig = _marketSignalBadge(id);
         if (!d || d.total_doc_commits_30d == null) {
-            rows += `<tr>
-                <td>${MARKET_PROVIDER_NAMES[id]}</td>
+            return `<tr>
+                <td>${MARKET_PROVIDER_NAMES[id]}${sig}</td>
                 <td class="market-na">—</td>
                 <td class="market-na">—</td>
-            </tr>`;
-        } else {
-            const ratio = d.breaking_change_ratio || 0;
-            const ratioText = (ratio * 100).toFixed(1) + '%';
-            const breakingIcon = ratio > 0 ? ' <span class="market-warn-icon">⚠️</span>' : '';
-            rows += `<tr>
-                <td>${MARKET_PROVIDER_NAMES[id]}</td>
-                <td>${d.total_doc_commits_30d}</td>
-                <td>${ratioText}${breakingIcon}</td>
             </tr>`;
         }
-    });
+        const ratio = d.breaking_change_ratio || 0;
+        const ratioText = (ratio * 100).toFixed(1) + '%';
+        const breakingIcon = ratio > 0 ? ' <span class="market-warn-icon">⚠️</span>' : '';
+        return `<tr>
+            <td>${MARKET_PROVIDER_NAMES[id]}${sig}</td>
+            <td>${d.total_doc_commits_30d}</td>
+            <td>${ratioText}${breakingIcon}</td>
+        </tr>`;
+    }
+
+    const waasRows  = MARKET_WAAS_IDS.map(_row).join('');
+    const skillRows = MARKET_SKILL_IDS.map(_row).join('');
+    const thead = `<thead><tr><th>供应商</th><th>近 30d 文档 Commits</th><th>Breaking Change 比例</th></tr></thead>`;
 
     return `
     <div class="market-card">
         <h3 class="market-card-title">产品成熟度（文档变更密度）</h3>
-        <table class="market-table">
-            <thead><tr><th>供应商</th><th>近 30d 文档 Commits</th><th>Breaking Change 比例</th></tr></thead>
-            <tbody>${rows}</tbody>
-        </table>
+        <div class="market-section-header">WaaS 基础设施</div>
+        <table class="market-table">${thead}<tbody>${waasRows}</tbody></table>
+        <div class="market-section-header">OpenClaw Skills</div>
+        <table class="market-table">${thead}<tbody>${skillRows}</tbody></table>
         <div class="market-confidence status-skip">置信度：中 — 仅追踪 changelog/docs 目录</div>
     </div>`;
 }
@@ -3210,10 +3252,16 @@ function renderMarketCard5(onchain) {
     const freshness = onchain.data_freshness || {};
     const sla = freshness.sla || 'T+1';
 
-    // 不可观测供应商覆盖条
-    const notTrackableNote = notTrackableNames.length
-        ? `<div class="market-coverage-footnote">不可观测（${notTrackableNames.length}）：${notTrackableNames.join('、')} — 架构原因无法链上归因</div>`
-        : '';
+    // 不可观测供应商覆盖条（WaaS vs Skills 分组）
+    const notTrackableWaaS   = notTrackableNames.filter(n => MARKET_WAAS_IDS.some(id => MARKET_PROVIDER_NAMES[id] === n));
+    const notTrackableSkills = notTrackableNames.filter(n => MARKET_SKILL_IDS.some(id => MARKET_PROVIDER_NAMES[id] === n));
+    let notTrackableNote = '';
+    if (notTrackableWaaS.length) {
+        notTrackableNote += `<div class="market-coverage-footnote">WaaS 不可观测（${notTrackableWaaS.length})：${notTrackableWaaS.join('、')} — 架构原因无法链上归因</div>`;
+    }
+    if (notTrackableSkills.length) {
+        notTrackableNote += `<div class="market-coverage-footnote market-skills-footnote">OpenClaw Skills 全部不可观测（${notTrackableSkills.length})：${notTrackableSkills.join('、')} — 以协议层 proxy 为替代信号</div>`;
+    }
 
     // --- Card 5a: 用户激活汇总 ---
     const card5a = `

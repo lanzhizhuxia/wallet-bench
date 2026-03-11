@@ -2896,6 +2896,53 @@ td.defi-difficulty { font-size: 0.82rem; white-space: nowrap; text-align: center
     margin-top: var(--space-xs);
 }
 
+.market-skills-footnote {
+    color: var(--color-warn, #b45309);
+    background: rgba(180, 83, 9, 0.06);
+    border-left: 2px solid var(--color-warn, #b45309);
+    padding: 2px 6px;
+    border-radius: 0 3px 3px 0;
+}
+
+/* Section divider inside market cards */
+.market-section-header {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-tertiary);
+    margin: var(--space-m) 0 var(--space-2xs);
+    padding-bottom: var(--space-2xs);
+    border-bottom: 1px solid var(--bg-border);
+}
+.market-section-header:first-of-type {
+    margin-top: var(--space-s);
+}
+
+/* Signal grade badges */
+.market-signal-badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 1px 5px;
+    border-radius: 3px;
+    margin-left: 4px;
+    vertical-align: middle;
+    cursor: help;
+}
+.market-signal-badge.signal-a { background: #d1fae5; color: #065f46; }
+.market-signal-badge.signal-b { background: #dbeafe; color: #1e40af; }
+.market-signal-badge.signal-c { background: #fef3c7; color: #92400e; }
+.market-signal-badge.signal-d { background: #fee2e2; color: #991b1b; }
+
+/* Noise annotation */
+.market-noise-note {
+    font-size: 10px;
+    color: var(--text-tertiary);
+    margin-left: 3px;
+    cursor: help;
+}
+
 .market-deepdive {
     margin-top: var(--space-m);
     padding: var(--space-s) var(--space-m);
