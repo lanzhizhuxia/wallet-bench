@@ -79,10 +79,17 @@ NPM_PACKAGES: dict[str, list[str]] = {
         "minara",
     ],
     # OKX OnchainOS is a Rust CLI (cargo), not published on npm
+    # OKX OnchainOS is a Rust CLI (cargo), not published on npm
+    # coinpilot_hyperliquid: 'coinpilot' package not found on npm registry
+    # clawlett: no npm package (CLI scripts only)
+    # para_wallet: no npm package (REST API)
+    # polymarket_agent: pypi only, see PYPI_PACKAGES
+    # universal_trading: github only
 }
 
 PYPI_PACKAGES: dict[str, list[str]] = {
     "coinbase": ["coinbase-agentkit"],
+    "polymarket_agent": ["polymarket-agent"],
 }
 
 GITHUB_REPOS: dict[str, list[str]] = {
@@ -93,6 +100,11 @@ GITHUB_REPOS: dict[str, list[str]] = {
     "moonpay": [],  # no public repos
     "minara": ["Minara-AI/skills"],
     "okx_onchainos": ["okx/onchainos-skills"],
+    "clawlett": [],  # no public repo
+    "coinpilot_hyperliquid": [],  # no public repo
+    "para_wallet": [],  # no public repo (REST API, closed-source)
+    "polymarket_agent": ["Polymarket/py-clob-client"],
+    "universal_trading": ["Particle-Network/universal-account-example"],
 }
 
 # Status page base URLs (None = no known status page)
@@ -104,6 +116,11 @@ STATUS_PAGES: dict[str, str | None] = {
     "moonpay": None,
     "minara": None,
     "okx_onchainos": None,
+    "clawlett": None,
+    "coinpilot_hyperliquid": None,
+    "para_wallet": None,
+    "polymarket_agent": None,
+    "universal_trading": None,
 }
 
 # Per-repo docs/changelog paths (empty list = no tracked paths)
@@ -119,6 +136,8 @@ DOCS_PATHS_BY_REPO: dict[str, list[str]] = {
     "bnb-chain/bnbchain-mcp":           [],
     "Minara-AI/skills":                 ["skills/minara/SKILL.md"],
     "okx/onchainos-skills":             ["README.md"],
+    "Polymarket/py-clob-client":        ["CHANGELOG.md"],
+    "Particle-Network/universal-account-example": [],
 }
 
 BREAKING_KEYWORDS: list[str] = ["breaking", "BREAKING", "breaking change"]
@@ -165,6 +184,11 @@ ONCHAIN_NOT_TRACKABLE: dict[str, str] = {
     "moonpay":     "HD 钱包架构，链上无工厂合约",
     "minara":      "托管钱包，链上不可追踪",
     "okx_onchainos": "本地 CLI 工具，不部署合约，链上无法追踪",
+    "clawlett":    "Gnosis Safe + Zodiac，工厂地址未公开，链上无法精准归因",
+    "coinpilot_hyperliquid": "Privy 托管钱包，Hyperliquid L1 非 EVM 链，链上不可追踪",
+    "para_wallet": "MPC 云签名，无工厂合约部署，链上不可追踪",
+    "polymarket_agent": "直接使用 EOA 钱包（poly CLI），链上无工厂合约",
+    "universal_trading": "本地 EOA 私钥，无工厂合约",
 }
 
 # ---------------------------------------------------------------------------
@@ -1219,7 +1243,9 @@ def collect_onchain() -> dict:
         }
 
     # 5. 不可追踪供应商
-    all_provider_ids = ["privy", "coinbase", "crossmint", "bnbchain_mcp", "moonpay", "minara"]
+    all_provider_ids = ["privy", "coinbase", "crossmint", "bnbchain_mcp", "moonpay", "minara",
+                        "okx_onchainos", "clawlett", "coinpilot_hyperliquid", "para_wallet",
+                        "polymarket_agent", "universal_trading"]
     for pid in all_provider_ids:
         if pid not in providers:
             providers[pid] = {

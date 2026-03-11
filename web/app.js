@@ -2915,7 +2915,7 @@ Response: {"id": "wallet_xxx", "address": "0x..."}</code></pre>
 // Tab 4: 市场活跃度
 // --------------------------------------------------------------------------
 
-const MARKET_PROVIDER_ORDER = ['privy', 'coinbase', 'crossmint', 'bnbchain_mcp', 'moonpay', 'minara', 'okx_onchainos'];
+const MARKET_PROVIDER_ORDER = ['privy', 'coinbase', 'crossmint', 'bnbchain_mcp', 'moonpay', 'minara', 'okx_onchainos', 'clawlett', 'para_wallet', 'universal_trading', 'polymarket_agent', 'coinpilot_hyperliquid'];
 const MARKET_PROVIDER_NAMES = {
     bnbchain_mcp: 'BNB Chain MCP',
     coinbase: 'Coinbase AgentKit',
@@ -2924,6 +2924,11 @@ const MARKET_PROVIDER_NAMES = {
     moonpay: 'MoonPay',
     minara: 'Minara',
     okx_onchainos: 'OKX OnchainOS',
+    clawlett: 'Clawlett',
+    para_wallet: 'Para Wallet',
+    universal_trading: 'Universal Trading',
+    polymarket_agent: 'Polymarket Agent',
+    coinpilot_hyperliquid: 'Coinpilot Hyperliquid',
 };
 
 let marketDataLoaded = false;
@@ -3144,7 +3149,7 @@ function renderMarketCard4(docs) {
 }
 
 function renderMarketCard5(onchain) {
-    const PROVIDER_ORDER = ['privy', 'coinbase', 'crossmint', 'bnbchain_mcp', 'moonpay', 'minara', 'okx_onchainos'];
+    const PROVIDER_ORDER = ['privy', 'coinbase', 'crossmint', 'bnbchain_mcp', 'moonpay', 'minara', 'okx_onchainos', 'clawlett', 'para_wallet', 'universal_trading', 'polymarket_agent', 'coinpilot_hyperliquid'];
 
     if (!onchain || !onchain.providers) {
         return `
