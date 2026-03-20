@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "source": "github-docs",
-  "collected_at": "2026-03-19T06:22:12+00:00",
+  "collected_at": "2026-03-20T06:19:13+00:00",
   "period": "last-30d",
   "providers": {
     "privy": {
@@ -95,14 +95,14 @@
       "repos": [
         {
           "repo": "Minara-AI/skills",
-          "doc_commits_30d": 22,
+          "doc_commits_30d": 24,
           "breaking_change_commits_30d": 0,
           "paths_checked": [
             "skills/minara/SKILL.md"
           ]
         }
       ],
-      "total_doc_commits_30d": 22,
+      "total_doc_commits_30d": 24,
       "total_breaking_change_commits_30d": 0,
       "breaking_change_ratio": 0.0,
       "partial": false
@@ -111,14 +111,14 @@
       "repos": [
         {
           "repo": "okx/onchainos-skills",
-          "doc_commits_30d": 13,
+          "doc_commits_30d": 14,
           "breaking_change_commits_30d": 0,
           "paths_checked": [
             "README.md"
           ]
         }
       ],
-      "total_doc_commits_30d": 13,
+      "total_doc_commits_30d": 14,
       "total_breaking_change_commits_30d": 0,
       "breaking_change_ratio": 0.0,
       "partial": false
