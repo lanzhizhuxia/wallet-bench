@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "source": "github",
-  "collected_at": "2026-03-20T06:19:00+00:00",
+  "collected_at": "2026-03-21T06:13:16+00:00",
   "providers": {
     "privy": {
       "repos": [
@@ -23,10 +23,10 @@
       "repos": [
         {
           "repo": "coinbase/agentkit",
-          "stars": 1163,
-          "commits_30d": 9,
+          "stars": 1166,
+          "commits_30d": 10,
           "open_issues_created_30d": 9,
-          "last_push": "2026-03-20T01:55:09Z"
+          "last_push": "2026-03-20T07:01:55Z"
         },
         {
           "repo": "coinbase/cdp-sdk-python",
@@ -36,10 +36,10 @@
           "last_push": "2025-10-27T21:30:53Z"
         }
       ],
-      "total_stars": 1256,
-      "total_commits_30d": 9,
+      "total_stars": 1259,
+      "total_commits_30d": 10,
       "total_open_issues_created_30d": 9,
-      "latest_push": "2026-03-20T01:55:09Z",
+      "latest_push": "2026-03-20T07:01:55Z",
       "partial": false
     },
     "crossmint": {
@@ -47,9 +47,9 @@
         {
           "repo": "Crossmint/crossmint-sdk",
           "stars": 45,
-          "commits_30d": 32,
-          "open_issues_created_30d": 0,
-          "last_push": "2026-03-20T01:27:24Z"
+          "commits_30d": 35,
+          "open_issues_created_30d": 1,
+          "last_push": "2026-03-21T04:36:52Z"
         },
         {
           "repo": "Crossmint/mcp-crossmint-checkout",
@@ -60,9 +60,9 @@
         }
       ],
       "total_stars": 46,
-      "total_commits_30d": 32,
-      "total_open_issues_created_30d": 0,
-      "latest_push": "2026-03-20T01:27:24Z",
+      "total_commits_30d": 35,
+      "total_open_issues_created_30d": 1,
+      "latest_push": "2026-03-21T04:36:52Z",
       "partial": false
     },
     "bnbchain_mcp": {
@@ -71,13 +71,13 @@
           "repo": "bnb-chain/bnbchain-mcp",
           "stars": 57,
           "commits_30d": 3,
-          "open_issues_created_30d": 0,
+          "open_issues_created_30d": 1,
           "last_push": "2026-03-20T04:46:29Z"
         }
       ],
       "total_stars": 57,
       "total_commits_30d": 3,
-      "total_open_issues_created_30d": 0,
+      "total_open_issues_created_30d": 1,
       "latest_push": "2026-03-20T04:46:29Z",
       "partial": false
     },
@@ -97,26 +97,26 @@
           "stars": 34,
           "commits_30d": 31,
           "open_issues_created_30d": 1,
-          "last_push": "2026-03-19T15:43:09Z"
+          "last_push": "2026-03-20T11:20:36Z"
         }
       ],
       "total_stars": 34,
       "total_commits_30d": 31,
       "total_open_issues_created_30d": 1,
-      "latest_push": "2026-03-19T15:43:09Z",
+      "latest_push": "2026-03-20T11:20:36Z",
       "partial": false
     },
     "okx_onchainos": {
       "repos": [
         {
           "repo": "okx/onchainos-skills",
-          "stars": 161,
+          "stars": 163,
           "commits_30d": 38,
           "open_issues_created_30d": 0,
           "last_push": "2026-03-19T15:18:07Z"
         }
       ],
-      "total_stars": 161,
+      "total_stars": 163,
       "total_commits_30d": 38,
       "total_open_issues_created_30d": 0,
       "latest_push": "2026-03-19T15:18:07Z",
@@ -153,15 +153,15 @@
       "repos": [
         {
           "repo": "Polymarket/py-clob-client",
-          "stars": 922,
+          "stars": 927,
           "commits_30d": 1,
-          "open_issues_created_30d": 17,
+          "open_issues_created_30d": 16,
           "last_push": "2026-02-22T16:16:36Z"
         }
       ],
-      "total_stars": 922,
+      "total_stars": 927,
       "total_commits_30d": 1,
-      "total_open_issues_created_30d": 17,
+      "total_open_issues_created_30d": 16,
       "latest_push": "2026-02-22T16:16:36Z",
       "partial": false
     },
@@ -185,10 +185,10 @@
   "ecosystem": {
     "clawhub": {
       "repo": "openclaw/skills",
-      "stars": 3145,
+      "stars": 3182,
       "forks": null,
-      "commits_30d": 58347,
-      "last_push": "2026-03-20T06:19:03Z",
+      "commits_30d": 59136,
+      "last_push": "2026-03-21T06:05:07Z",
       "note": "OpenClaw 生态主仓库，包含所有 Skills"
     }
   }
