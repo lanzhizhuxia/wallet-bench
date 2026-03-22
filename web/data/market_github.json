@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "source": "github",
-  "collected_at": "2026-03-21T06:13:16+00:00",
+  "collected_at": "2026-03-22T06:18:02+00:00",
   "providers": {
     "privy": {
       "repos": [
@@ -23,10 +23,10 @@
       "repos": [
         {
           "repo": "coinbase/agentkit",
-          "stars": 1166,
-          "commits_30d": 10,
-          "open_issues_created_30d": 9,
-          "last_push": "2026-03-20T07:01:55Z"
+          "stars": 1167,
+          "commits_30d": 11,
+          "open_issues_created_30d": 8,
+          "last_push": "2026-03-21T09:15:43Z"
         },
         {
           "repo": "coinbase/cdp-sdk-python",
@@ -36,10 +36,10 @@
           "last_push": "2025-10-27T21:30:53Z"
         }
       ],
-      "total_stars": 1259,
-      "total_commits_30d": 10,
-      "total_open_issues_created_30d": 9,
-      "latest_push": "2026-03-20T07:01:55Z",
+      "total_stars": 1260,
+      "total_commits_30d": 11,
+      "total_open_issues_created_30d": 8,
+      "latest_push": "2026-03-21T09:15:43Z",
       "partial": false
     },
     "crossmint": {
@@ -47,7 +47,7 @@
         {
           "repo": "Crossmint/crossmint-sdk",
           "stars": 45,
-          "commits_30d": 35,
+          "commits_30d": 34,
           "open_issues_created_30d": 1,
           "last_push": "2026-03-21T04:36:52Z"
         },
@@ -60,7 +60,7 @@
         }
       ],
       "total_stars": 46,
-      "total_commits_30d": 35,
+      "total_commits_30d": 34,
       "total_open_issues_created_30d": 1,
       "latest_push": "2026-03-21T04:36:52Z",
       "partial": false
@@ -94,31 +94,31 @@
       "repos": [
         {
           "repo": "Minara-AI/skills",
-          "stars": 34,
+          "stars": 35,
           "commits_30d": 31,
           "open_issues_created_30d": 1,
-          "last_push": "2026-03-20T11:20:36Z"
+          "last_push": "2026-03-21T06:28:18Z"
         }
       ],
-      "total_stars": 34,
+      "total_stars": 35,
       "total_commits_30d": 31,
       "total_open_issues_created_30d": 1,
-      "latest_push": "2026-03-20T11:20:36Z",
+      "latest_push": "2026-03-21T06:28:18Z",
       "partial": false
     },
     "okx_onchainos": {
       "repos": [
         {
           "repo": "okx/onchainos-skills",
-          "stars": 163,
+          "stars": 166,
           "commits_30d": 38,
-          "open_issues_created_30d": 0,
+          "open_issues_created_30d": 1,
           "last_push": "2026-03-19T15:18:07Z"
         }
       ],
-      "total_stars": 163,
+      "total_stars": 166,
       "total_commits_30d": 38,
-      "total_open_issues_created_30d": 0,
+      "total_open_issues_created_30d": 1,
       "latest_push": "2026-03-19T15:18:07Z",
       "partial": false
     },
@@ -153,14 +153,14 @@
       "repos": [
         {
           "repo": "Polymarket/py-clob-client",
-          "stars": 927,
-          "commits_30d": 1,
+          "stars": 930,
+          "commits_30d": 0,
           "open_issues_created_30d": 16,
           "last_push": "2026-02-22T16:16:36Z"
         }
       ],
-      "total_stars": 927,
-      "total_commits_30d": 1,
+      "total_stars": 930,
+      "total_commits_30d": 0,
       "total_open_issues_created_30d": 16,
       "latest_push": "2026-02-22T16:16:36Z",
       "partial": false
@@ -185,10 +185,10 @@
   "ecosystem": {
     "clawhub": {
       "repo": "openclaw/skills",
-      "stars": 3182,
+      "stars": 3222,
       "forks": null,
-      "commits_30d": 59136,
-      "last_push": "2026-03-21T06:05:07Z",
+      "commits_30d": 64450,
+      "last_push": "2026-03-22T06:12:59Z",
       "note": "OpenClaw 生态主仓库，包含所有 Skills"
     }
   }
