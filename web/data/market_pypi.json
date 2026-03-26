@@ -1,17 +1,17 @@
 {
   "schema_version": "1.0",
   "source": "pypi",
-  "collected_at": "2026-03-25T06:23:56+00:00",
+  "collected_at": "2026-03-26T06:26:12+00:00",
   "period": "last-week",
   "providers": {
     "coinbase": {
       "packages": [
         {
           "package": "coinbase-agentkit",
-          "weekly_downloads": 3184
+          "weekly_downloads": 3084
         }
       ],
-      "total_weekly_downloads": 3184,
+      "total_weekly_downloads": 3084,
       "partial": false
     },
     "polymarket_agent": {
