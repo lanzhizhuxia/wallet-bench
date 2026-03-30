@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "source": "github",
-  "collected_at": "2026-03-29T06:25:29+00:00",
+  "collected_at": "2026-03-30T06:38:03+00:00",
   "providers": {
     "privy": {
       "repos": [
@@ -70,13 +70,13 @@
         {
           "repo": "bnb-chain/bnbchain-mcp",
           "stars": 58,
-          "commits_30d": 3,
+          "commits_30d": 2,
           "open_issues_created_30d": 2,
           "last_push": "2026-03-20T04:46:29Z"
         }
       ],
       "total_stars": 58,
-      "total_commits_30d": 3,
+      "total_commits_30d": 2,
       "total_open_issues_created_30d": 2,
       "latest_push": "2026-03-20T04:46:29Z",
       "partial": false
@@ -110,16 +110,16 @@
       "repos": [
         {
           "repo": "okx/onchainos-skills",
-          "stars": 184,
-          "commits_30d": 52,
+          "stars": 183,
+          "commits_30d": 55,
           "open_issues_created_30d": 3,
-          "last_push": "2026-03-28T16:01:54Z"
+          "last_push": "2026-03-29T13:33:36Z"
         }
       ],
-      "total_stars": 184,
-      "total_commits_30d": 52,
+      "total_stars": 183,
+      "total_commits_30d": 55,
       "total_open_issues_created_30d": 3,
-      "latest_push": "2026-03-28T16:01:54Z",
+      "latest_push": "2026-03-29T13:33:36Z",
       "partial": false
     },
     "clawlett": {
@@ -153,13 +153,13 @@
       "repos": [
         {
           "repo": "Polymarket/py-clob-client",
-          "stars": 969,
+          "stars": 975,
           "commits_30d": 0,
           "open_issues_created_30d": 16,
           "last_push": "2026-02-22T16:16:36Z"
         }
       ],
-      "total_stars": 969,
+      "total_stars": 975,
       "total_commits_30d": 0,
       "total_open_issues_created_30d": 16,
       "latest_push": "2026-02-22T16:16:36Z",
@@ -185,10 +185,10 @@
   "ecosystem": {
     "clawhub": {
       "repo": "openclaw/skills",
-      "stars": 3545,
+      "stars": 3585,
       "forks": null,
-      "commits_30d": 74751,
-      "last_push": "2026-03-29T06:03:30Z",
+      "commits_30d": 73397,
+      "last_push": "2026-03-30T06:35:12Z",
       "note": "OpenClaw 生态主仓库，包含所有 Skills"
     }
   }
