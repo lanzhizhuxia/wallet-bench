@@ -1,14 +1,14 @@
 {
   "schema_version": "4.0",
   "source": "bundlebear",
-  "collected_at": "2026-03-30T06:38:13+00:00",
+  "collected_at": "2026-03-31T06:30:15+00:00",
   "period": "last-30d",
   "granularity": "daily",
   "data_freshness": {
     "sla": "T+1",
-    "latest_data_date": "2026-03-28",
-    "series_start": "2026-02-27",
-    "series_end": "2026-03-28",
+    "latest_data_date": "2026-03-29",
+    "series_start": "2026-02-28",
+    "series_end": "2026-03-29",
     "num_days": 30,
     "collection_status": "success"
   },
@@ -17,9 +17,9 @@
   "providers": {
     "coinbase": {
       "trackable": true,
-      "erc4337_active_wallets_30d": 361469,
-      "eip7702_live_accounts": 562768,
-      "total_onchain_footprint": 924237,
+      "erc4337_active_wallets_30d": 354383,
+      "eip7702_live_accounts": 581732,
+      "total_onchain_footprint": 936115,
       "source": "bundlebear",
       "bundlebear_labels": {
         "erc4337": "coinbase_smart_wallet",
@@ -27,12 +27,6 @@
       },
       "note": "ERC-4337 + EIP-7702 双维度。4337=日度新激活智能钱包，7702=日度新授权 EOA。两者不重叠。30d 为时间序列求和。",
       "daily_series": [
-        {
-          "date": "2026-02-27",
-          "erc4337": 20157,
-          "eip7702": 1674,
-          "total": 21831
-        },
         {
           "date": "2026-02-28",
           "erc4337": 18047,
@@ -197,32 +191,38 @@
         },
         {
           "date": "2026-03-27",
-          "erc4337": 1968,
+          "erc4337": 14060,
           "eip7702": 10089,
-          "total": 12057
+          "total": 24149
         },
         {
           "date": "2026-03-28",
+          "erc4337": 979,
+          "eip7702": 19205,
+          "total": 20184
+        },
+        {
+          "date": "2026-03-29",
           "erc4337": 0,
-          "eip7702": 1398,
-          "total": 1398
+          "eip7702": 2831,
+          "total": 2831
         }
       ],
       "chain_distribution": {
-        "base": 911695,
-        "ethereum": 6678,
-        "arbitrum": 291,
-        "optimism": 238,
+        "base": 923715,
+        "ethereum": 6572,
+        "arbitrum": 299,
+        "optimism": 243,
         "polygon": 65
       },
       "chain_distribution_source": "bundlebear",
-      "active_wallets_30d": 924237
+      "active_wallets_30d": 936115
     },
     "crossmint": {
       "trackable": "partial",
-      "erc4337_active_wallets_30d": 68361,
+      "erc4337_active_wallets_30d": 65164,
       "eip7702_live_accounts": null,
-      "total_onchain_footprint": 68361,
+      "total_onchain_footprint": 65164,
       "source": "bundlebear",
       "confidence": "medium",
       "bundlebear_labels": {
@@ -230,12 +230,6 @@
       },
       "note": "降级：精准 RPC 采集失败，使用 BundleBear 上界估计。factory 0xd703aae...（ZeroDev Kernel）含 Crossmint + 其他 Kernel 客户。",
       "daily_series": [
-        {
-          "date": "2026-02-27",
-          "erc4337": 6343,
-          "eip7702": null,
-          "total": 6343
-        },
         {
           "date": "2026-02-28",
           "erc4337": 4616,
@@ -400,24 +394,30 @@
         },
         {
           "date": "2026-03-27",
-          "erc4337": 0,
+          "erc4337": 3146,
           "eip7702": null,
-          "total": 0
+          "total": 3146
         },
         {
           "date": "2026-03-28",
           "erc4337": 0,
           "eip7702": null,
           "total": 0
+        },
+        {
+          "date": "2026-03-29",
+          "erc4337": 0,
+          "eip7702": null,
+          "total": 0
         }
       ],
       "chain_distribution": {
-        "base": 65715,
-        "arbitrum": 2146,
-        "optimism": 500
+        "base": 62642,
+        "arbitrum": 2045,
+        "optimism": 476
       },
       "chain_distribution_source": "nonce_ratio",
-      "active_wallets_30d": 68361
+      "active_wallets_30d": 65164
     },
     "privy": {
       "trackable": false,

@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "source": "statuspage",
-  "collected_at": "2026-03-30T06:38:10+00:00",
+  "collected_at": "2026-03-31T06:30:12+00:00",
   "period": "last-30d",
   "providers": {
     "privy": {
@@ -12,8 +12,8 @@
     },
     "coinbase": {
       "incidents_30d": 32,
-      "mttr_minutes": 997.4,
-      "resolved_count": 31,
+      "mttr_minutes": 1175.3,
+      "resolved_count": 32,
       "status_page_url": "https://coinbase.statuspage.io"
     },
     "crossmint": {
