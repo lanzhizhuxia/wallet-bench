@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "source": "github",
-  "collected_at": "2026-04-20T06:45:50+00:00",
+  "collected_at": "2026-04-21T06:38:58+00:00",
   "providers": {
     "privy": {
       "repos": [
@@ -23,8 +23,8 @@
       "repos": [
         {
           "repo": "coinbase/agentkit",
-          "stars": 1200,
-          "commits_30d": 3,
+          "stars": 1204,
+          "commits_30d": 2,
           "open_issues_created_30d": 11,
           "last_push": "2026-04-17T00:48:17Z"
         },
@@ -36,8 +36,8 @@
           "last_push": "2025-10-27T21:30:53Z"
         }
       ],
-      "total_stars": 1293,
-      "total_commits_30d": 3,
+      "total_stars": 1297,
+      "total_commits_30d": 2,
       "total_open_issues_created_30d": 11,
       "latest_push": "2026-04-17T00:48:17Z",
       "partial": false
@@ -94,13 +94,13 @@
       "repos": [
         {
           "repo": "Minara-AI/skills",
-          "stars": 164,
+          "stars": 165,
           "commits_30d": 47,
           "open_issues_created_30d": 29,
           "last_push": "2026-04-17T09:49:10Z"
         }
       ],
-      "total_stars": 164,
+      "total_stars": 165,
       "total_commits_30d": 47,
       "total_open_issues_created_30d": 29,
       "latest_push": "2026-04-17T09:49:10Z",
@@ -110,15 +110,15 @@
       "repos": [
         {
           "repo": "okx/onchainos-skills",
-          "stars": 211,
+          "stars": 213,
           "commits_30d": 44,
-          "open_issues_created_30d": 4,
+          "open_issues_created_30d": 3,
           "last_push": "2026-04-17T14:15:30Z"
         }
       ],
-      "total_stars": 211,
+      "total_stars": 213,
       "total_commits_30d": 44,
-      "total_open_issues_created_30d": 4,
+      "total_open_issues_created_30d": 3,
       "latest_push": "2026-04-17T14:15:30Z",
       "partial": false
     },
@@ -153,13 +153,13 @@
       "repos": [
         {
           "repo": "Polymarket/py-clob-client",
-          "stars": 1117,
+          "stars": 1121,
           "commits_30d": 0,
           "open_issues_created_30d": 16,
           "last_push": "2026-02-22T16:16:36Z"
         }
       ],
-      "total_stars": 1117,
+      "total_stars": 1121,
       "total_commits_30d": 0,
       "total_open_issues_created_30d": 16,
       "latest_push": "2026-02-22T16:16:36Z",
@@ -185,10 +185,10 @@
   "ecosystem": {
     "clawhub": {
       "repo": "openclaw/skills",
-      "stars": 4210,
+      "stars": 4230,
       "forks": null,
-      "commits_30d": 75844,
-      "last_push": "2026-04-20T06:36:22Z",
+      "commits_30d": 70841,
+      "last_push": "2026-04-21T06:36:26Z",
       "note": "OpenClaw 生态主仓库，包含所有 Skills"
     }
   }
