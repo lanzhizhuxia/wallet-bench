@@ -1,83 +1,83 @@
 {
   "schema_version": "1.0",
   "source": "npm",
-  "collected_at": "2026-04-30T06:53:04+00:00",
+  "collected_at": "2026-05-01T06:55:40+00:00",
   "period": "last-week",
   "providers": {
     "privy": {
       "packages": [
         {
           "package": "@privy-io/server-auth",
-          "weekly_downloads": 100400
+          "weekly_downloads": 97738
         },
         {
           "package": "@privy-io/react-auth",
-          "weekly_downloads": 214026
+          "weekly_downloads": 213967
         },
         {
           "package": "@privy-io/node",
-          "weekly_downloads": 128995
+          "weekly_downloads": 132561
         }
       ],
-      "total_weekly_downloads": 443421,
+      "total_weekly_downloads": 444266,
       "partial": false
     },
     "coinbase": {
       "packages": [
         {
           "package": "@coinbase/agentkit",
-          "weekly_downloads": 15503
+          "weekly_downloads": 16908
         },
         {
           "package": "@coinbase/coinbase-sdk",
-          "weekly_downloads": 14839
+          "weekly_downloads": 14855
         }
       ],
-      "total_weekly_downloads": 30342,
+      "total_weekly_downloads": 31763,
       "partial": false
     },
     "crossmint": {
       "packages": [
         {
           "package": "@crossmint/wallets-sdk",
-          "weekly_downloads": 18943
+          "weekly_downloads": 19746
         },
         {
           "package": "@crossmint/client-sdk-smart-wallet",
           "weekly_downloads": 395
         }
       ],
-      "total_weekly_downloads": 19338,
+      "total_weekly_downloads": 20141,
       "partial": false
     },
     "bnbchain_mcp": {
       "packages": [
         {
           "package": "@bnb-chain/mcp",
-          "weekly_downloads": 247
+          "weekly_downloads": 259
         }
       ],
-      "total_weekly_downloads": 247,
+      "total_weekly_downloads": 259,
       "partial": false
     },
     "moonpay": {
       "packages": [
         {
           "package": "@moonpay/cli",
-          "weekly_downloads": 1066
+          "weekly_downloads": 1193
         }
       ],
-      "total_weekly_downloads": 1066,
+      "total_weekly_downloads": 1193,
       "partial": false
     },
     "minara": {
       "packages": [
         {
           "package": "minara",
-          "weekly_downloads": 255
+          "weekly_downloads": 261
         }
       ],
-      "total_weekly_downloads": 255,
+      "total_weekly_downloads": 261,
       "partial": false
     }
   }
