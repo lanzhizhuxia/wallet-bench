@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "source": "github",
-  "collected_at": "2026-05-06T06:55:46+00:00",
+  "collected_at": "2026-05-07T07:00:16+00:00",
   "providers": {
     "privy": {
       "repos": [
@@ -47,7 +47,7 @@
         {
           "repo": "Crossmint/crossmint-sdk",
           "stars": 48,
-          "commits_30d": 40,
+          "commits_30d": 38,
           "open_issues_created_30d": 1,
           "last_push": "2026-05-06T02:56:42Z"
         },
@@ -60,7 +60,7 @@
         }
       ],
       "total_stars": 49,
-      "total_commits_30d": 40,
+      "total_commits_30d": 38,
       "total_open_issues_created_30d": 1,
       "latest_push": "2026-05-06T02:56:42Z",
       "partial": false
@@ -110,16 +110,16 @@
       "repos": [
         {
           "repo": "okx/onchainos-skills",
-          "stars": 239,
-          "commits_30d": 39,
+          "stars": 242,
+          "commits_30d": 41,
           "open_issues_created_30d": 3,
-          "last_push": "2026-04-30T14:41:36Z"
+          "last_push": "2026-05-07T03:22:10Z"
         }
       ],
-      "total_stars": 239,
-      "total_commits_30d": 39,
+      "total_stars": 242,
+      "total_commits_30d": 41,
       "total_open_issues_created_30d": 3,
-      "latest_push": "2026-04-30T14:41:36Z",
+      "latest_push": "2026-05-07T03:22:10Z",
       "partial": false
     },
     "clawlett": {
@@ -153,15 +153,15 @@
       "repos": [
         {
           "repo": "Polymarket/py-clob-client",
-          "stars": 1187,
+          "stars": 1191,
           "commits_30d": 0,
-          "open_issues_created_30d": 15,
+          "open_issues_created_30d": 16,
           "last_push": "2026-02-22T16:16:36Z"
         }
       ],
-      "total_stars": 1187,
+      "total_stars": 1191,
       "total_commits_30d": 0,
-      "total_open_issues_created_30d": 15,
+      "total_open_issues_created_30d": 16,
       "latest_push": "2026-02-22T16:16:36Z",
       "partial": false
     },
