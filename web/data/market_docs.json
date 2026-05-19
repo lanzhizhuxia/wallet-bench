@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "source": "github-docs",
-  "collected_at": "2026-05-18T07:23:55+00:00",
+  "collected_at": "2026-05-19T07:13:55+00:00",
   "period": "last-30d",
   "providers": {
     "privy": {
@@ -111,14 +111,14 @@
       "repos": [
         {
           "repo": "okx/onchainos-skills",
-          "doc_commits_30d": 7,
+          "doc_commits_30d": 10,
           "breaking_change_commits_30d": 0,
           "paths_checked": [
             "README.md"
           ]
         }
       ],
-      "total_doc_commits_30d": 7,
+      "total_doc_commits_30d": 10,
       "total_breaking_change_commits_30d": 0,
       "breaking_change_ratio": 0.0,
       "partial": false

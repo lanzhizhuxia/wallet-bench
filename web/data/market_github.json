@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "source": "github",
-  "collected_at": "2026-05-18T07:23:46+00:00",
+  "collected_at": "2026-05-19T07:13:46+00:00",
   "providers": {
     "privy": {
       "repos": [
@@ -23,9 +23,9 @@
       "repos": [
         {
           "repo": "coinbase/agentkit",
-          "stars": 1231,
+          "stars": 1232,
           "commits_30d": 0,
-          "open_issues_created_30d": 12,
+          "open_issues_created_30d": 14,
           "last_push": "2026-05-17T12:01:35Z"
         },
         {
@@ -36,9 +36,9 @@
           "last_push": "2025-10-27T21:30:53Z"
         }
       ],
-      "total_stars": 1325,
+      "total_stars": 1326,
       "total_commits_30d": 0,
-      "total_open_issues_created_30d": 12,
+      "total_open_issues_created_30d": 14,
       "latest_push": "2026-05-17T12:01:35Z",
       "partial": false
     },
@@ -69,13 +69,13 @@
       "repos": [
         {
           "repo": "bnb-chain/bnbchain-mcp",
-          "stars": 58,
+          "stars": 59,
           "commits_30d": 0,
           "open_issues_created_30d": 0,
           "last_push": "2026-04-17T01:56:00Z"
         }
       ],
-      "total_stars": 58,
+      "total_stars": 59,
       "total_commits_30d": 0,
       "total_open_issues_created_30d": 0,
       "latest_push": "2026-04-17T01:56:00Z",
@@ -110,16 +110,16 @@
       "repos": [
         {
           "repo": "okx/onchainos-skills",
-          "stars": 262,
-          "commits_30d": 529,
+          "stars": 263,
+          "commits_30d": 556,
           "open_issues_created_30d": 4,
-          "last_push": "2026-05-17T04:24:45Z"
+          "last_push": "2026-05-19T04:52:03Z"
         }
       ],
-      "total_stars": 262,
-      "total_commits_30d": 529,
+      "total_stars": 263,
+      "total_commits_30d": 556,
       "total_open_issues_created_30d": 4,
-      "latest_push": "2026-05-17T04:24:45Z",
+      "latest_push": "2026-05-19T04:52:03Z",
       "partial": false
     },
     "clawlett": {
