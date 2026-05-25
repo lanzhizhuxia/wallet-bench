@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "source": "statuspage",
-  "collected_at": "2026-05-24T07:06:46+00:00",
+  "collected_at": "2026-05-25T07:34:42+00:00",
   "period": "last-30d",
   "providers": {
     "privy": {
