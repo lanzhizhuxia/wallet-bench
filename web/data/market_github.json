@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "source": "github",
-  "collected_at": "2026-05-27T07:27:13+00:00",
+  "collected_at": "2026-05-28T07:20:56+00:00",
   "providers": {
     "privy": {
       "repos": [
@@ -47,9 +47,9 @@
         {
           "repo": "Crossmint/crossmint-sdk",
           "stars": 49,
-          "commits_30d": 33,
+          "commits_30d": 34,
           "open_issues_created_30d": 0,
-          "last_push": "2026-05-26T20:07:30Z"
+          "last_push": "2026-05-27T23:57:53Z"
         },
         {
           "repo": "Crossmint/mcp-crossmint-checkout",
@@ -60,9 +60,9 @@
         }
       ],
       "total_stars": 50,
-      "total_commits_30d": 33,
+      "total_commits_30d": 34,
       "total_open_issues_created_30d": 0,
-      "latest_push": "2026-05-26T20:07:30Z",
+      "latest_push": "2026-05-27T23:57:53Z",
       "partial": false
     },
     "bnbchain_mcp": {
@@ -94,13 +94,13 @@
       "repos": [
         {
           "repo": "Minara-AI/skills",
-          "stars": 273,
+          "stars": 274,
           "commits_30d": 3,
           "open_issues_created_30d": 1,
           "last_push": "2026-05-27T07:00:37Z"
         }
       ],
-      "total_stars": 273,
+      "total_stars": 274,
       "total_commits_30d": 3,
       "total_open_issues_created_30d": 1,
       "latest_push": "2026-05-27T07:00:37Z",
@@ -111,13 +111,13 @@
         {
           "repo": "okx/onchainos-skills",
           "stars": 273,
-          "commits_30d": 315,
+          "commits_30d": 294,
           "open_issues_created_30d": 4,
           "last_push": "2026-05-22T01:45:08Z"
         }
       ],
       "total_stars": 273,
-      "total_commits_30d": 315,
+      "total_commits_30d": 294,
       "total_open_issues_created_30d": 4,
       "latest_push": "2026-05-22T01:45:08Z",
       "partial": false
