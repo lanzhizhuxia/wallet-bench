@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "source": "statuspage",
-  "collected_at": "2026-06-05T07:30:17+00:00",
+  "collected_at": "2026-06-06T07:05:03+00:00",
   "period": "last-30d",
   "providers": {
     "privy": {
@@ -12,7 +12,7 @@
     },
     "coinbase": {
       "incidents_30d": 33,
-      "mttr_minutes": 518.0,
+      "mttr_minutes": 485.7,
       "resolved_count": 33,
       "status_page_url": "https://coinbase.statuspage.io"
     },
