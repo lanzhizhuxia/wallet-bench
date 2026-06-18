@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "source": "github-docs",
-  "collected_at": "2026-06-17T07:50:58+00:00",
+  "collected_at": "2026-06-18T07:41:07+00:00",
   "period": "last-30d",
   "providers": {
     "privy": {
@@ -47,7 +47,7 @@
       "repos": [
         {
           "repo": "Crossmint/crossmint-sdk",
-          "doc_commits_30d": 44,
+          "doc_commits_30d": 46,
           "breaking_change_commits_30d": 0,
           "paths_checked": [
             ".changeset",
@@ -63,7 +63,7 @@
           "note": "no tracked docs paths"
         }
       ],
-      "total_doc_commits_30d": 44,
+      "total_doc_commits_30d": 46,
       "total_breaking_change_commits_30d": 0,
       "breaking_change_ratio": 0.0,
       "partial": false
