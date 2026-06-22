@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "source": "github",
-  "collected_at": "2026-06-21T07:38:45+00:00",
+  "collected_at": "2026-06-22T08:00:49+00:00",
   "providers": {
     "privy": {
       "repos": [
@@ -23,9 +23,9 @@
       "repos": [
         {
           "repo": "coinbase/agentkit",
-          "stars": 1254,
+          "stars": 1255,
           "commits_30d": 0,
-          "open_issues_created_30d": 2,
+          "open_issues_created_30d": 3,
           "last_push": "2026-06-17T17:28:18Z"
         },
         {
@@ -36,9 +36,9 @@
           "last_push": "2025-10-27T21:30:53Z"
         }
       ],
-      "total_stars": 1349,
+      "total_stars": 1350,
       "total_commits_30d": 0,
-      "total_open_issues_created_30d": 2,
+      "total_open_issues_created_30d": 3,
       "latest_push": "2026-06-17T17:28:18Z",
       "partial": false
     },
@@ -95,13 +95,13 @@
         {
           "repo": "Minara-AI/skills",
           "stars": 281,
-          "commits_30d": 4,
+          "commits_30d": 2,
           "open_issues_created_30d": 0,
           "last_push": "2026-06-18T09:01:59Z"
         }
       ],
       "total_stars": 281,
-      "total_commits_30d": 4,
+      "total_commits_30d": 2,
       "total_open_issues_created_30d": 0,
       "latest_push": "2026-06-18T09:01:59Z",
       "partial": false
@@ -113,13 +113,13 @@
           "stars": 289,
           "commits_30d": 37,
           "open_issues_created_30d": 0,
-          "last_push": "2026-06-18T11:20:43Z"
+          "last_push": "2026-06-22T05:46:51Z"
         }
       ],
       "total_stars": 289,
       "total_commits_30d": 37,
       "total_open_issues_created_30d": 0,
-      "latest_push": "2026-06-18T11:20:43Z",
+      "latest_push": "2026-06-22T05:46:51Z",
       "partial": false
     },
     "clawlett": {
