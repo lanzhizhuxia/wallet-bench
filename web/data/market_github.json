@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "source": "github",
-  "collected_at": "2026-06-30T07:18:24+00:00",
+  "collected_at": "2026-07-01T07:30:27+00:00",
   "providers": {
     "privy": {
       "repos": [
@@ -23,10 +23,10 @@
       "repos": [
         {
           "repo": "coinbase/agentkit",
-          "stars": 1257,
+          "stars": 1255,
           "commits_30d": 0,
-          "open_issues_created_30d": 6,
-          "last_push": "2026-06-23T20:54:17Z"
+          "open_issues_created_30d": 7,
+          "last_push": "2026-06-30T17:29:10Z"
         },
         {
           "repo": "coinbase/cdp-sdk-python",
@@ -36,10 +36,10 @@
           "last_push": "2025-10-27T21:30:53Z"
         }
       ],
-      "total_stars": 1352,
+      "total_stars": 1350,
       "total_commits_30d": 0,
-      "total_open_issues_created_30d": 6,
-      "latest_push": "2026-06-23T20:54:17Z",
+      "total_open_issues_created_30d": 7,
+      "latest_push": "2026-06-30T17:29:10Z",
       "partial": false
     },
     "crossmint": {
@@ -47,9 +47,9 @@
         {
           "repo": "Crossmint/crossmint-sdk",
           "stars": 50,
-          "commits_30d": 55,
+          "commits_30d": 57,
           "open_issues_created_30d": 0,
-          "last_push": "2026-06-30T05:23:40Z"
+          "last_push": "2026-07-01T00:00:14Z"
         },
         {
           "repo": "Crossmint/mcp-crossmint-checkout",
@@ -60,9 +60,9 @@
         }
       ],
       "total_stars": 51,
-      "total_commits_30d": 55,
+      "total_commits_30d": 57,
       "total_open_issues_created_30d": 0,
-      "latest_push": "2026-06-30T05:23:40Z",
+      "latest_push": "2026-07-01T00:00:14Z",
       "partial": false
     },
     "bnbchain_mcp": {
@@ -94,32 +94,32 @@
       "repos": [
         {
           "repo": "Minara-AI/skills",
-          "stars": 281,
-          "commits_30d": 1,
+          "stars": 298,
+          "commits_30d": 6,
           "open_issues_created_30d": 0,
-          "last_push": "2026-06-18T09:01:59Z"
+          "last_push": "2026-07-01T07:19:01Z"
         }
       ],
-      "total_stars": 281,
-      "total_commits_30d": 1,
+      "total_stars": 298,
+      "total_commits_30d": 6,
       "total_open_issues_created_30d": 0,
-      "latest_push": "2026-06-18T09:01:59Z",
+      "latest_push": "2026-07-01T07:19:01Z",
       "partial": false
     },
     "okx_onchainos": {
       "repos": [
         {
           "repo": "okx/onchainos-skills",
-          "stars": 294,
-          "commits_30d": 915,
+          "stars": 302,
+          "commits_30d": 900,
           "open_issues_created_30d": 0,
-          "last_push": "2026-06-30T04:36:34Z"
+          "last_push": "2026-06-30T08:38:51Z"
         }
       ],
-      "total_stars": 294,
-      "total_commits_30d": 915,
+      "total_stars": 302,
+      "total_commits_30d": 900,
       "total_open_issues_created_30d": 0,
-      "latest_push": "2026-06-30T04:36:34Z",
+      "latest_push": "2026-06-30T08:38:51Z",
       "partial": false
     },
     "clawlett": {
