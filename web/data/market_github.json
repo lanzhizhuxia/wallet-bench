@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "source": "github",
-  "collected_at": "2026-07-06T10:08:03+00:00",
+  "collected_at": "2026-07-07T09:32:50+00:00",
   "providers": {
     "privy": {
       "repos": [
@@ -23,7 +23,7 @@
       "repos": [
         {
           "repo": "coinbase/agentkit",
-          "stars": 1259,
+          "stars": 1262,
           "commits_30d": 0,
           "open_issues_created_30d": 7,
           "last_push": "2026-06-30T17:29:10Z"
@@ -36,7 +36,7 @@
           "last_push": "2025-10-27T21:30:53Z"
         }
       ],
-      "total_stars": 1354,
+      "total_stars": 1357,
       "total_commits_30d": 0,
       "total_open_issues_created_30d": 7,
       "latest_push": "2026-06-30T17:29:10Z",
@@ -47,9 +47,9 @@
         {
           "repo": "Crossmint/crossmint-sdk",
           "stars": 50,
-          "commits_30d": 47,
+          "commits_30d": 49,
           "open_issues_created_30d": 0,
-          "last_push": "2026-07-06T09:56:38Z"
+          "last_push": "2026-07-07T02:44:16Z"
         },
         {
           "repo": "Crossmint/mcp-crossmint-checkout",
@@ -60,9 +60,9 @@
         }
       ],
       "total_stars": 51,
-      "total_commits_30d": 47,
+      "total_commits_30d": 49,
       "total_open_issues_created_30d": 0,
-      "latest_push": "2026-07-06T09:56:38Z",
+      "latest_push": "2026-07-07T02:44:16Z",
       "partial": false
     },
     "bnbchain_mcp": {
@@ -111,15 +111,15 @@
         {
           "repo": "okx/onchainos-skills",
           "stars": 311,
-          "commits_30d": 721,
+          "commits_30d": 700,
           "open_issues_created_30d": 3,
-          "last_push": "2026-07-03T16:56:05Z"
+          "last_push": "2026-07-06T14:43:59Z"
         }
       ],
       "total_stars": 311,
-      "total_commits_30d": 721,
+      "total_commits_30d": 700,
       "total_open_issues_created_30d": 3,
-      "latest_push": "2026-07-03T16:56:05Z",
+      "latest_push": "2026-07-06T14:43:59Z",
       "partial": false
     },
     "clawlett": {
@@ -153,13 +153,13 @@
       "repos": [
         {
           "repo": "Polymarket/py-clob-client",
-          "stars": 1233,
+          "stars": 1234,
           "commits_30d": 0,
           "open_issues_created_30d": 0,
           "last_push": "2026-05-25T18:13:33Z"
         }
       ],
-      "total_stars": 1233,
+      "total_stars": 1234,
       "total_commits_30d": 0,
       "total_open_issues_created_30d": 0,
       "latest_push": "2026-05-25T18:13:33Z",
