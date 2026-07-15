@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "source": "github",
-  "collected_at": "2026-07-14T07:53:57+00:00",
+  "collected_at": "2026-07-15T07:58:43+00:00",
   "providers": {
     "privy": {
       "repos": [
@@ -23,7 +23,7 @@
       "repos": [
         {
           "repo": "coinbase/agentkit",
-          "stars": 1264,
+          "stars": 1265,
           "commits_30d": 0,
           "open_issues_created_30d": 8,
           "last_push": "2026-07-10T21:48:03Z"
@@ -36,7 +36,7 @@
           "last_push": "2025-10-27T21:30:53Z"
         }
       ],
-      "total_stars": 1359,
+      "total_stars": 1360,
       "total_commits_30d": 0,
       "total_open_issues_created_30d": 8,
       "latest_push": "2026-07-10T21:48:03Z",
@@ -110,14 +110,14 @@
       "repos": [
         {
           "repo": "okx/onchainos-skills",
-          "stars": 313,
-          "commits_30d": 489,
+          "stars": 312,
+          "commits_30d": 455,
           "open_issues_created_30d": 6,
           "last_push": "2026-07-13T11:52:54Z"
         }
       ],
-      "total_stars": 313,
-      "total_commits_30d": 489,
+      "total_stars": 312,
+      "total_commits_30d": 455,
       "total_open_issues_created_30d": 6,
       "latest_push": "2026-07-13T11:52:54Z",
       "partial": false
@@ -153,13 +153,13 @@
       "repos": [
         {
           "repo": "Polymarket/py-clob-client",
-          "stars": 1239,
+          "stars": 1238,
           "commits_30d": 0,
           "open_issues_created_30d": 0,
           "last_push": "2026-05-25T18:13:33Z"
         }
       ],
-      "total_stars": 1239,
+      "total_stars": 1238,
       "total_commits_30d": 0,
       "total_open_issues_created_30d": 0,
       "latest_push": "2026-05-25T18:13:33Z",
