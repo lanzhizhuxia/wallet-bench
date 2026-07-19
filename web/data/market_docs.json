@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "source": "github-docs",
-  "collected_at": "2026-07-18T07:41:11+00:00",
+  "collected_at": "2026-07-19T08:08:05+00:00",
   "period": "last-30d",
   "providers": {
     "privy": {
@@ -47,7 +47,7 @@
       "repos": [
         {
           "repo": "Crossmint/crossmint-sdk",
-          "doc_commits_30d": 34,
+          "doc_commits_30d": 32,
           "breaking_change_commits_30d": 1,
           "paths_checked": [
             ".changeset",
@@ -63,9 +63,9 @@
           "note": "no tracked docs paths"
         }
       ],
-      "total_doc_commits_30d": 34,
+      "total_doc_commits_30d": 32,
       "total_breaking_change_commits_30d": 1,
-      "breaking_change_ratio": 0.029,
+      "breaking_change_ratio": 0.031,
       "partial": false
     },
     "bnbchain_mcp": {
@@ -95,14 +95,14 @@
       "repos": [
         {
           "repo": "Minara-AI/skills",
-          "doc_commits_30d": 1,
+          "doc_commits_30d": 0,
           "breaking_change_commits_30d": 0,
           "paths_checked": [
             "skills/minara/SKILL.md"
           ]
         }
       ],
-      "total_doc_commits_30d": 1,
+      "total_doc_commits_30d": 0,
       "total_breaking_change_commits_30d": 0,
       "breaking_change_ratio": 0.0,
       "partial": false
