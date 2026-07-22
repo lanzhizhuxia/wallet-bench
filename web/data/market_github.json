@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "source": "github",
-  "collected_at": "2026-07-21T08:18:39+00:00",
+  "collected_at": "2026-07-22T08:19:33+00:00",
   "providers": {
     "privy": {
       "repos": [
@@ -23,10 +23,10 @@
       "repos": [
         {
           "repo": "coinbase/agentkit",
-          "stars": 1272,
+          "stars": 1273,
           "commits_30d": 0,
           "open_issues_created_30d": 7,
-          "last_push": "2026-07-16T20:33:40Z"
+          "last_push": "2026-07-21T19:57:48Z"
         },
         {
           "repo": "coinbase/cdp-sdk-python",
@@ -36,10 +36,10 @@
           "last_push": "2025-10-27T21:30:53Z"
         }
       ],
-      "total_stars": 1367,
+      "total_stars": 1368,
       "total_commits_30d": 0,
       "total_open_issues_created_30d": 7,
-      "latest_push": "2026-07-16T20:33:40Z",
+      "latest_push": "2026-07-21T19:57:48Z",
       "partial": false
     },
     "crossmint": {
@@ -49,7 +49,7 @@
           "stars": 50,
           "commits_30d": 33,
           "open_issues_created_30d": 0,
-          "last_push": "2026-07-20T20:10:14Z"
+          "last_push": "2026-07-21T22:49:33Z"
         },
         {
           "repo": "Crossmint/mcp-crossmint-checkout",
@@ -62,7 +62,7 @@
       "total_stars": 51,
       "total_commits_30d": 33,
       "total_open_issues_created_30d": 0,
-      "latest_push": "2026-07-20T20:10:14Z",
+      "latest_push": "2026-07-21T22:49:33Z",
       "partial": false
     },
     "bnbchain_mcp": {
@@ -94,13 +94,13 @@
       "repos": [
         {
           "repo": "Minara-AI/skills",
-          "stars": 319,
+          "stars": 320,
           "commits_30d": 14,
           "open_issues_created_30d": 0,
           "last_push": "2026-07-07T12:35:15Z"
         }
       ],
-      "total_stars": 319,
+      "total_stars": 320,
       "total_commits_30d": 14,
       "total_open_issues_created_30d": 0,
       "latest_push": "2026-07-07T12:35:15Z",
@@ -111,13 +111,13 @@
         {
           "repo": "okx/onchainos-skills",
           "stars": 315,
-          "commits_30d": 247,
+          "commits_30d": 235,
           "open_issues_created_30d": 8,
           "last_push": "2026-07-20T13:26:11Z"
         }
       ],
       "total_stars": 315,
-      "total_commits_30d": 247,
+      "total_commits_30d": 235,
       "total_open_issues_created_30d": 8,
       "latest_push": "2026-07-20T13:26:11Z",
       "partial": false
