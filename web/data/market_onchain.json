@@ -1,7 +1,7 @@
 {
   "schema_version": "4.0",
   "source": "bundlebear",
-  "collected_at": "2026-08-01T08:12:13+00:00",
+  "collected_at": "2026-08-02T08:13:46+00:00",
   "period": "last-30d",
   "granularity": "daily",
   "data_freshness": {
@@ -210,9 +210,9 @@
       ],
       "chain_distribution": {
         "base": 264258,
-        "ethereum": 2065,
+        "ethereum": 2137,
         "arbitrum": 127,
-        "optimism": 156,
+        "optimism": 159,
         "polygon": 0
       },
       "chain_distribution_source": "bundlebear",
