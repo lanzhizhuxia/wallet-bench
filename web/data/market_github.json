@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "source": "github",
-  "collected_at": "2026-08-04T08:28:33+00:00",
+  "collected_at": "2026-08-05T08:27:35+00:00",
   "providers": {
     "privy": {
       "repos": [
@@ -23,10 +23,10 @@
       "repos": [
         {
           "repo": "coinbase/agentkit",
-          "stars": 1277,
+          "stars": 1279,
           "commits_30d": 0,
           "open_issues_created_30d": 6,
-          "last_push": "2026-08-01T07:05:26Z"
+          "last_push": "2026-08-04T17:36:00Z"
         },
         {
           "repo": "coinbase/cdp-sdk-python",
@@ -36,10 +36,10 @@
           "last_push": "2025-10-27T21:30:53Z"
         }
       ],
-      "total_stars": 1372,
+      "total_stars": 1374,
       "total_commits_30d": 0,
       "total_open_issues_created_30d": 6,
-      "latest_push": "2026-08-01T07:05:26Z",
+      "latest_push": "2026-08-04T17:36:00Z",
       "partial": false
     },
     "crossmint": {
@@ -47,9 +47,9 @@
         {
           "repo": "Crossmint/crossmint-sdk",
           "stars": 50,
-          "commits_30d": 22,
+          "commits_30d": 23,
           "open_issues_created_30d": 0,
-          "last_push": "2026-08-01T13:37:16Z"
+          "last_push": "2026-08-05T02:01:46Z"
         },
         {
           "repo": "Crossmint/mcp-crossmint-checkout",
@@ -60,9 +60,9 @@
         }
       ],
       "total_stars": 51,
-      "total_commits_30d": 22,
+      "total_commits_30d": 23,
       "total_open_issues_created_30d": 0,
-      "latest_push": "2026-08-01T13:37:16Z",
+      "latest_push": "2026-08-05T02:01:46Z",
       "partial": false
     },
     "bnbchain_mcp": {
@@ -111,15 +111,15 @@
         {
           "repo": "okx/onchainos-skills",
           "stars": 315,
-          "commits_30d": 46,
-          "open_issues_created_30d": 11,
-          "last_push": "2026-08-01T14:08:03Z"
+          "commits_30d": 50,
+          "open_issues_created_30d": 9,
+          "last_push": "2026-08-04T12:58:21Z"
         }
       ],
       "total_stars": 315,
-      "total_commits_30d": 46,
-      "total_open_issues_created_30d": 11,
-      "latest_push": "2026-08-01T14:08:03Z",
+      "total_commits_30d": 50,
+      "total_open_issues_created_30d": 9,
+      "latest_push": "2026-08-04T12:58:21Z",
       "partial": false
     },
     "clawlett": {
