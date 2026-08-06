@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "source": "github",
-  "collected_at": "2026-08-05T08:27:35+00:00",
+  "collected_at": "2026-08-06T08:26:08+00:00",
   "providers": {
     "privy": {
       "repos": [
@@ -23,7 +23,7 @@
       "repos": [
         {
           "repo": "coinbase/agentkit",
-          "stars": 1279,
+          "stars": 1280,
           "commits_30d": 0,
           "open_issues_created_30d": 6,
           "last_push": "2026-08-04T17:36:00Z"
@@ -36,7 +36,7 @@
           "last_push": "2025-10-27T21:30:53Z"
         }
       ],
-      "total_stars": 1374,
+      "total_stars": 1375,
       "total_commits_30d": 0,
       "total_open_issues_created_30d": 6,
       "latest_push": "2026-08-04T17:36:00Z",
@@ -47,9 +47,9 @@
         {
           "repo": "Crossmint/crossmint-sdk",
           "stars": 50,
-          "commits_30d": 23,
+          "commits_30d": 21,
           "open_issues_created_30d": 0,
-          "last_push": "2026-08-05T02:01:46Z"
+          "last_push": "2026-08-06T00:42:45Z"
         },
         {
           "repo": "Crossmint/mcp-crossmint-checkout",
@@ -60,9 +60,9 @@
         }
       ],
       "total_stars": 51,
-      "total_commits_30d": 23,
+      "total_commits_30d": 21,
       "total_open_issues_created_30d": 0,
-      "latest_push": "2026-08-05T02:01:46Z",
+      "latest_push": "2026-08-06T00:42:45Z",
       "partial": false
     },
     "bnbchain_mcp": {
@@ -110,15 +110,15 @@
       "repos": [
         {
           "repo": "okx/onchainos-skills",
-          "stars": 315,
-          "commits_30d": 50,
-          "open_issues_created_30d": 9,
+          "stars": 316,
+          "commits_30d": 48,
+          "open_issues_created_30d": 10,
           "last_push": "2026-08-04T12:58:21Z"
         }
       ],
-      "total_stars": 315,
-      "total_commits_30d": 50,
-      "total_open_issues_created_30d": 9,
+      "total_stars": 316,
+      "total_commits_30d": 48,
+      "total_open_issues_created_30d": 10,
       "latest_push": "2026-08-04T12:58:21Z",
       "partial": false
     },
