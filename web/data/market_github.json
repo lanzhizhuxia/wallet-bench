@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "source": "github",
-  "collected_at": "2026-08-16T06:30:36+00:00",
+  "collected_at": "2026-08-17T06:42:06+00:00",
   "providers": {
     "privy": {
       "repos": [
@@ -111,15 +111,15 @@
         {
           "repo": "okx/onchainos-skills",
           "stars": 322,
-          "commits_30d": 191,
-          "open_issues_created_30d": 10,
-          "last_push": "2026-08-16T03:46:37Z"
+          "commits_30d": 185,
+          "open_issues_created_30d": 9,
+          "last_push": "2026-08-17T06:38:29Z"
         }
       ],
       "total_stars": 322,
-      "total_commits_30d": 191,
-      "total_open_issues_created_30d": 10,
-      "latest_push": "2026-08-16T03:46:37Z",
+      "total_commits_30d": 185,
+      "total_open_issues_created_30d": 9,
+      "latest_push": "2026-08-17T06:38:29Z",
       "partial": false
     },
     "clawlett": {
