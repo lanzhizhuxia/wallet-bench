@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "source": "github",
-  "collected_at": "2026-08-24T06:45:29+00:00",
+  "collected_at": "2026-08-25T06:37:10+00:00",
   "providers": {
     "privy": {
       "repos": [
@@ -25,7 +25,7 @@
           "repo": "coinbase/agentkit",
           "stars": 1285,
           "commits_30d": 2,
-          "open_issues_created_30d": 9,
+          "open_issues_created_30d": 8,
           "last_push": "2026-08-19T19:19:01Z"
         },
         {
@@ -38,7 +38,7 @@
       ],
       "total_stars": 1380,
       "total_commits_30d": 2,
-      "total_open_issues_created_30d": 9,
+      "total_open_issues_created_30d": 8,
       "latest_push": "2026-08-19T19:19:01Z",
       "partial": false
     },
@@ -94,13 +94,13 @@
       "repos": [
         {
           "repo": "Minara-AI/skills",
-          "stars": 331,
+          "stars": 332,
           "commits_30d": 2,
           "open_issues_created_30d": 0,
           "last_push": "2026-08-04T06:34:49Z"
         }
       ],
-      "total_stars": 331,
+      "total_stars": 332,
       "total_commits_30d": 2,
       "total_open_issues_created_30d": 0,
       "latest_push": "2026-08-04T06:34:49Z",
@@ -111,15 +111,15 @@
         {
           "repo": "okx/onchainos-skills",
           "stars": 324,
-          "commits_30d": 161,
+          "commits_30d": 167,
           "open_issues_created_30d": 7,
-          "last_push": "2026-08-24T03:59:50Z"
+          "last_push": "2026-08-25T05:42:34Z"
         }
       ],
       "total_stars": 324,
-      "total_commits_30d": 161,
+      "total_commits_30d": 167,
       "total_open_issues_created_30d": 7,
-      "latest_push": "2026-08-24T03:59:50Z",
+      "latest_push": "2026-08-25T05:42:34Z",
       "partial": false
     },
     "clawlett": {
@@ -153,13 +153,13 @@
       "repos": [
         {
           "repo": "Polymarket/py-clob-client",
-          "stars": 1233,
+          "stars": 1234,
           "commits_30d": 0,
           "open_issues_created_30d": 0,
           "last_push": "2026-05-25T18:13:33Z"
         }
       ],
-      "total_stars": 1233,
+      "total_stars": 1234,
       "total_commits_30d": 0,
       "total_open_issues_created_30d": 0,
       "latest_push": "2026-05-25T18:13:33Z",
