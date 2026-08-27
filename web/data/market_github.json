@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "source": "github",
-  "collected_at": "2026-08-26T06:38:53+00:00",
+  "collected_at": "2026-08-27T17:14:27+00:00",
   "providers": {
     "privy": {
       "repos": [
@@ -23,9 +23,9 @@
       "repos": [
         {
           "repo": "coinbase/agentkit",
-          "stars": 1285,
+          "stars": 1290,
           "commits_30d": 2,
-          "open_issues_created_30d": 9,
+          "open_issues_created_30d": 10,
           "last_push": "2026-08-19T19:19:01Z"
         },
         {
@@ -36,9 +36,9 @@
           "last_push": "2025-10-27T21:30:53Z"
         }
       ],
-      "total_stars": 1380,
+      "total_stars": 1385,
       "total_commits_30d": 2,
-      "total_open_issues_created_30d": 9,
+      "total_open_issues_created_30d": 10,
       "latest_push": "2026-08-19T19:19:01Z",
       "partial": false
     },
@@ -47,9 +47,9 @@
         {
           "repo": "Crossmint/crossmint-sdk",
           "stars": 51,
-          "commits_30d": 21,
+          "commits_30d": 20,
           "open_issues_created_30d": 0,
-          "last_push": "2026-08-25T12:23:23Z"
+          "last_push": "2026-08-27T12:14:01Z"
         },
         {
           "repo": "Crossmint/mcp-crossmint-checkout",
@@ -60,9 +60,9 @@
         }
       ],
       "total_stars": 52,
-      "total_commits_30d": 21,
+      "total_commits_30d": 20,
       "total_open_issues_created_30d": 0,
-      "latest_push": "2026-08-25T12:23:23Z",
+      "latest_push": "2026-08-27T12:14:01Z",
       "partial": false
     },
     "bnbchain_mcp": {
@@ -111,15 +111,15 @@
         {
           "repo": "okx/onchainos-skills",
           "stars": 325,
-          "commits_30d": 167,
+          "commits_30d": 160,
           "open_issues_created_30d": 6,
-          "last_push": "2026-08-25T05:42:34Z"
+          "last_push": "2026-08-27T11:59:22Z"
         }
       ],
       "total_stars": 325,
-      "total_commits_30d": 167,
+      "total_commits_30d": 160,
       "total_open_issues_created_30d": 6,
-      "latest_push": "2026-08-25T05:42:34Z",
+      "latest_push": "2026-08-27T11:59:22Z",
       "partial": false
     },
     "clawlett": {
