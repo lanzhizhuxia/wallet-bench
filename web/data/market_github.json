@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "source": "github",
-  "collected_at": "2026-08-27T17:14:27+00:00",
+  "collected_at": "2026-08-28T18:07:10+00:00",
   "providers": {
     "privy": {
       "repos": [
@@ -23,7 +23,7 @@
       "repos": [
         {
           "repo": "coinbase/agentkit",
-          "stars": 1290,
+          "stars": 1293,
           "commits_30d": 2,
           "open_issues_created_30d": 10,
           "last_push": "2026-08-19T19:19:01Z"
@@ -36,7 +36,7 @@
           "last_push": "2025-10-27T21:30:53Z"
         }
       ],
-      "total_stars": 1385,
+      "total_stars": 1388,
       "total_commits_30d": 2,
       "total_open_issues_created_30d": 10,
       "latest_push": "2026-08-19T19:19:01Z",
@@ -47,9 +47,9 @@
         {
           "repo": "Crossmint/crossmint-sdk",
           "stars": 51,
-          "commits_30d": 20,
+          "commits_30d": 21,
           "open_issues_created_30d": 0,
-          "last_push": "2026-08-27T12:14:01Z"
+          "last_push": "2026-08-28T13:26:57Z"
         },
         {
           "repo": "Crossmint/mcp-crossmint-checkout",
@@ -60,9 +60,9 @@
         }
       ],
       "total_stars": 52,
-      "total_commits_30d": 20,
+      "total_commits_30d": 21,
       "total_open_issues_created_30d": 0,
-      "latest_push": "2026-08-27T12:14:01Z",
+      "latest_push": "2026-08-28T13:26:57Z",
       "partial": false
     },
     "bnbchain_mcp": {
@@ -110,16 +110,16 @@
       "repos": [
         {
           "repo": "okx/onchainos-skills",
-          "stars": 325,
-          "commits_30d": 160,
+          "stars": 326,
+          "commits_30d": 147,
           "open_issues_created_30d": 6,
-          "last_push": "2026-08-27T11:59:22Z"
+          "last_push": "2026-08-28T03:09:11Z"
         }
       ],
-      "total_stars": 325,
-      "total_commits_30d": 160,
+      "total_stars": 326,
+      "total_commits_30d": 147,
       "total_open_issues_created_30d": 6,
-      "latest_push": "2026-08-27T11:59:22Z",
+      "latest_push": "2026-08-28T03:09:11Z",
       "partial": false
     },
     "clawlett": {
