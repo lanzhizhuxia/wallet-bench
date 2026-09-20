@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "source": "github",
-  "collected_at": "2026-09-19T10:11:10+00:00",
+  "collected_at": "2026-09-20T10:29:40+00:00",
   "providers": {
     "privy": {
       "repos": [
@@ -23,7 +23,7 @@
       "repos": [
         {
           "repo": "coinbase/agentkit",
-          "stars": 1312,
+          "stars": 1314,
           "commits_30d": 2,
           "open_issues_created_30d": 16,
           "last_push": "2026-09-03T17:58:06Z"
@@ -36,7 +36,7 @@
           "last_push": "2025-10-27T21:30:53Z"
         }
       ],
-      "total_stars": 1407,
+      "total_stars": 1409,
       "total_commits_30d": 2,
       "total_open_issues_created_30d": 16,
       "latest_push": "2026-09-03T17:58:06Z",
@@ -94,13 +94,13 @@
       "repos": [
         {
           "repo": "Minara-AI/skills",
-          "stars": 353,
+          "stars": 355,
           "commits_30d": 1,
           "open_issues_created_30d": 0,
           "last_push": "2026-09-17T08:31:00Z"
         }
       ],
-      "total_stars": 353,
+      "total_stars": 355,
       "total_commits_30d": 1,
       "total_open_issues_created_30d": 0,
       "latest_push": "2026-09-17T08:31:00Z",
@@ -112,13 +112,13 @@
           "repo": "okx/onchainos-skills",
           "stars": 336,
           "commits_30d": 21,
-          "open_issues_created_30d": 3,
+          "open_issues_created_30d": 2,
           "last_push": "2026-09-18T11:25:10Z"
         }
       ],
       "total_stars": 336,
       "total_commits_30d": 21,
-      "total_open_issues_created_30d": 3,
+      "total_open_issues_created_30d": 2,
       "latest_push": "2026-09-18T11:25:10Z",
       "partial": false
     },
