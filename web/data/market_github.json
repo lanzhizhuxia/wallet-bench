@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "source": "github",
-  "collected_at": "2026-09-29T11:59:49+00:00",
+  "collected_at": "2026-09-30T11:48:09+00:00",
   "providers": {
     "privy": {
       "repos": [
@@ -23,7 +23,7 @@
       "repos": [
         {
           "repo": "coinbase/agentkit",
-          "stars": 1321,
+          "stars": 1322,
           "commits_30d": 2,
           "open_issues_created_30d": 17,
           "last_push": "2026-09-03T17:58:06Z"
@@ -36,7 +36,7 @@
           "last_push": "2025-10-27T21:30:53Z"
         }
       ],
-      "total_stars": 1416,
+      "total_stars": 1417,
       "total_commits_30d": 2,
       "total_open_issues_created_30d": 17,
       "latest_push": "2026-09-03T17:58:06Z",
@@ -49,7 +49,7 @@
           "stars": 52,
           "commits_30d": 52,
           "open_issues_created_30d": 1,
-          "last_push": "2026-09-29T11:15:26Z"
+          "last_push": "2026-09-30T01:25:46Z"
         },
         {
           "repo": "Crossmint/mcp-crossmint-checkout",
@@ -62,7 +62,7 @@
       "total_stars": 53,
       "total_commits_30d": 52,
       "total_open_issues_created_30d": 1,
-      "latest_push": "2026-09-29T11:15:26Z",
+      "latest_push": "2026-09-30T01:25:46Z",
       "partial": false
     },
     "bnbchain_mcp": {
