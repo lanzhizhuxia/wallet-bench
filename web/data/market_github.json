@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "source": "github",
-  "collected_at": "2026-10-01T12:17:44+00:00",
+  "collected_at": "2026-10-02T11:45:58+00:00",
   "providers": {
     "privy": {
       "repos": [
@@ -25,7 +25,7 @@
           "repo": "coinbase/agentkit",
           "stars": 1322,
           "commits_30d": 2,
-          "open_issues_created_30d": 16,
+          "open_issues_created_30d": 14,
           "last_push": "2026-09-03T17:58:06Z"
         },
         {
@@ -38,7 +38,7 @@
       ],
       "total_stars": 1417,
       "total_commits_30d": 2,
-      "total_open_issues_created_30d": 16,
+      "total_open_issues_created_30d": 14,
       "latest_push": "2026-09-03T17:58:06Z",
       "partial": false
     },
@@ -49,7 +49,7 @@
           "stars": 52,
           "commits_30d": 51,
           "open_issues_created_30d": 1,
-          "last_push": "2026-10-01T11:07:27Z"
+          "last_push": "2026-10-02T11:10:26Z"
         },
         {
           "repo": "Crossmint/mcp-crossmint-checkout",
@@ -62,7 +62,7 @@
       "total_stars": 53,
       "total_commits_30d": 51,
       "total_open_issues_created_30d": 1,
-      "latest_push": "2026-10-01T11:07:27Z",
+      "latest_push": "2026-10-02T11:10:26Z",
       "partial": false
     },
     "bnbchain_mcp": {
@@ -110,14 +110,14 @@
       "repos": [
         {
           "repo": "okx/onchainos-skills",
-          "stars": 338,
-          "commits_30d": 17,
+          "stars": 340,
+          "commits_30d": 15,
           "open_issues_created_30d": 2,
           "last_push": "2026-09-28T02:53:42Z"
         }
       ],
-      "total_stars": 338,
-      "total_commits_30d": 17,
+      "total_stars": 340,
+      "total_commits_30d": 15,
       "total_open_issues_created_30d": 2,
       "latest_push": "2026-09-28T02:53:42Z",
       "partial": false
