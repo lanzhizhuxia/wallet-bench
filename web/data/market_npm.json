@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "source": "npm",
-  "collected_at": "2026-10-05T13:24:12+00:00",
+  "collected_at": "2026-10-06T12:38:03+00:00",
   "period": "last-week",
   "providers": {
     "privy": {
@@ -54,10 +54,10 @@
       "packages": [
         {
           "package": "@bnb-chain/mcp",
-          "weekly_downloads": 88
+          "weekly_downloads": 100
         }
       ],
-      "total_weekly_downloads": 88,
+      "total_weekly_downloads": 100,
       "partial": false
     },
     "moonpay": {
@@ -74,10 +74,10 @@
       "packages": [
         {
           "package": "minara",
-          "weekly_downloads": 87
+          "weekly_downloads": 96
         }
       ],
-      "total_weekly_downloads": 87,
+      "total_weekly_downloads": 96,
       "partial": false
     }
   }
