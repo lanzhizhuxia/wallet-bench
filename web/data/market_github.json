@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "source": "github",
-  "collected_at": "2026-10-08T12:41:02+00:00",
+  "collected_at": "2026-10-09T12:27:53+00:00",
   "providers": {
     "privy": {
       "repos": [
@@ -23,9 +23,9 @@
       "repos": [
         {
           "repo": "coinbase/agentkit",
-          "stars": 1322,
+          "stars": 1324,
           "commits_30d": 0,
-          "open_issues_created_30d": 19,
+          "open_issues_created_30d": 21,
           "last_push": "2026-09-03T17:58:06Z"
         },
         {
@@ -36,9 +36,9 @@
           "last_push": "2025-10-27T21:30:53Z"
         }
       ],
-      "total_stars": 1417,
+      "total_stars": 1419,
       "total_commits_30d": 0,
-      "total_open_issues_created_30d": 19,
+      "total_open_issues_created_30d": 21,
       "latest_push": "2026-09-03T17:58:06Z",
       "partial": false
     },
@@ -49,7 +49,7 @@
           "stars": 52,
           "commits_30d": 60,
           "open_issues_created_30d": 1,
-          "last_push": "2026-10-07T18:46:00Z"
+          "last_push": "2026-10-09T06:34:27Z"
         },
         {
           "repo": "Crossmint/mcp-crossmint-checkout",
@@ -62,7 +62,7 @@
       "total_stars": 53,
       "total_commits_30d": 60,
       "total_open_issues_created_30d": 1,
-      "latest_push": "2026-10-07T18:46:00Z",
+      "latest_push": "2026-10-09T06:34:27Z",
       "partial": false
     },
     "bnbchain_mcp": {
@@ -94,13 +94,13 @@
       "repos": [
         {
           "repo": "Minara-AI/skills",
-          "stars": 358,
+          "stars": 362,
           "commits_30d": 1,
           "open_issues_created_30d": 0,
           "last_push": "2026-09-17T08:31:00Z"
         }
       ],
-      "total_stars": 358,
+      "total_stars": 362,
       "total_commits_30d": 1,
       "total_open_issues_created_30d": 0,
       "latest_push": "2026-09-17T08:31:00Z",
@@ -110,16 +110,16 @@
       "repos": [
         {
           "repo": "okx/onchainos-skills",
-          "stars": 342,
+          "stars": 343,
           "commits_30d": 16,
           "open_issues_created_30d": 2,
-          "last_push": "2026-10-08T10:42:54Z"
+          "last_push": "2026-10-09T03:24:35Z"
         }
       ],
-      "total_stars": 342,
+      "total_stars": 343,
       "total_commits_30d": 16,
       "total_open_issues_created_30d": 2,
-      "latest_push": "2026-10-08T10:42:54Z",
+      "latest_push": "2026-10-09T03:24:35Z",
       "partial": false
     },
     "clawlett": {
