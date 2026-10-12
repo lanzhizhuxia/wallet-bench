@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "source": "github",
-  "collected_at": "2026-10-11T11:59:13+00:00",
+  "collected_at": "2026-10-12T14:13:46+00:00",
   "providers": {
     "privy": {
       "repos": [
@@ -23,9 +23,9 @@
       "repos": [
         {
           "repo": "coinbase/agentkit",
-          "stars": 1327,
+          "stars": 1326,
           "commits_30d": 0,
-          "open_issues_created_30d": 22,
+          "open_issues_created_30d": 24,
           "last_push": "2026-09-03T17:58:06Z"
         },
         {
@@ -36,9 +36,9 @@
           "last_push": "2025-10-27T21:30:53Z"
         }
       ],
-      "total_stars": 1422,
+      "total_stars": 1421,
       "total_commits_30d": 0,
-      "total_open_issues_created_30d": 22,
+      "total_open_issues_created_30d": 24,
       "latest_push": "2026-09-03T17:58:06Z",
       "partial": false
     },
@@ -47,7 +47,7 @@
         {
           "repo": "Crossmint/crossmint-sdk",
           "stars": 52,
-          "commits_30d": 59,
+          "commits_30d": 56,
           "open_issues_created_30d": 1,
           "last_push": "2026-10-10T18:22:43Z"
         },
@@ -60,7 +60,7 @@
         }
       ],
       "total_stars": 53,
-      "total_commits_30d": 59,
+      "total_commits_30d": 56,
       "total_open_issues_created_30d": 1,
       "latest_push": "2026-10-10T18:22:43Z",
       "partial": false
@@ -110,16 +110,16 @@
       "repos": [
         {
           "repo": "okx/onchainos-skills",
-          "stars": 344,
-          "commits_30d": 16,
+          "stars": 343,
+          "commits_30d": 13,
           "open_issues_created_30d": 1,
-          "last_push": "2026-10-09T03:24:35Z"
+          "last_push": "2026-10-12T12:21:48Z"
         }
       ],
-      "total_stars": 344,
-      "total_commits_30d": 16,
+      "total_stars": 343,
+      "total_commits_30d": 13,
       "total_open_issues_created_30d": 1,
-      "latest_push": "2026-10-09T03:24:35Z",
+      "latest_push": "2026-10-12T12:21:48Z",
       "partial": false
     },
     "clawlett": {
@@ -153,13 +153,13 @@
       "repos": [
         {
           "repo": "Polymarket/py-clob-client",
-          "stars": 1228,
+          "stars": 1227,
           "commits_30d": 0,
           "open_issues_created_30d": 0,
           "last_push": "2026-05-25T18:13:33Z"
         }
       ],
-      "total_stars": 1228,
+      "total_stars": 1227,
       "total_commits_30d": 0,
       "total_open_issues_created_30d": 0,
       "latest_push": "2026-05-25T18:13:33Z",

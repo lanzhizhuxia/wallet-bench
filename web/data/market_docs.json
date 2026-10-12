@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "source": "github-docs",
-  "collected_at": "2026-10-11T11:59:23+00:00",
+  "collected_at": "2026-10-12T14:13:59+00:00",
   "period": "last-30d",
   "providers": {
     "privy": {
@@ -47,7 +47,7 @@
       "repos": [
         {
           "repo": "Crossmint/crossmint-sdk",
-          "doc_commits_30d": 48,
+          "doc_commits_30d": 47,
           "breaking_change_commits_30d": 1,
           "paths_checked": [
             ".changeset",
@@ -63,7 +63,7 @@
           "note": "no tracked docs paths"
         }
       ],
-      "total_doc_commits_30d": 48,
+      "total_doc_commits_30d": 47,
       "total_breaking_change_commits_30d": 1,
       "breaking_change_ratio": 0.021,
       "partial": false
@@ -111,14 +111,14 @@
       "repos": [
         {
           "repo": "okx/onchainos-skills",
-          "doc_commits_30d": 1,
+          "doc_commits_30d": 0,
           "breaking_change_commits_30d": 0,
           "paths_checked": [
             "README.md"
           ]
         }
       ],
-      "total_doc_commits_30d": 1,
+      "total_doc_commits_30d": 0,
       "total_breaking_change_commits_30d": 0,
       "breaking_change_ratio": 0.0,
       "partial": false
