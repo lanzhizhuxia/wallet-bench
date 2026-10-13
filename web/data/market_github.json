@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "source": "github",
-  "collected_at": "2026-10-12T14:13:46+00:00",
+  "collected_at": "2026-10-13T13:23:52+00:00",
   "providers": {
     "privy": {
       "repos": [
@@ -23,9 +23,9 @@
       "repos": [
         {
           "repo": "coinbase/agentkit",
-          "stars": 1326,
+          "stars": 1327,
           "commits_30d": 0,
-          "open_issues_created_30d": 24,
+          "open_issues_created_30d": 23,
           "last_push": "2026-09-03T17:58:06Z"
         },
         {
@@ -36,9 +36,9 @@
           "last_push": "2025-10-27T21:30:53Z"
         }
       ],
-      "total_stars": 1421,
+      "total_stars": 1422,
       "total_commits_30d": 0,
-      "total_open_issues_created_30d": 24,
+      "total_open_issues_created_30d": 23,
       "latest_push": "2026-09-03T17:58:06Z",
       "partial": false
     },
@@ -49,7 +49,7 @@
           "stars": 52,
           "commits_30d": 56,
           "open_issues_created_30d": 1,
-          "last_push": "2026-10-10T18:22:43Z"
+          "last_push": "2026-10-13T11:40:12Z"
         },
         {
           "repo": "Crossmint/mcp-crossmint-checkout",
@@ -62,7 +62,7 @@
       "total_stars": 53,
       "total_commits_30d": 56,
       "total_open_issues_created_30d": 1,
-      "latest_push": "2026-10-10T18:22:43Z",
+      "latest_push": "2026-10-13T11:40:12Z",
       "partial": false
     },
     "bnbchain_mcp": {
@@ -94,13 +94,13 @@
       "repos": [
         {
           "repo": "Minara-AI/skills",
-          "stars": 363,
+          "stars": 362,
           "commits_30d": 1,
           "open_issues_created_30d": 0,
           "last_push": "2026-09-17T08:31:00Z"
         }
       ],
-      "total_stars": 363,
+      "total_stars": 362,
       "total_commits_30d": 1,
       "total_open_issues_created_30d": 0,
       "latest_push": "2026-09-17T08:31:00Z",
@@ -153,13 +153,13 @@
       "repos": [
         {
           "repo": "Polymarket/py-clob-client",
-          "stars": 1227,
+          "stars": 1228,
           "commits_30d": 0,
           "open_issues_created_30d": 0,
           "last_push": "2026-05-25T18:13:33Z"
         }
       ],
-      "total_stars": 1227,
+      "total_stars": 1228,
       "total_commits_30d": 0,
       "total_open_issues_created_30d": 0,
       "latest_push": "2026-05-25T18:13:33Z",
