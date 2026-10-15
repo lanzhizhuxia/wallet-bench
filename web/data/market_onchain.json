@@ -1,7 +1,7 @@
 {
   "schema_version": "4.0",
   "source": "bundlebear",
-  "collected_at": "2026-10-14T11:07:34+00:00",
+  "collected_at": "2026-10-15T10:45:14+00:00",
   "period": "last-30d",
   "granularity": "daily",
   "data_freshness": {
@@ -17,9 +17,9 @@
   "providers": {
     "coinbase": {
       "trackable": true,
-      "erc4337_active_wallets_30d": 157219,
-      "eip7702_live_accounts": 22031,
-      "total_onchain_footprint": 179250,
+      "erc4337_active_wallets_30d": 179593,
+      "eip7702_live_accounts": 21653,
+      "total_onchain_footprint": 201246,
       "source": "bundlebear",
       "bundlebear_labels": {
         "erc4337": "coinbase_smart_wallet",
@@ -197,32 +197,32 @@
         },
         {
           "date": "2026-10-12",
-          "erc4337": 2220,
+          "erc4337": 15199,
           "eip7702": 0,
-          "total": 2220
+          "total": 15199
         },
         {
           "date": "2026-10-13",
-          "erc4337": 0,
-          "eip7702": 378,
-          "total": 378
+          "erc4337": 9395,
+          "eip7702": 0,
+          "total": 9395
         }
       ],
       "chain_distribution": {
-        "base": 224094,
-        "ethereum": 5939,
-        "arbitrum": 883,
-        "optimism": 381,
-        "polygon": 180
+        "base": 246988,
+        "ethereum": 6097,
+        "arbitrum": 923,
+        "optimism": 386,
+        "polygon": 172
       },
       "chain_distribution_source": "bundlebear",
-      "active_wallets_30d": 179250
+      "active_wallets_30d": 201246
     },
     "crossmint": {
       "trackable": "partial",
-      "erc4337_active_wallets_30d": 84655,
+      "erc4337_active_wallets_30d": 86735,
       "eip7702_live_accounts": null,
-      "total_onchain_footprint": 84655,
+      "total_onchain_footprint": 86735,
       "source": "bundlebear",
       "confidence": "medium",
       "bundlebear_labels": {
@@ -406,18 +406,18 @@
         },
         {
           "date": "2026-10-13",
-          "erc4337": 0,
+          "erc4337": 2080,
           "eip7702": null,
-          "total": 0
+          "total": 2080
         }
       ],
       "chain_distribution": {
-        "base": 81379,
-        "arbitrum": 2657,
-        "optimism": 619
+        "base": 83378,
+        "arbitrum": 2722,
+        "optimism": 634
       },
       "chain_distribution_source": "nonce_ratio",
-      "active_wallets_30d": 84655
+      "active_wallets_30d": 86735
     },
     "privy": {
       "trackable": false,
