@@ -1,19 +1,19 @@
 {
   "schema_version": "1.0",
   "source": "statuspage",
-  "collected_at": "2026-10-27T11:29:13+00:00",
+  "collected_at": "2026-10-28T11:59:37+00:00",
   "period": "last-30d",
   "providers": {
     "privy": {
-      "incidents_30d": 4,
-      "mttr_minutes": 615.7,
-      "resolved_count": 4,
+      "incidents_30d": 5,
+      "mttr_minutes": 550.6,
+      "resolved_count": 5,
       "status_page_url": "https://privy.statuspage.io"
     },
     "coinbase": {
       "incidents_30d": 19,
-      "mttr_minutes": 1290.1,
-      "resolved_count": 16,
+      "mttr_minutes": 1451.0,
+      "resolved_count": 17,
       "status_page_url": "https://coinbase.statuspage.io"
     },
     "crossmint": {
