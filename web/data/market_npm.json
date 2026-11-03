@@ -1,83 +1,83 @@
 {
   "schema_version": "1.0",
   "source": "npm",
-  "collected_at": "2026-11-02T14:35:29+00:00",
+  "collected_at": "2026-11-03T13:29:19+00:00",
   "period": "last-week",
   "providers": {
     "privy": {
       "packages": [
         {
           "package": "@privy-io/server-auth",
-          "weekly_downloads": 236789
+          "weekly_downloads": 242805
         },
         {
           "package": "@privy-io/react-auth",
-          "weekly_downloads": 681337
+          "weekly_downloads": 673705
         },
         {
           "package": "@privy-io/node",
-          "weekly_downloads": 485260
+          "weekly_downloads": 431752
         }
       ],
-      "total_weekly_downloads": 1403386,
+      "total_weekly_downloads": 1348262,
       "partial": false
     },
     "coinbase": {
       "packages": [
         {
           "package": "@coinbase/agentkit",
-          "weekly_downloads": 4855
+          "weekly_downloads": 5052
         },
         {
           "package": "@coinbase/coinbase-sdk",
-          "weekly_downloads": 8766
+          "weekly_downloads": 9481
         }
       ],
-      "total_weekly_downloads": 13621,
+      "total_weekly_downloads": 14533,
       "partial": false
     },
     "crossmint": {
       "packages": [
         {
           "package": "@crossmint/wallets-sdk",
-          "weekly_downloads": 47745
+          "weekly_downloads": 53274
         },
         {
           "package": "@crossmint/client-sdk-smart-wallet",
-          "weekly_downloads": 639
+          "weekly_downloads": 364
         }
       ],
-      "total_weekly_downloads": 48384,
+      "total_weekly_downloads": 53638,
       "partial": false
     },
     "bnbchain_mcp": {
       "packages": [
         {
           "package": "@bnb-chain/mcp",
-          "weekly_downloads": 113
+          "weekly_downloads": 96
         }
       ],
-      "total_weekly_downloads": 113,
+      "total_weekly_downloads": 96,
       "partial": false
     },
     "moonpay": {
       "packages": [
         {
           "package": "@moonpay/cli",
-          "weekly_downloads": 2612
+          "weekly_downloads": 2456
         }
       ],
-      "total_weekly_downloads": 2612,
+      "total_weekly_downloads": 2456,
       "partial": false
     },
     "minara": {
       "packages": [
         {
           "package": "minara",
-          "weekly_downloads": 66
+          "weekly_downloads": 106
         }
       ],
-      "total_weekly_downloads": 66,
+      "total_weekly_downloads": 106,
       "partial": false
     }
   }
