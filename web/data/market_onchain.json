@@ -1,7 +1,7 @@
 {
   "schema_version": "4.0",
   "source": "bundlebear",
-  "collected_at": "2026-11-03T13:29:44+00:00",
+  "collected_at": "2026-11-04T13:40:55+00:00",
   "period": "last-30d",
   "granularity": "daily",
   "data_freshness": {
@@ -10,10 +10,10 @@
     "series_start": "2026-10-03",
     "series_end": "2026-11-01",
     "num_days": 30,
-    "collection_status": "success"
+    "collection_status": "stale"
   },
-  "stale": false,
-  "stale_since": null,
+  "stale": true,
+  "stale_since": "2026-11-04T13:40:55+00:00",
   "providers": {
     "coinbase": {
       "trackable": true,
